@@ -1,0 +1,199 @@
+/*
+ * Copyright (C) 2008-2011 Nils Hoffmann Nils.Hoffmann A T
+ * CeBiTec.Uni-Bielefeld.DE
+ *
+ * This file is part of Cross/Maltcms.
+ *
+ * Cross/Maltcms is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * Cross/Maltcms is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with Cross/Maltcms. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * $Id$
+ */
+package net.sf.maltcms.execution.computehost;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.UUID;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.sf.maltcms.execution.api.ConfigurationKeys;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
+
+/**
+ * First argument is ip of master server,
+ * second one is port number of RMI port.
+ * 
+ * @author Kai Bernd Stadermann
+ */
+public class StartUp {
+
+    public StartUp(Configuration cfg) {
+        FileHandler handler;
+        try {
+            handler = new FileHandler("computeHostStartup.log");
+            Logger logger = Logger.getLogger(StartUp.class.getName());
+            logger.addHandler(handler);
+        } catch (IOException ex) {
+            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        Settings settings = new Settings(cfg);
+//            }
+
+        try {
+            System.setProperty("java.rmi.server.codebase",
+                    settings.getCodebase().toString());
+            Logger.getLogger(StartUp.class.getName()).
+                    log(Level.INFO, "RMI Codebase at " + settings.getCodebase().
+                    toString());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE,
+                    null,
+                    ex);
+        }
+        File policyFile;
+        try {
+            policyFile = new File(new File(
+                    settings.getCodebase().toURI()),
+                    settings.getPolicyName());
+            if (!policyFile.exists()) {
+                System.out.println(
+                        "Did not find security policy, will create default one!");
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(
+                        StartUp.class.getResourceAsStream(
+                        "/net/sf/maltcms/execution/computehost/wideopen.policy")));
+                try {
+                    BufferedWriter bw = new BufferedWriter(new FileWriter(
+                            policyFile));
+                    String s = null;
+                    while ((s = br.readLine()) != null) {
+                        bw.write(s + "\n");
+                    }
+                    bw.flush();
+                    bw.close();
+                    br.close();
+                    Logger.getLogger(StartUp.class.getName()).
+                            log(Level.INFO,
+                            "Using security policy at " + policyFile.getAbsolutePath());
+                } catch (IOException ex) {
+                    Logger.getLogger(StartUp.class.getName()).log(
+                            Level.SEVERE, null, ex);
+                }
+            } else {
+                Logger.getLogger(StartUp.class.getName()).
+                        log(Level.INFO,
+                        "Found existing policy file at " + policyFile.getAbsolutePath());
+            }
+            System.setProperty("java.security.policy", policyFile.getAbsolutePath());
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE,
+                    null,
+                    ex);
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE,
+                    null,
+                    ex);
+        }
+
+        System.setProperty("java.net.preferIPv4Stack", "true");
+
+        if (System.getSecurityManager() == null) {
+            System.setSecurityManager(new SecurityManager());
+        }
+
+        System.out.println("Creating host");
+        Host h = new Host();
+        System.out.println("Configuring host");
+        h.configure(cfg);
+        System.out.println("Setting auth token " + settings.getOption(
+                ConfigurationKeys.KEY_AUTH_TOKEN));
+        String at = settings.getOption(
+                ConfigurationKeys.KEY_AUTH_TOKEN);
+        h.setAuthenticationToken(UUID.fromString(at));
+        System.out.println("Starting host");
+        h.startComputeHost();
+    }
+
+    public static void main(String args[]) {
+        FileHandler handler;
+        try {
+            handler = new FileHandler("computeHostStartupMain.log");
+            Logger logger = Logger.getLogger(StartUp.class.getName());
+            logger.addHandler(handler);
+        } catch (IOException ex) {
+            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+        Options options = new Options();
+        Option[] optionArray = new Option[]{OptionBuilder.withArgName(
+            "configuration").
+            hasArg().isRequired().withDescription(
+            "URL to configuration file for compute host").create("c")};
+        for (Option opt : optionArray) {
+            options.addOption(opt);
+        }
+        if (args.length == 0) {
+            HelpFormatter hf = new HelpFormatter();
+            hf.printHelp(
+                    StartUp.class.getCanonicalName(), options,
+                    true);
+            System.exit(1);
+        }
+        GnuParser gp = new GnuParser();
+        try {
+            //try {
+            CommandLine cl = gp.parse(options, args);
+            try {
+                URL configURL = new URL(cl.getOptionValue("c"));
+                PropertiesConfiguration cfg = new PropertiesConfiguration(
+                        configURL);
+//        PropertiesConfiguration cfg = new PropertiesConfiguration();
+                StartUp su = new StartUp(cfg);
+
+            } catch (ConfigurationException ex) {
+                Logger.getLogger(StartUp.class.getName()).
+                        log(Level.SEVERE, null, ex);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(StartUp.class.getName()).
+                        log(Level.SEVERE, null, ex);
+            }
+
+        } catch (ParseException ex) {
+            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+    }
+}
