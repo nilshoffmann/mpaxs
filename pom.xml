@@ -10,9 +10,9 @@
     <name>Mpaxs - Maltcms Execution</name>
 
 	<scm>
-                <connection>scm:svn:svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/maltcms-execution-mpaxs/trunk/</connection>
-                <developerConnection>scm:svn:svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/maltcms-execution-mpaxs/trunk/</developerConnection>
-                <url>svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/maltcms-execution-mpaxs/trunk/</url>
+                <connection>scm:svn:svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/mpaxs/trunk/</connection>
+                <developerConnection>scm:svn:svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/mpaxs/trunk/</developerConnection>
+                <url>svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/mpaxs/trunk/</url>
         </scm>
         <distributionManagement>
                 <repository>
