@@ -4,15 +4,15 @@
 
     <groupId>net.sf.maltcms</groupId>
     <artifactId>maltcms-execution-mpaxs</artifactId>
-    <version>1.1</version>
+    <version>1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Mpaxs - Maltcms Execution</name>
 
 	<scm>
-                <connection>scm:svn:svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/mpaxs/tags/maltcms-execution-mpaxs-1.1</connection>
-                <developerConnection>scm:svn:svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/mpaxs/tags/maltcms-execution-mpaxs-1.1</developerConnection>
-                <url>svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/mpaxs/tags/maltcms-execution-mpaxs-1.1</url>
+                <connection>scm:svn:svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/mpaxs/trunk/</connection>
+                <developerConnection>scm:svn:svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/mpaxs/trunk/</developerConnection>
+                <url>svn+ssh://porta.cebitec.uni-bielefeld.de/vol/maltcms/repository/mpaxs/trunk/</url>
         </scm>
         <distributionManagement>
                 <repository>
