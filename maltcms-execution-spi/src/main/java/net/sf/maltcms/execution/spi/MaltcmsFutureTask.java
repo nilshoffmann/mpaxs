@@ -4,10 +4,8 @@
  */
 package net.sf.maltcms.execution.spi;
 
-import java.io.Serializable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.RunnableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -16,6 +14,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import net.sf.maltcms.execution.api.Impaxs;
 import net.sf.maltcms.execution.api.concurrent.DefaultCallable;
 import net.sf.maltcms.execution.api.concurrent.DefaultRunnable;
