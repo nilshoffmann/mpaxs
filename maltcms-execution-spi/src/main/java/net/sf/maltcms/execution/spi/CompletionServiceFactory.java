@@ -20,15 +20,19 @@ public class CompletionServiceFactory<T extends Serializable> {
     private TimeUnit timeUnit = TimeUnit.SECONDS;
     private boolean blockingWait = false;
     
-    public ICompletionService<T> createVMLocalCompletionService() {
+    public MaltcmsCompletionService<T> createVMLocalCompletionService() {
         MaltcmsCompletionService<T> mcs = new MaltcmsCompletionService<T>(null,
                 timeOut, timeUnit, blockingWait);
         return mcs;
     }
     
-    public ICompletionService<T> createMpaxsCompletionService() {
+    public MaltcmsCompletionService<T> createMpaxsCompletionService() {
         MaltcmsCompletionService<T> mcs = new MaltcmsCompletionService<T>(new MpaxsExecutorService(),
                 timeOut, timeUnit, false);
         return mcs;
+    }
+    
+    public MaltcmsResubmissionCompletionService<T> asResubmissionService(MaltcmsCompletionService<T> ics, int maxResubmissions) {
+    	return new MaltcmsResubmissionCompletionService<T>(ics);
     }
 }
