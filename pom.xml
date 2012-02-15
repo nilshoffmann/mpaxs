@@ -16,15 +16,15 @@
     </scm>
     <distributionManagement>
         <repository>
-            <id>maltcms-artifactory</id>
+            <id>central</id>
             <name>maltcms-artifactory-releases</name>
-            <url>http://www.maltcms.de:8081/artifactory/libs-releases-local</url>
+            <url>http://maltcms.de:8080/artifactory/libs-release</url>
         </repository>
 
         <snapshotRepository>
-            <id>maltcms-artifactory</id>
+            <id>snapshots</id>
             <name>maltcms-artifactory-snapshots</name>
-            <url>http://www.maltcms.de:8081/artifactory/libs-snapshots-local</url>
+            <url>http://maltcms.de:8080/artifactory/libs-snapshot</url>
         </snapshotRepository>
     </distributionManagement>
 
