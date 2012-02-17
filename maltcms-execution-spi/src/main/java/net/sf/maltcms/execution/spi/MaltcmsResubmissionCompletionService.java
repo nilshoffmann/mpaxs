@@ -122,7 +122,7 @@ public class MaltcmsResubmissionCompletionService<T extends Serializable>
 		Logger.getLogger(
 				MaltcmsResubmissionCompletionService.class
 						.getName()).log(
-				Level.DEBUG,
+				Level.FINER,
 				"Submitted " + submitted + " jobs!");
 		boolean allJobsDone = false;
 		Set<T> results = new LinkedHashSet<T>();
