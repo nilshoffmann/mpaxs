@@ -53,7 +53,7 @@ public class MpaxsExecutorService extends AbstractExecutorService {
 
 	@Override
 	protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
-		Logger.getLogger(MpaxsExecutorService.class.getName()).log(Level.DEBUG,
+		Logger.getLogger(MpaxsExecutorService.class.getName()).log(Level.FINER,
 				"Creating new FutureTask for {}", callable.getClass());
 		return new MaltcmsFutureTask<T>(callable);
 	}
@@ -93,7 +93,7 @@ public class MpaxsExecutorService extends AbstractExecutorService {
 
 	@Override
 	public void execute(Runnable r) {
-		Logger.getLogger(MpaxsExecutorService.class.getName()).log(Level.DEBUG,
+		Logger.getLogger(MpaxsExecutorService.class.getName()).log(Level.FINER,
 				"Running {}", r);
 		es.execute(r);
 	}
