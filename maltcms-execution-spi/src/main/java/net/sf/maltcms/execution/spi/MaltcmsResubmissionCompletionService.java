@@ -119,7 +119,11 @@ public class MaltcmsResubmissionCompletionService<T extends Serializable>
 	@Override
 	public List<T> call() throws Exception {
 		submissionClosed = true;
-		System.out.println("Submitted " + submitted + " jobs!");
+		Logger.getLogger(
+				MaltcmsResubmissionCompletionService.class
+						.getName()).log(
+				Level.DEBUG,
+				"Submitted " + submitted + " jobs!");
 		boolean allJobsDone = false;
 		Set<T> results = new LinkedHashSet<T>();
 		while (!allJobsDone) {
