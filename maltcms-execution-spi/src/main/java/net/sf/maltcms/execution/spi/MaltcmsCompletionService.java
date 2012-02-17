@@ -63,8 +63,8 @@ public class MaltcmsCompletionService<T extends Serializable> implements
 		if (e != null) {
 			this.e = e;
 		} else {
-			this.maxThreads = Math.min(1, Runtime.getRuntime()
-					.availableProcessors() - 1);
+			this.maxThreads = Math.max(1,Math.min(1, Runtime.getRuntime()
+					.availableProcessors() - 1));
 			this.e = Executors.newFixedThreadPool(this.maxThreads);
 		}
 		this.es = new ExecutorCompletionService<T>(this.e);
@@ -130,18 +130,23 @@ public class MaltcmsCompletionService<T extends Serializable> implements
 			}
 		} finally {
 			// cancel all remaining tasks
-			System.out.println("Cancelling " + futureToTaskMap.size()
-					+ " tasks!");
+			if(!futureToTaskMap.keySet().isEmpty()) {
+				Logger.getLogger(MaltcmsCompletionService.class.getName())
+					.log(Level.DEBUG,
+						"Cancelling " + futureToTaskMap.size()
+							+ " tasks!");
+			}
 			for (Future<T> f : futureToTaskMap.keySet()) {
 				f.cancel(true);
 			}
 		}
-
-		Logger.getLogger(MaltcmsCompletionService.class.getName())
-				.log(Level.INFO,
-						"Retrieved all results. " + done + " jobs succeeded, "
-								+ failed + " failed, " + cancelled
-								+ " were cancelled.");
+		if(failed!=0 || cancelled!=0) {
+			Logger.getLogger(MaltcmsCompletionService.class.getName())
+					.log(Level.DEBUG,
+							"Retrieved all results. " + done + " jobs succeeded, "
+									+ failed + " failed, " + cancelled
+									+ " were cancelled.");
+		}								
 		waitForShutdownCompletion();
 		return results;
 	}
