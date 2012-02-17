@@ -132,7 +132,7 @@ public class MaltcmsCompletionService<T extends Serializable> implements
 			// cancel all remaining tasks
 			if(!futureToTaskMap.keySet().isEmpty()) {
 				Logger.getLogger(MaltcmsCompletionService.class.getName())
-					.log(Level.DEBUG,
+					.log(Level.FINEST,
 						"Cancelling " + futureToTaskMap.size()
 							+ " tasks!");
 			}
@@ -142,7 +142,7 @@ public class MaltcmsCompletionService<T extends Serializable> implements
 		}
 		if(failed!=0 || cancelled!=0) {
 			Logger.getLogger(MaltcmsCompletionService.class.getName())
-					.log(Level.DEBUG,
+					.log(Level.FINEST,
 							"Retrieved all results. " + done + " jobs succeeded, "
 									+ failed + " failed, " + cancelled
 									+ " were cancelled.");
