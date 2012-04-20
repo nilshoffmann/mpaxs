@@ -4,11 +4,11 @@
     <parent>
         <artifactId>maltcms-execution-mpaxs</artifactId>
         <groupId>net.sf.maltcms</groupId>
-        <version>1.5-SNAPSHOT</version>
+        <version>1.5</version>
     </parent>
     <groupId>net.sf.maltcms</groupId>
     <artifactId>maltcms-execution-computeHost</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.5</version>
     <name>maltcms-execution-computeHost</name>
     <url>http://maven.apache.org</url>
     <dependencies>
