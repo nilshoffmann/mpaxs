@@ -64,9 +64,14 @@ public class ExecutionFactory {
         //System.out.println("Retrieving computeHost providers: "+l);
         LinkedList<IComputeHostLauncher> retl = new LinkedList<IComputeHostLauncher>();
         for(IComputeHostLauncher ichl:l) {
+            System.out.println("Checking compute host provider "+ichl.getClass().getSimpleName());
             if(ichl.getExecutionType().equals(et)) {
+                System.out.println("Provided execution type: "+ichl.getExecutionType()+"; required execution type: "+et);
                 retl.add(ichl);
             }
+        }
+        if(l.isEmpty()) {
+            throw new RuntimeException("Could not retrieve IComputeHostLauncher for execution type "+et);
         }
         return retl;
     }

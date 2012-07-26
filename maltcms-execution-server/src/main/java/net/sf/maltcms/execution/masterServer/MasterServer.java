@@ -93,9 +93,6 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
         watcher = new DirWatcher(this);
         scheduler.scheduleAtFixedRate(watcher, 1, settings.getScheduleWaitingTime(), TimeUnit.SECONDS);
         scheduler.schedule(jobScheduler, 1, TimeUnit.SECONDS);
-        if (c == null) {
-            this.exitOnShutdown = true;
-        }
         if (settings.getGuiMode()) {
             main = new MainFrame(this, c);
             reporter.addListener(main);
@@ -109,11 +106,12 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
             inputThread = new Thread(input);
             inputThread.start();
         }
+        this.exitOnShutdown = Boolean.parseBoolean(settings.getString(ConfigurationKeys.KEY_MASTER_SERVER_EXIT_ON_SHUTDOWN));
     }
 
     /**
-     * Startet eine RMI-Registry und bindet das HostRegister an diese.
-     * In diesem können sich dann ComputeHosts eintragen.
+     * Startet eine RMI-Registry und bindet das HostRegister an diese. In diesem
+     * können sich dann ComputeHosts eintragen.
      */
     private void bindHostRegister(UUID authToken) {
         try {
@@ -121,6 +119,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
             createRegistry(settings.getLocalPort());
             // Create Remote object.
             IRemoteServer remObj = new ServerImpl(register, this, authToken);
+            System.out.println("Binding server at " + settings.getLocalIP() + ":" + settings.getLocalPort() + " with name " + settings.getName());
             // Naming remote object.
             Naming.bind("//" + settings.getLocalIP() + ":" + settings.getLocalPort() + "/" + settings.getName(), remObj);
         } catch (AlreadyBoundException ex) {
@@ -150,23 +149,23 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
             throw new IllegalStateException("MasterServer instance was already shutdown, can not accept new jobs!");
         }
     }
-    
+
     public HashMap<UUID, Host> getHosts() {
         return register.getHosts();
     }
-    
+
     public HashMap<UUID, IJob> getRunningJobs() {
         return runningJobs;
     }
-    
+
     public HashMap<UUID, IJob> getDoneJobs() {
         return doneJobs;
     }
-    
+
     public MyConcurrentLinkedJobQueue getPendingJobs() {
         return undoneJobs;
     }
-    
+
     public HashMap<UUID, IJob> getCanceledJobs() {
         return canceledJobs;
     }
@@ -175,39 +174,52 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
         isShutdown = true;
         scheduler.shutdown();
         HashMap<UUID, Host> hosts = register.getHosts();
+        try{
+            for (Iterator<UUID> i = hosts.keySet().iterator(); i.hasNext();) {
+                Host host = hosts.get(i.next());
+                IComputeHost remRef;
+                try {
 
-        for (Iterator<UUID> i = hosts.keySet().iterator(); i.hasNext();) {
-            Host host = hosts.get(i.next());
-            IComputeHost remRef;
-            try {
+                    remRef = (IComputeHost) Naming.lookup("//" + host.getIP()
+                            + ":" + settings.getLocalPort() + "/" + host.getName());
+                    remRef.masterServerShuttingDown(UUID.fromString(settings.getString(ConfigurationKeys.KEY_AUTH_TOKEN)));
 
-                remRef = (IComputeHost) Naming.lookup("//" + host.getIP()
-                        + ":" + settings.getLocalPort() + "/" + host.getName());
-                remRef.masterServerShuttingDown(UUID.fromString(settings.getString(ConfigurationKeys.KEY_AUTH_TOKEN)));
-
-            } catch (NotBoundException ex) {
-                EventLogger.getInstance().getLogger().log(Level.SEVERE, null, ex);
-            } catch (MalformedURLException ex) {
-                EventLogger.getInstance().getLogger().log(Level.SEVERE, null, ex);
-            } catch (RemoteException ex) {
-                EventLogger.getInstance().getLogger().log(Level.SEVERE, null, ex);
+                } catch (NotBoundException ex) {
+                    EventLogger.getInstance().getLogger().log(Level.SEVERE, "Not Bound Exception!", ex);
+                } catch (MalformedURLException ex) {
+                    EventLogger.getInstance().getLogger().log(Level.SEVERE, "MalformedURLException!", ex);
+                } catch (RemoteException ex) {
+                    EventLogger.getInstance().getLogger().log(Level.SEVERE, "RemoteException!", ex);
+                }
             }
+        } catch(Exception e) {
+            EventLogger.getInstance().getLogger().log(Level.SEVERE, "Exception while shutting down hosts!", e);
+            throw new RuntimeException(e);
         }
 
 //        new Thread() {
 //
 //            @Override
 //            public void run() {
-                try {
-                    EventLogger.getInstance().getLogger().log(Level.INFO, "Waiting for MasterServer to shut down!");
-                    scheduler.awaitTermination(5, TimeUnit.SECONDS);
-                } catch (InterruptedException ex) {
-                    EventLogger.getInstance().getLogger().log(Level.SEVERE, null, ex);
-                }
-                EventLogger.getInstance().getLogger().log(Level.INFO, "exitOnShutdown: " + exitOnShutdown);
-                if (exitOnShutdown) {
-                    System.exit(0);
-                }
+        try {
+            Logger.getLogger(MasterServer.class.getName()).log(Level.INFO, "Waiting for MasterServer to shut down!");
+            scheduler.awaitTermination(5, TimeUnit.SECONDS);
+        } catch (InterruptedException ex) {
+            EventLogger.getInstance().getLogger().log(Level.SEVERE, "Interrupted while waiting for scheduler termination!", ex);
+        }
+        
+        if(input != null) {
+            try{
+                input.cancel();
+            }catch(InterruptedException ex) {
+                EventLogger.getInstance().getLogger().log(Level.SEVERE, "Interrupted while waiting for scheduler termination!", ex);
+            }
+        }
+        
+        if (exitOnShutdown) {
+            EventLogger.getInstance().getLogger().log(Level.INFO, "exitOnShutdown: " + exitOnShutdown);
+            System.exit(0);
+        }
 //            }
 //        }.start();
     }
@@ -221,9 +233,10 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 
                 remRef = (IComputeHost) Naming.lookup("//" + host.getIP()
                         + ":" + settings.getLocalPort() + "/" + host.getName());
-                ret = remRef.getJobProgress(UUID.fromString(settings.getString(ConfigurationKeys.KEY_AUTH_TOKEN)),jobID);
-                /* All errors must be caught! If not, a poor programmed run method in a job
-                 * could crash the hole server!
+                ret = remRef.getJobProgress(UUID.fromString(settings.getString(ConfigurationKeys.KEY_AUTH_TOKEN)), jobID);
+                /*
+                 * All errors must be caught! If not, a poor programmed run
+                 * method in a job could crash the hole server!
                  */
             } catch (Exception ex) {
                 ret = null;
@@ -283,6 +296,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
     /**
      * Return the host with the given ID or null if there is no host with such
      * an ID.
+     *
      * @param hostID UUID of the host
      * @return host with the given ID
      */
@@ -292,6 +306,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 
     /**
      * Shuts down the host with the given ID.
+     *
      * @param hostID UUID of the host that should be shutted down.
      */
     public void shutdownHost(UUID hostID) {
@@ -332,7 +347,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
                 try {
                     remRef = (IComputeHost) Naming.lookup("//" + host.getIP()
                             + ":" + settings.getLocalPort() + "/" + host.getName());
-                    remRef.cancelJob(UUID.fromString(settings.getString(ConfigurationKeys.KEY_AUTH_TOKEN)),jobId);
+                    remRef.cancelJob(UUID.fromString(settings.getString(ConfigurationKeys.KEY_AUTH_TOKEN)), jobId);
                     register.releaseHost(host);
                     afterCancel(job);
                     return true;
@@ -389,6 +404,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 
     /**
      * Removes the host with the given id from the register.
+     *
      * @param id Host ID of the Host that should be remove
      * @return true if remove action was succesfull, false if not
      */
@@ -462,8 +478,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        reporter.report("Error: "+e.getLocalizedMessage());
-        EventLogger.getInstance().getLogger().log(Level.SEVERE, null, e);
+        //reporter.report("Error: " + e.getLocalizedMessage());
+        EventLogger.getInstance().getLogger().log(Level.SEVERE, "Uncaught exception!", e);
     }
-    
 }

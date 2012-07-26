@@ -21,6 +21,8 @@
  */
 package net.sf.maltcms.execution.spi.server;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import net.sf.maltcms.execution.api.ExecutionType;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,9 @@ import java.util.logging.Logger;
 import net.sf.maltcms.execution.api.ConfigurationKeys;
 import net.sf.maltcms.execution.api.server.IComputeHostLauncher;
 import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.ConfigurationUtils;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.ggf.drmaa.DrmaaException;
 import org.ggf.drmaa.JobTemplate;
 import org.ggf.drmaa.Session;
@@ -47,18 +51,36 @@ public class DrmaaComputeHostLauncher implements IComputeHostLauncher {
      */
     @Override
     public void startComputeHost(Configuration cfg) {
+        File configLocation = new File(cfg.getString(
+                        ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR),"computeHost.properties");
+        try {
+            PropertiesConfiguration pc = new PropertiesConfiguration(configLocation);
+            ConfigurationUtils.copy(cfg, pc);
+            pc.save();
+        } catch (ConfigurationException ex) {
+            Logger.getLogger(DrmaaComputeHostLauncher.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         List<String> arguments = new ArrayList<String>();
+        //arguments.add("-cp");
+        //arguments.add(System.getProperty("java.class.path"));
         arguments.add("-cp");
-        arguments.add(System.getProperty("java.class.path"));
-        arguments.add("-jar");
         arguments.add(cfg.getString(
                 ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR));
-        arguments.add(cfg.getString(ConfigurationKeys.KEY_LOCAL_IP));
-        arguments.add(cfg.getInt(ConfigurationKeys.KEY_LOCAL_PORT) + "");
+        arguments.add(cfg.getString(
+                ConfigurationKeys.KEY_COMPUTE_HOST_MAIN_CLASS));
+        arguments.add("-c");
+        try {
+            arguments.add(configLocation.toURI().toURL().toString());
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(DrmaaComputeHostLauncher.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        //arguments.add(cfg.getString(ConfigurationKeys.KEY_LOCAL_IP));
+        //arguments.add(cfg.getInt(ConfigurationKeys.KEY_LOCAL_PORT) + "");
 //        settings.setOption("authToken", authToken.toString());
         //arguments.add(cfg.getString(ConfigurationKeys.KEY_AUTH_TOKEN));
         Logger.getLogger(this.getClass().getName()).log(Level.INFO,
-                "ComputeHost configuration: {}", ConfigurationUtils.toString(cfg));
+                "ComputeHost configuration: "+ConfigurationUtils.toString(cfg));
         try {
             SessionFactory factory = SessionFactory.getFactory();
             Session session = factory.getSession();
@@ -73,8 +95,7 @@ public class DrmaaComputeHostLauncher implements IComputeHostLauncher {
             Logger.getLogger(this.getClass().getName()).log(Level.INFO,
                     "Remote command: " + cfg.getString(
                     ConfigurationKeys.KEY_PATH_TO_JAVA));
-            jt.setRemoteCommand(
-                    cfg.getString(ConfigurationKeys.KEY_PATH_TO_JAVA));
+            jt.setRemoteCommand(cfg.getString(ConfigurationKeys.KEY_PATH_TO_JAVA));
             Logger.getLogger(this.getClass().getName()).log(Level.INFO,
                     "Working dir: " + cfg.getString(
                     ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR));
@@ -94,7 +115,7 @@ public class DrmaaComputeHostLauncher implements IComputeHostLauncher {
             jt.setOutputPath(":" + cfg.getString(
                     ConfigurationKeys.KEY_OUTPUT_FILE));
             jt.setNativeSpecification(cfg.getString(
-                    ConfigurationKeys.KEY_NATIVE_SPEC));
+                    ConfigurationKeys.KEY_NATIVE_SPEC,"-q all.q@@qics"));
             session.runJob(jt);
             session.deleteJobTemplate(jt);
             session.exit();

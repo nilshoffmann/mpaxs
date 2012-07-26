@@ -39,6 +39,7 @@ import net.sf.maltcms.execution.api.event.IJobEventListener;
 public class Input implements Runnable, IReceiver, IJobEventListener, IComputeHostEventListener{
 
     private MasterServer master;
+    private boolean cancel = false;
 
     public Input(MasterServer master) {
         this.master = master;
@@ -118,6 +119,10 @@ public class Input implements Runnable, IReceiver, IJobEventListener, IComputeHo
     @Override
     public void hostRemoved(Host host) {
         print("ComputeHost removed with IP: "+host.getIP());
+    }
+    
+    public void cancel() throws InterruptedException {
+        //throw new InterruptedException();
     }
 
     public void run() {

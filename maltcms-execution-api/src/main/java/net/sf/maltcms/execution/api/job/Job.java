@@ -30,15 +30,11 @@ import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.jar.Attributes;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.sf.maltcms.execution.api.ConfigurationKeys;
 
 /**
  *
@@ -95,7 +91,25 @@ public class Job<T> implements IJob<T> {
 
     private ConfigurableRunnable loadClass(final File JarFile, final String ClassToLoad)
             throws ClassNotFoundException, MalformedURLException, InstantiationException, IllegalAccessException, IOException {
-        Set<URL> jarFiles = getDependentJars(JarFile);
+        Set<URL> jarFiles = new LinkedHashSet<URL>();
+        if (config.containsKey(ConfigurationKeys.KEY_CODEBASE)) {
+            System.out.println("Using codebase "+config.get(ConfigurationKeys.KEY_CODEBASE));
+            URL u = null;
+            try {
+                u = new URL(config.get(ConfigurationKeys.KEY_CODEBASE));
+            } catch (MalformedURLException mex) {
+                Logger.getLogger(Job.class.getName()).log(Level.WARNING, config.get(ConfigurationKeys.KEY_CODEBASE)+" is not a valid URL for codebase!" , mex);
+                File cb = new File(config.get(ConfigurationKeys.KEY_CODEBASE));
+                if(cb.exists() && cb.isDirectory()) {
+                    Logger.getLogger(Job.class.getName()).log(Level.INFO, config.get(ConfigurationKeys.KEY_CODEBASE)+" is used as codebase directory!" , mex);
+                    u = cb.toURI().toURL();
+                }
+            }
+            if(u != null) {
+                jarFiles.add(u);
+            }
+        }
+        jarFiles.addAll(getDependentJars(JarFile));
         URL[] urls = new URL[jarFiles.size()];
         jarFiles.toArray(urls);
         Class<?> loadetClass = null;
@@ -111,7 +125,7 @@ public class Job<T> implements IJob<T> {
     }
 
     private Set<URL> getDependentJars(final File startJarFile) throws IOException {
-        Set<URL> ret = new HashSet<URL>();
+        Set<URL> ret = new LinkedHashSet<URL>();
         URL jar = new URL("jar:" + startJarFile.toURI() + "!/");
         ret.add(jar);
         JarURLConnection uc = (JarURLConnection) jar.openConnection();
@@ -189,7 +203,7 @@ public class Job<T> implements IJob<T> {
     @Override
     public void setClassToExecute(final String jobConfigFile) throws ClassNotFoundException,
             MalformedURLException, InstantiationException, IllegalAccessException, IOException, IllegalStateException {
-        if(!this.jobConfigFile.isEmpty() || classToExecute!=null) {
+        if (!this.jobConfigFile.isEmpty() || classToExecute != null) {
             throw new IllegalStateException("Can not reassign job after first call to setClassToExecute!");
         }
         this.jobConfigFile = jobConfigFile;
@@ -209,7 +223,7 @@ public class Job<T> implements IJob<T> {
 
     @Override
     public void setClassToExecute(ConfigurableRunnable<T> cr) throws IllegalStateException {
-        if(classToExecute!=null) {
+        if (classToExecute != null) {
             throw new IllegalStateException("Can not reassign job after first call to setClassToExecute!");
         }
         this.classToExecute = cr;

@@ -62,7 +62,7 @@ public class Reporter extends Handler{
     @Override
     public void publish(LogRecord record) {
         String errorMessage = "Error in class: "+ record.getSourceClassName() + ". "
-                               + "Method causing the error: " + record.getSourceMethodName();
+                               + "Method causing the error: " + record.getSourceMethodName()+"; Cause: "+record.getThrown();
         report(errorMessage);
     }
 
