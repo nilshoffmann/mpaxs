@@ -47,24 +47,24 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
- * First argument is ip of master server,
- * second one is port number of RMI port.
- * 
+ * First argument is ip of master server, second one is port number of RMI port.
+ *
  * @author Kai Bernd Stadermann
  */
 public class StartUp {
 
     public StartUp(Configuration cfg) {
-        FileHandler handler;
-        try {
-            handler = new FileHandler("computeHostStartup.log");
-            Logger logger = Logger.getLogger(StartUp.class.getName());
-            logger.addHandler(handler);
-        } catch (IOException ex) {
-            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        System.out.println("Codebase given in startUp: "+cfg.getString(ConfigurationKeys.KEY_CODEBASE));
+//        FileHandler handler;
+//        try {
+//            handler = new FileHandler("computeHostStartup.log");
+//            Logger logger = Logger.getLogger(StartUp.class.getName());
+//            logger.addHandler(handler);
+//        } catch (IOException ex) {
+//            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (SecurityException ex) {
+//            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         Settings settings = new Settings(cfg);
 //            }
 
@@ -80,49 +80,40 @@ public class StartUp {
                     ex);
         }
         File policyFile;
-        try {
-            policyFile = new File(new File(
-                    settings.getCodebase().toURI()),
-                    settings.getPolicyName());
-            if (!policyFile.exists()) {
-                System.out.println(
-                        "Did not find security policy, will create default one!");
-                BufferedReader br = new BufferedReader(
-                        new InputStreamReader(
-                        StartUp.class.getResourceAsStream(
-                        "/net/sf/maltcms/execution/computehost/wideopen.policy")));
-                try {
-                    BufferedWriter bw = new BufferedWriter(new FileWriter(
-                            policyFile));
-                    String s = null;
-                    while ((s = br.readLine()) != null) {
-                        bw.write(s + "\n");
-                    }
-                    bw.flush();
-                    bw.close();
-                    br.close();
-                    Logger.getLogger(StartUp.class.getName()).
-                            log(Level.INFO,
-                            "Using security policy at " + policyFile.getAbsolutePath());
-                } catch (IOException ex) {
-                    Logger.getLogger(StartUp.class.getName()).log(
-                            Level.SEVERE, null, ex);
+        policyFile = new File(new File(
+                settings.getOption(ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR)),
+                settings.getPolicyName());
+        if (!policyFile.exists()) {
+            System.out.println(
+                    "Did not find security policy, will create default one!");
+            policyFile.getParentFile().mkdirs();
+            BufferedReader br = new BufferedReader(
+                    new InputStreamReader(
+                    StartUp.class.getResourceAsStream(
+                    "/net/sf/maltcms/execution/computehost/wideopen.policy")));
+            try {
+                BufferedWriter bw = new BufferedWriter(new FileWriter(
+                        policyFile));
+                String s = null;
+                while ((s = br.readLine()) != null) {
+                    bw.write(s + "\n");
                 }
-            } else {
+                bw.flush();
+                bw.close();
+                br.close();
                 Logger.getLogger(StartUp.class.getName()).
                         log(Level.INFO,
-                        "Found existing policy file at " + policyFile.getAbsolutePath());
+                        "Using security policy at " + policyFile.getAbsolutePath());
+            } catch (IOException ex) {
+                Logger.getLogger(StartUp.class.getName()).log(
+                        Level.SEVERE, null, ex);
             }
-            System.setProperty("java.security.policy", policyFile.getAbsolutePath());
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE,
-                    null,
-                    ex);
-        } catch (MalformedURLException ex) {
-            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE,
-                    null,
-                    ex);
+        } else {
+            Logger.getLogger(StartUp.class.getName()).
+                    log(Level.INFO,
+                    "Found existing policy file at " + policyFile.getAbsolutePath());
         }
+        System.setProperty("java.security.policy", policyFile.getAbsolutePath());
 
         System.setProperty("java.net.preferIPv4Stack", "true");
 
@@ -146,7 +137,7 @@ public class StartUp {
     public static void main(String args[]) {
         FileHandler handler;
         try {
-            handler = new FileHandler("computeHostStartupMain.log");
+            handler = new FileHandler("computeHost.log");
             Logger logger = Logger.getLogger(StartUp.class.getName());
             logger.addHandler(handler);
         } catch (IOException ex) {

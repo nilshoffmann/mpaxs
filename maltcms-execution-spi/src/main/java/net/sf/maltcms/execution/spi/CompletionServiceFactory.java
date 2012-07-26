@@ -29,7 +29,7 @@ public class CompletionServiceFactory<T extends Serializable> {
     
     public MaltcmsCompletionService<T> createMpaxsCompletionService() {
         MaltcmsCompletionService<T> mcs = new MaltcmsCompletionService<T>(new MpaxsExecutorService(),
-                timeOut, timeUnit, false);
+                timeOut, timeUnit, blockingWait);
         return mcs;
     }
     

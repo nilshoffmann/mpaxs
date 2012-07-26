@@ -56,7 +56,7 @@ public class JobExecutor extends Thread implements Thread.UncaughtExceptionHandl
             executor = Executors.newSingleThreadExecutor(new ExceptionSafeThreadFactory(this));
             executor.execute(job.getClassToExecute());
             executor.shutdown();
-            executor.awaitTermination(365, TimeUnit.DAYS);
+            executor.awaitTermination(5, TimeUnit.SECONDS);
 //            IRemoteServer remRef = settings.getRemoteRefference();
             if (!this.isInterrupted() && !jobFailed) {
                 server.addDoneJob(host.getAuthenticationToken(),job);

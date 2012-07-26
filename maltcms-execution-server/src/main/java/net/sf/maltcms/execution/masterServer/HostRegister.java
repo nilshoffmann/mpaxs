@@ -21,6 +21,7 @@
  */
 package net.sf.maltcms.execution.masterServer;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,6 +45,7 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  * Hold the register of hosts currently registert at the MasterServer
+ *
  * @author Kai Bernd Stadermann
  * @author Nils Hoffmann
  */
@@ -66,6 +68,7 @@ public class HostRegister {
 //    }
     /**
      * Adds a new Host to the register.
+     *
      * @param name Name of the Host
      * @param ip IP of the server the Host is running on
      * @param cores Numer of availible cores
@@ -85,6 +88,7 @@ public class HostRegister {
 
     /**
      * Removes the host with the given id from the register.
+     *
      * @param id Host ID of the Host that should be remove
      * @return true if remove action was succesfull, false if not
      */
@@ -104,6 +108,7 @@ public class HostRegister {
 
     /**
      * Gives back the instance of an host still having a free core.
+     *
      * @return instance of the free host
      */
     public Host getFreeHost() {
@@ -116,8 +121,7 @@ public class HostRegister {
             return null;
         }
         host.oneCoreMoreUsed();
-        if (host.getFreeCores() == 0 || host.getNumberOfJobs() >= settings.
-                getMaxJobsPerHost()) {
+        if (host.getFreeCores() == 0 || host.getNumberOfJobs() >= settings.getMaxJobsPerHost()) {
             usedHosts.put(host.getId(), host);
         } else {
             hosts.offer(host);
@@ -141,13 +145,11 @@ public class HostRegister {
                 if (settings.getMaxNumberOfChosts() > getNumberOfHosts()) {
                     ExecutionType et = settings.getExecutionMode();
                     System.out.println("Execution mode: " + et);
-                    IComputeHostLauncher ichl = ExecutionFactory.
-                            getComputeHostLaunchers(et).
+                    IComputeHostLauncher ichl = ExecutionFactory.getComputeHostLaunchers(et).
                             get(0);
 //                        try {
-                    System.out.println("Preparing to launch host " + (getNumberOfHosts() + 1) + "/" + settings.
-                            getMaxNumberOfChosts());
-                    String nativeSpec = "";//-l \"idle=1\" -q all.q@@qics";
+                    System.out.println("Preparing to launch host " + (getNumberOfHosts() + 1) + "/" + settings.getMaxNumberOfChosts());
+                    String nativeSpec = "-q all.q@@qics";//-l \"idle=1\" -q all.q@@qics";
                     if (settings.getOption("nativeSpec") != null) {
                         nativeSpec = settings.getString("nativeSpec");
                     }
@@ -162,26 +164,34 @@ public class HostRegister {
                             ConfigurationKeys.KEY_NATIVE_SPEC,
                             nativeSpec);
                     hostConfiguration.setProperty(
-                            ConfigurationKeys.KEY_LOCAL_IP,
+                            ConfigurationKeys.KEY_MASTERSERVER_IP,
                             settings.getLocalIP());
                     hostConfiguration.setProperty(
-                            ConfigurationKeys.KEY_LOCAL_PORT,
+                            ConfigurationKeys.KEY_MASTERSERVER_PORT,
                             settings.getLocalPort());
+                    hostConfiguration.setProperty(
+                            ConfigurationKeys.KEY_MASTERSERVER_NAME,
+                            settings.getName());
                     hostConfiguration.setProperty(
                             ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR,
                             settings.getPathToComputeHostJar());
-                    hostConfiguration.setProperty(
-                            ConfigurationKeys.KEY_ERROR_FILE,
-                            settings.getComputeHostErrorFile());
-                    hostConfiguration.setProperty(
-                            ConfigurationKeys.KEY_OUTPUT_FILE,
-                            settings.getComputeHostOutputFile());
+                    hostConfiguration.setProperty(ConfigurationKeys.KEY_COMPUTE_HOST_MAIN_CLASS,
+                            settings.getComputeHostMainClass());
                     hostConfiguration.setProperty(
                             ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR,
-                            settings.getComputeHostWorkingDir());
+                            new File(settings.getComputeHostWorkingDir(), "" + hostsLaunched).getAbsolutePath());
+                    hostConfiguration.setProperty(
+                            ConfigurationKeys.KEY_ERROR_FILE,
+                            hostConfiguration.getString(ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR) + "/error.txt");
+                    hostConfiguration.setProperty(
+                            ConfigurationKeys.KEY_OUTPUT_FILE,
+                            hostConfiguration.getString(ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR) + "/output.txt");
                     hostConfiguration.setProperty(
                             ConfigurationKeys.KEY_PATH_TO_JAVA,
                             settings.getPathToJava());
+                    hostConfiguration.setProperty(
+                            ConfigurationKeys.KEY_CODEBASE,
+                            settings.getCodebase());
                     System.out.println(
                             "Starting compute host: " + ichl.getClass());
                     ichl.startComputeHost(hostConfiguration);
@@ -255,8 +265,9 @@ public class HostRegister {
     }
 
     /**
-     * When the host has completed its calculation this method is called to indicate
-     * that its free again.
+     * When the host has completed its calculation this method is called to
+     * indicate that its free again.
+     *
      * @param host Host that should be released
      */
     public synchronized void releaseHost(Host host) {
@@ -272,6 +283,7 @@ public class HostRegister {
     /**
      * Return the host with the given ID or null if there is no host with such
      * an ID.
+     *
      * @param hostID UUID of the host
      * @return host with the given ID
      */
@@ -281,6 +293,7 @@ public class HostRegister {
 
     /**
      * Returns a HashMap containing all hosts currently associated.
+     *
      * @return HashMap<Integer, Host>
      */
     public HashMap<UUID, Host> getHosts() {

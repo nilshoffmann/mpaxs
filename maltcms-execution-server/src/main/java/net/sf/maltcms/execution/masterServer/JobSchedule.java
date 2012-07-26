@@ -37,7 +37,7 @@ import net.sf.maltcms.execution.api.job.IJob;
 import net.sf.maltcms.execution.api.job.Status;
 
 /**
- * 
+ *
  * @author Kai Bernd Stadermann
  */
 public class JobSchedule implements Runnable, IComputeHostEventListener {
@@ -76,8 +76,7 @@ public class JobSchedule implements Runnable, IComputeHostEventListener {
                     try {
 //                        System.out.println("Trying to lookup host");
                         connectionString = "//" + host.getIP()
-                                + ":" + settings.getLocalPort() + "/" + host.
-                                getName();
+                                + ":" + settings.getLocalPort() + "/" + host.getName();
                         remRef = (IComputeHost) Naming.lookup(
                                 connectionString);
                         remRef.stillAlive(UUID.fromString(settings.getString(
@@ -85,7 +84,7 @@ public class JobSchedule implements Runnable, IComputeHostEventListener {
                         SubmitThread submitter = new SubmitThread(current,
                                 remRef, master, host);
                         reporter.report(
-                                "Submitting job " + current + " for execution on host: " +connectionString);
+                                "Submitting job " + current + " for execution on host: " + connectionString);
                         master.jobOnHost(current, host);
                         submitter.start();
                         currentSubmitted = true;
@@ -97,7 +96,7 @@ public class JobSchedule implements Runnable, IComputeHostEventListener {
                                 null, ex);
                     } catch (MalformedURLException ex) {
                         reporter.report(
-                                "Error during job submission! Please check connection details: "+connectionString);
+                                "Error during job submission! Please check connection details: " + connectionString);
                         master.removeHost(host.getId());
                         EventLogger.getInstance().getLogger().log(Level.SEVERE,
                                 null, ex);

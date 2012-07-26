@@ -101,10 +101,12 @@ public class Settings {
         config.setProperty(ConfigurationKeys.KEY_MASTERSERVER_NAME,
                 "MasterServer");
         config.setProperty(ConfigurationKeys.KEY_MASTERSERVER_IP, "127.0.0.1");
+        config.setProperty(ConfigurationKeys.KEY_MASTERSERVER_PORT, "1099");
         config.setProperty(ConfigurationKeys.KEY_MASTER_SERVER_TIMEOUT, 15);
         config.setProperty(ConfigurationKeys.KEY_TIMEOUT_BEFORE_SHUTDOWN, 2000);
         config.setProperty(ConfigurationKeys.KEY_NUMBER_OF_CORES, 1);
         config.setProperty(ConfigurationKeys.KEY_SILENT_MODE, "true");
+        config.setProperty(ConfigurationKeys.KEY_BASE_DIR, System.getProperty("user.dir"));
         for (int i = 0; i < CONFIG_FILES.length; i++) {
 
             addConfigFile(CONFIG_FILES[i]);
@@ -119,7 +121,7 @@ public class Settings {
         if (this.config.containsKey(key)) {
             return this.config.getString(key);
         }
-        throw new NullPointerException();
+        throw new NullPointerException("Key "+key+" not bound in configuration!");
     }
 
 //    public Configuration getOption(String key) {

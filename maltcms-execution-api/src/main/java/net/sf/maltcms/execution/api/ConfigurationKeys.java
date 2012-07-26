@@ -45,5 +45,7 @@ public class ConfigurationKeys {
     //common keys
     public static final String KEY_AUTH_TOKEN = "AUTH_TOKEN";
     public static final String KEY_LOCAL_PORT = "LOCAL_PORT";
-    public static final String KEY_LOCAL_IP = " LOCAL_IP";
+    public static final String KEY_LOCAL_IP = "LOCAL_IP";
+    public static final String KEY_COMPUTE_HOST_MAIN_CLASS = "COMPUTE_HOST_MAIN_CLASS";
+    public static final String KEY_MASTER_SERVER_EXIT_ON_SHUTDOWN = "MASTER_SERVER_EXIT_ON_SHUTDOWN";
 }

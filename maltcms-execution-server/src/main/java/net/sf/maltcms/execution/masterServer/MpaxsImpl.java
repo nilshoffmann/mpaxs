@@ -137,6 +137,7 @@ public class MpaxsImpl implements Impaxs {
     @Override
     public void stopMasterServer() {
         master.shutdown();
+        master = null;
     }
 
     @Override

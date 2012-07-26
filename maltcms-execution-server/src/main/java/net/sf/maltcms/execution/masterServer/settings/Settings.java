@@ -55,9 +55,10 @@ public class Settings {
     private static final String DEFAULT_NAME = "MasterServer";
     private static final String DEFAULT_LOCAL_IP = getOwnIP();
     private static final int DEFAULT_SCHEDULE_WAIT_TIME = 5;
-    private static final String DEFAULT_PATH_TO_COMPUTEHOST_JAR = DEFAULT_CODEBASE + File.separator + "computeHost" + File.separator + "ComputeHost.jar";
-    private static final String DEFAULT_PATH_TO_JAVA = "java";
-    private static final String DEFAULT_COMPUTE_HOST_WORKING_DIR = DEFAULT_CODEBASE + File.separator + "computeHost" + File.separator + "working";
+    private static final String DEFAULT_PATH_TO_COMPUTEHOST_JAR = DEFAULT_BASE_DIR + File.separator + "computeHost" + File.separator + "ComputeHost.jar";
+    private static final String DEFAULT_COMPUTE_HOST_MAIN_CLASS = "net.sf.maltcms.execution.computehost.StartUp";
+    private static final String DEFAULT_PATH_TO_JAVA = "/vol/java-1.6/bin/java";
+    private static final String DEFAULT_COMPUTE_HOST_WORKING_DIR = DEFAULT_BASE_DIR + File.separator + "computeHost" + File.separator + "working";
     private static final String DEFAULT_COMPUTE_HOST_ERROR_FILE = DEFAULT_COMPUTE_HOST_WORKING_DIR + File.separator + "error.txt";
     private static final String DEFAULT_COMPUTE_HOST_OUTPUT_FILE = DEFAULT_COMPUTE_HOST_WORKING_DIR + File.separator + "output.txt";
     private static final ExecutionType DEFAULT_EXECUTION_MODE = ExecutionType.LOCAL;
@@ -124,11 +125,9 @@ public class Settings {
         File codebase = new File(DEFAULT_CODEBASE);
         codebase.mkdirs();
         try {
-            DEFAULT_CODEBASE = new File(DEFAULT_CODEBASE).toURI().toURL().
-                    toString();
+            DEFAULT_CODEBASE = new File(DEFAULT_CODEBASE).toURI().toURL().toString();
         } catch (MalformedURLException ex) {
-            Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null,
-                    ex);
+            Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         //create default policyfile
@@ -331,6 +330,15 @@ public class Settings {
         String ret = getString(ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR);
         if (ret == null) {
             return DEFAULT_COMPUTE_HOST_WORKING_DIR;
+        } else {
+            return ret;
+        }
+    }
+    
+    public String getComputeHostMainClass() {
+        String ret = getString(ConfigurationKeys.KEY_COMPUTE_HOST_MAIN_CLASS);
+        if (ret == null) {
+            return DEFAULT_COMPUTE_HOST_MAIN_CLASS;
         } else {
             return ret;
         }

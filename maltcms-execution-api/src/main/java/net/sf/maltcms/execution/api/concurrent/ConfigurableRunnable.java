@@ -32,6 +32,14 @@ import net.sf.maltcms.execution.api.job.Progress;
  */
 public interface ConfigurableRunnable<V> extends Runnable, Serializable{
 
+    /**
+     * An InterruptedException is thrown, when the result is not yet ready.
+     * An ExecutionException is thrown, when the job has experienced an Exception
+     * or Error of any kind.
+     * @return
+     * @throws InterruptedException
+     * @throws ExecutionException 
+     */
     public V get() throws InterruptedException, ExecutionException;
 
     public void configure(File pathToConfig);
