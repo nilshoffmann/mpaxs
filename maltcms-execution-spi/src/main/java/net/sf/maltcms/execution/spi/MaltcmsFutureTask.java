@@ -4,11 +4,7 @@
  */
 package net.sf.maltcms.execution.spi;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.RunnableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -34,6 +30,8 @@ public class MaltcmsFutureTask<V> implements
     private final Impaxs computeServer = ComputeServerFactory.getComputeServer();
     private Lock lock = new ReentrantLock(true);
     private Condition completed = lock.newCondition();
+    private BlockingQueue<V> intermediateQueue = new LinkedBlockingQueue<V>(1);
+    private BlockingQueue<V> resultQueue = new LinkedBlockingQueue<V>(1);
     private V result = null;
 
     public MaltcmsFutureTask(Callable<V> callable) {
@@ -58,86 +56,69 @@ public class MaltcmsFutureTask<V> implements
 
     @Override
     public boolean isDone() {
-        return (job.getStatus() == Status.DONE) && (result!=null);
+        return (job.getStatus() == Status.DONE) && (resultQueue.isEmpty());
     }
 
     @Override
-    public V get() throws InterruptedException, ExecutionException {
-        if (job.getStatus() != Status.DONE) {
-            throw new InterruptedException();
-        }
-        if (job.getStatus() == Status.ERROR) {
-            throw new ExecutionException("Job terminated with exception!", job.
-                    getThrowable());
-        }
-        final Lock lock = this.lock;
-        lock.lockInterruptibly();
-        try {
-            try {
-                while (result == null) {
-                    completed.await();
-                }
-            } catch (InterruptedException ie) {
-                completed.signal(); // propagate to non-interrupted thread
-                throw ie;
-            }
-            return result;
-        } finally {
-            lock.unlock();
-        }
-
+    public V get() throws InterruptedException, ExecutionException, CancellationException {
+//        System.out.println("Retrieving result with blocking get()");
+//        Status status = job.getStatus();
+//        if (status == Status.DONE) {
+//            return resultQueue.take();
+//        }
+//        if (job.getStatus() == Status.CANCELED) {
+//            throw new CancellationException();
+//        }
+//        if (job.getStatus() == Status.ERROR) {
+//            throw new ExecutionException("Job terminated with exception!", job.getThrowable());
+//        }
+//        throw new InterruptedException("Job is not done yet!");
+        return resultQueue.take();
     }
 
     @Override
-    public V get(long l, TimeUnit tu) throws InterruptedException, ExecutionException, TimeoutException {
-        long nanos = tu.toNanos(l);
-        final Lock lock = this.lock;
-        lock.lockInterruptibly();
-        try {
-            for (;;) {
-                if (result != null) {
-                    return result;
-                }
-                if (nanos <= 0) {
-                    return null;
-                }
-                try {
-                    nanos = completed.awaitNanos(nanos);
-                } catch (InterruptedException ie) {
-                    completed.signal(); // propagate to non-interrupted thread
-                    throw ie;
-                }
-
-            }
-        } finally {
-            lock.unlock();
-        }
+    public V get(long l, TimeUnit tu) throws InterruptedException, ExecutionException, CancellationException, TimeoutException {
+//        System.out.println("Retrieving result with non-blocking get()");
+        return resultQueue.poll(l, tu);
+//        Status status = job.getStatus();
+//        if (status == Status.DONE) {
+//            return resultQueue.poll(l, tu);
+//        }
+//        if (status == Status.CANCELED) {
+//            throw new CancellationException();
+//        }
+//        if (status == Status.ERROR) {
+//            throw new ExecutionException("Job terminated with exception!", job.getThrowable());
+//        }
+//        throw new InterruptedException("Job is not done yet!");
     }
 
     @Override
     public void run() {
         computeServer.submitJob(job);
+        try {
+//            System.out.println("Submitted job, waiting for result!");
+            result = intermediateQueue.take();
+//            System.out.println("Receieved result, passing to resultQueue!");
+            resultQueue.put(result);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MaltcmsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
-    public void jobChanged(IJob job) {
-        if (job.getId().equals(this.job.getId())) {
-            if (job.getStatus() == Status.DONE) {
-                try {
-                    result = (V) job.getClassToExecute().get();
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(MaltcmsFutureTask.class.getName()).
-                            log(Level.SEVERE, null, ex);
-                } catch (ExecutionException ex) {
-                    Logger.getLogger(MaltcmsFutureTask.class.getName()).
-                            log(Level.SEVERE, null, ex);
-                }
-                computeServer.removeJobEventListener(this);
-            }else if(job.getStatus() == Status.CANCELED) {
-                computeServer.removeJobEventListener(this);
-            }else if(job.getStatus() == Status.ERROR) {
-                computeServer.removeJobEventListener(this);
+    public void jobChanged(final IJob job) {
+        if (job.getStatus() == Status.DONE) {
+            try {
+//                System.out.println("Adding result to queue!");
+                intermediateQueue.put((V) job.getClassToExecute().get());
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MaltcmsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ExecutionException ex) {
+                Logger.getLogger(MaltcmsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
+    
+    
 }
