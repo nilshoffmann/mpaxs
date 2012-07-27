@@ -18,7 +18,7 @@
         <exec command="rsync" inputstring="">
             <arg value="-avtruP"/>
             <arg value="-e ssh "/>
-            <arg value="target/staging/"/>
+            <arg value="target/site/"/>
             <arg value="${sf.username},mpaxs@web.sourceforge.net:htdocs/maven/${project.version}"/>
         </exec>
     </target>
