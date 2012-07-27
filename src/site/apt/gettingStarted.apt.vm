@@ -1,0 +1,11 @@
+Getting Started
+
+    [[1]] Please download and install {{{http://www.oracle.com/technetwork/java/javase/downloads/index.html}Java Runtime Environment (JRE) or JDK version 1.6.0 or newer}} for 
+          your specific platform and operating system.
+
+    [[2]] Then {{{./download.html}Download Mpaxs}} and follow the installation instructions.
+
+Installation Instructions
+  
+   Download the zip-release of Mpaxs and include the mpaxs-${project.version}.jar in the classpath of 
+   your project. 
