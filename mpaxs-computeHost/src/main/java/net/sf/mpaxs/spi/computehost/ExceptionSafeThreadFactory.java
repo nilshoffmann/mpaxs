@@ -25,21 +25,29 @@
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
  * under licenses/ for details.
  */
-package net.sf.mpaxs.api;
+package net.sf.mpaxs.spi.computehost;
 
-import java.io.IOException;
-import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  *
- * @author nilshoffmann
+ * @author Kai Bernd Stadermann
  */
-public class Version {
+public class ExceptionSafeThreadFactory implements ThreadFactory{
 
-    public static String getVersion() throws IOException {
-        Properties props = new Properties();
-        props.load(Version.class.getResourceAsStream("/net/sf/maltcms/execution/api/version.properties"));
-        return props.getProperty("api.version");
+    private ThreadFactory threadFactory = Executors.defaultThreadFactory();
+    private Thread.UncaughtExceptionHandler handler;
 
+    public ExceptionSafeThreadFactory(Thread.UncaughtExceptionHandler handler) {
+        this.handler = handler;
     }
+
+    @Override
+    public Thread newThread(Runnable r) {
+        Thread t = threadFactory.newThread(r);
+        t.setUncaughtExceptionHandler(handler);
+        return t;
+    }
+
 }

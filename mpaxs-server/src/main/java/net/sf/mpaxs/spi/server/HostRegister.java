@@ -67,7 +67,7 @@ public class HostRegister {
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private int hostsLaunched = 0;
     private int hostLaunchRetries = 0;
-    private int maxHostLaunchRetries = 1;
+    private int maxHostLaunchRetries = 2;
 
 //    public HostRegister(MasterServer master) {
 //        this.master = master;

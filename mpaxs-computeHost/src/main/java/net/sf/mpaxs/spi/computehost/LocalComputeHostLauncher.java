@@ -25,21 +25,29 @@
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
  * under licenses/ for details.
  */
-package net.sf.mpaxs.api;
+package net.sf.mpaxs.spi.computehost;
 
-import java.io.IOException;
-import java.util.Properties;
+import java.util.logging.Logger;
+import net.sf.mpaxs.api.ExecutionType;
+import net.sf.mpaxs.api.server.IComputeHostLauncher;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationUtils;
 
 /**
  *
- * @author nilshoffmann
+ * @author Nils.Hoffmann@cebitec.uni-bielefeld.de
  */
-public class Version {
+public class LocalComputeHostLauncher implements IComputeHostLauncher {
 
-    public static String getVersion() throws IOException {
-        Properties props = new Properties();
-        props.load(Version.class.getResourceAsStream("/net/sf/maltcms/execution/api/version.properties"));
-        return props.getProperty("api.version");
-
+    @Override
+    public ExecutionType getExecutionType() {
+        return ExecutionType.LOCAL;
     }
+
+    @Override
+    public void startComputeHost(Configuration cfg) {
+        Logger.getLogger(getClass().getName()).info("Starting local compute host with configuration: "+ConfigurationUtils.toString(cfg));
+        StartUp su = new StartUp(cfg);
+    }
+    
 }

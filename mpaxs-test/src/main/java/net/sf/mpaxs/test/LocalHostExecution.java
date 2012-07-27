@@ -55,7 +55,7 @@ public class LocalHostExecution implements Callable<List<String>>{
         csf.setTimeOut(1);
         csf.setTimeUnit(TimeUnit.SECONDS);
 
-        final ICompletionService<String> mcs2 = csf.newLocalCompletionService();
+        final ICompletionService<String> mcs2 = csf.createVMLocalCompletionService();
         for(int i = 0; i< maxJobs; i++) {
             mcs2.submit(new TestCallable());
         }
