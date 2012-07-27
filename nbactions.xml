@@ -8,4 +8,25 @@
                 <goal>install</goal>
             </goals>
         </action>
+        <action>
+            <actionName>CUSTOM-Site</actionName>
+            <displayName>Site</displayName>
+            <goals>
+                <goal>site</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Stage Site</actionName>
+            <displayName>Stage Site</displayName>
+            <goals>
+                <goal>site:stage</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Assembly</actionName>
+            <displayName>Assembly</displayName>
+            <goals>
+                <goal>assembly</goal>
+            </goals>
+        </action>
     </actions>
