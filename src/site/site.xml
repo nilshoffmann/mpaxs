@@ -24,7 +24,7 @@
         <menu name="Mpaxs">
             <item name="Download" href="download.html"/>
             <item name="Getting Started" href="gettingStarted.html"/>
-            <item name="Contributing" href="contribution.html"/>
+            <!--<item name="Contributing" href="contribution.html"/>-->
         </menu>
     
         <menu ref="modules" />
