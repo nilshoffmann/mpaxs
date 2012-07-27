@@ -10,7 +10,7 @@
     <name>Mpaxs - Modular Parallel Execution System</name>
     <url>http://mpaxs.sf.net/maven/${project.version}</url>
     <scm>
-        <connection>scm:hg:http://hg.code.sf.net/p/mpaxs/code</connection>
+        <connection>scm:hg:file:///${basedir}</connection>
         <developerConnection>scm:hg:file:///${basedir}</developerConnection>
         <url>https://sourceforge.net/p/mpaxs/code</url>
       <tag>HEAD</tag>
