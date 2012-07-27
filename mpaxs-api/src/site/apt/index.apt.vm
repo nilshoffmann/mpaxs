@@ -1,0 +1,5 @@
+Welcome to ${project.name}
+
+    * {{{./apidocs/index.html}Javadoc API}}
+
+    * {{{https://sourceforge.net/projects/mpaxs/support}Help}}
