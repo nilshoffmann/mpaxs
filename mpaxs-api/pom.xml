@@ -4,11 +4,11 @@
     <parent>
         <artifactId>mpaxs</artifactId>
         <groupId>net.sf.mpaxs</groupId>
-        <version>1.6.2-SNAPSHOT</version>
+        <version>1.6-SNAPSHOT</version>
     </parent>
     <groupId>net.sf.mpaxs</groupId>
     <artifactId>mpaxs-api</artifactId>
-    <version>1.6.2-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
     <name>mpaxs-api</name>
     <url>http://maven.apache.org</url>
     <packaging>jar</packaging>
@@ -41,7 +41,7 @@
             </resource>
         </resources>
     </build>
-    <dependencies />
+    <dependencies></dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
