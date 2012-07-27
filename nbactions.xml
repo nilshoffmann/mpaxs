@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>build-with-dependencies</actionName>
+            <basedir>..</basedir>
+            <reactor>also-make</reactor>
+            <goals>
+                <goal>install</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Site</actionName>
+            <displayName>Site</displayName>
+            <goals>
+                <goal>site</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Stage Site</actionName>
+            <displayName>Stage Site</displayName>
+            <goals>
+                <goal>site:stage</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-Assembly</actionName>
+            <displayName>Assembly</displayName>
+            <goals>
+                <goal>assembly</goal>
+            </goals>
+        </action>
+    </actions>
