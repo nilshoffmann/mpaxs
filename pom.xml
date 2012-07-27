@@ -140,6 +140,32 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <preparationGoals>clean install</preparationGoals>
+<!--                    <checkModificationExcludes>
+         Intellij project files 
+                        <exclude>**/*.iml</exclude>
+         JRebel configuration files 
+                        <exclude>**/rebel.xml</exclude>
+         Coverage measurement files 
+                        <exclude>**/coverage_hack/*</exclude>
+         JavaDB log files 
+                        <exclude>**/derby.log</exclude>
+                    </checkModificationExcludes>-->
+                </configuration>
+                <dependencies> 
+                    <dependency> 
+                        <groupId>org.apache.maven.scm</groupId> 
+                        <artifactId>maven-scm-provider-hg</artifactId> 
+                        <version>1.7</version> 
+                    </dependency> 
+                </dependencies>
+            </plugin>
 <!--            <plugin>
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
