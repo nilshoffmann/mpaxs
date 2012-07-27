@@ -11,7 +11,7 @@
     <url>http://mpaxs.sf.net/maven/${project.version}</url>
     <scm>
         <connection>scm:hg:http://hg.code.sf.net/p/mpaxs/code</connection>
-        <developerConnection>scm:hg:ssh://hg.code.sf.net/p/mpaxs/code</developerConnection>
+        <developerConnection>scm:hg:file:///${basedir}</developerConnection>
         <url>https://sourceforge.net/p/mpaxs/code</url>
       <tag>HEAD</tag>
   </scm>
