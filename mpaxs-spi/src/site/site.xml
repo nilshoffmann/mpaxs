@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : site.xml
+    Created on : 1. November 2011, 11:24
+    Author     : nilshoffmann
+    Description:
+        Base file for maven site documentation.
+-->
+<project xmlns="http://maven.apache.org/DECORATION/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd" name="Mpaxs">
+    <bannerLeft>
+        <name>Mpaxs</name>
+        <src>images/MpaxsLogo.png</src>
+        <href>https://sf.net/projects/mpaxs</href>
+    </bannerLeft>
+    <publishDate position="right"/>
+    <version position="right"/>
+    <body>
+        <links>
+            <item name="Mpaxs Home" href="https://sf.net/projects/mpaxs" />
+        </links>
+
+        <menu ref="parent"/>
+<!--        <menu name="${project.name}">
+            <item name="Getting Started" href="gettingStarted.html"/>
+        </menu>-->
+    
+<!--        <menu ref="modules" />-->
+
+        <menu ref="reports"/>
+        <footer>
+            <span>
+                Copyright 2010-2012,
+            </span>
+            <a title="Contact" href="http://sourceforge.net/users/nilshoffmann">Nils Hoffmann</a> - Mpaxs is hosted by
+            <a title="Hosting by sourceforge.net" href="http://sourceforge.net/">sourceforge.net</a> | 
+            <a href="http://maven.apache.org">Built by Maven 3</a>
+        </footer>
+    </body>
+</project>
