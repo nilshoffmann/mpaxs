@@ -25,12 +25,12 @@
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
  * under licenses/ for details.
  */
-package net.sf.mpaxs.spi.computehost;
+package net.sf.mpaxs.spi.computeHost;
 
 import java.io.File;
 import java.io.IOException;
 import net.sf.mpaxs.api.computeHost.IRemoteHost;
-import net.sf.mpaxs.spi.computehost.consoleInput.Input;
+import net.sf.mpaxs.spi.computeHost.consoleInput.Input;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

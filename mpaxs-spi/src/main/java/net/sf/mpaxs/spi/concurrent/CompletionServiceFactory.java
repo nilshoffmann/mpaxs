@@ -30,8 +30,8 @@ package net.sf.mpaxs.spi.concurrent;
 import java.io.Serializable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.xml.ws.ServiceMode;
 import lombok.Data;
+import net.sf.mpaxs.api.ICompletionService;
 
 /**
  *
@@ -45,19 +45,21 @@ public class CompletionServiceFactory<T extends Serializable> {
     private boolean blockingWait = false;
     private int maxThreads = 1;
     
-    public MpaxsCompletionService<T> createVMLocalCompletionService() {
+    public ICompletionService<T> newLocalCompletionService() {
         MpaxsCompletionService<T> mcs = new MpaxsCompletionService<T>(Executors.newFixedThreadPool(maxThreads),
                 timeOut, timeUnit, blockingWait);
         return mcs;
     }
     
-    public MpaxsCompletionService<T> createMpaxsCompletionService() {
+    public ICompletionService<T> newDistributedCompletionService() {
         MpaxsCompletionService<T> mcs = new MpaxsCompletionService<T>(new MpaxsExecutorService(),
                 timeOut, timeUnit, blockingWait);
         return mcs;
     }
     
-    public MpaxsResubmissionCompletionService<T> asResubmissionService(MpaxsCompletionService<T> ics, int maxResubmissions) {
-    	return new MpaxsResubmissionCompletionService<T>(ics);
+    public ICompletionService<T> asResubmissionService(MpaxsCompletionService<T> ics, int maxResubmissions) {
+    	MpaxsResubmissionCompletionService<T> mrcs = new MpaxsResubmissionCompletionService<T>(ics);
+        mrcs.setMaxResubmissions(maxResubmissions);
+        return mrcs;
     }
 }

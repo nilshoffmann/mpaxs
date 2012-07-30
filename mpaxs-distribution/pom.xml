@@ -13,7 +13,7 @@
     <url>http://maven.apache.org</url>
     <packaging>pom</packaging>
     <dependencies>
-<!--        <dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>mpaxs-api</artifactId>
             <version>${project.version}</version>
@@ -37,7 +37,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>mpaxs-drmaa-spi</artifactId>
             <version>${project.version}</version>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>mpaxs-test</artifactId>
@@ -46,9 +46,36 @@
     </dependencies>
     <build>
         <plugins>
+            <!--        
+             Jar plugin 
+-->            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.2</version>
+                <executions>
+                    <execution>
+                        <id>create-cp-jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <archive>
+                                <manifest>
+                                    <mainClass>net.sf.mpaxs.test.ImpaxsExecution</mainClass>
+                                    <addClasspath>true</addClasspath>
+                                    <classpathPrefix>lib</classpathPrefix>
+                                </manifest>
+                            </archive>
+                            <finalName>mpaxs</finalName>
+                            <outputDirectory>${project.build.directory}/</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Assembly plugin -->
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.3</version>
                 <executions>
                     <execution>
                         <id>my-assembly</id>
@@ -60,8 +87,10 @@
                 </executions>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/main/assembly/bin.xml</descriptor>
+                        <descriptor>src/main/assembly/install.xml</descriptor>
                     </descriptors>
+                    <updateOnly>true</updateOnly>
+                    <attach>false</attach>
                 </configuration>
             </plugin>
         </plugins>
