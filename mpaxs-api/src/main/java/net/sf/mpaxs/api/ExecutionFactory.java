@@ -78,12 +78,13 @@ public class ExecutionFactory {
     }
     
     public static <T> List<T> getServiceProviders(Class<T> c) {
+        System.out.println("Loading service providers for "+c.getSimpleName());
         ServiceLoader<T> sl = ServiceLoader.load(c);
         Iterator<T> iter = sl.iterator();
         List<T> l = new LinkedList<T>();
         while(iter.hasNext()) {
             T t = iter.next();
-            //System.out.println("Adding service provider "+t.getClass().getName()+" for interface "+c.getName());
+            System.out.println("Adding service provider "+t.getClass().getName()+" for interface "+c.getName());
             l.add(t);
         }
         return l;

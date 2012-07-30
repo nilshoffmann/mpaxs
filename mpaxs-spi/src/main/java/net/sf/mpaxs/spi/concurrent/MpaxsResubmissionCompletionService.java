@@ -58,7 +58,7 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
 	private int submitted = 0;
 	private int failed = 0;
 	private int finished = 0;
-	private int maxSubmissions = 3;
+	private int maxResubmissions = 3;
 
 	public MpaxsResubmissionCompletionService() {
 		super();
@@ -83,12 +83,12 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
 		this.mcs = mcs;
 	}
 
-	public int getMaxSubmissions() {
-		return maxSubmissions;
+	public int getMaxResubmissions() {
+		return maxResubmissions;
 	}
 
-	public void setMaxSubmissions(int maxSubmissions) {
-		this.maxSubmissions = maxSubmissions;
+	public void setMaxResubmissions(int maxResubmissions) {
+		this.maxResubmissions = maxResubmissions;
 	}
 
 	public int getFailed() {
@@ -158,14 +158,14 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
 				// System.out.println("Failed tasks: " + failedTasks.size() +
 				// " Results: " + mcsResult.size());
 				for (Callable<T> c : failedTasks) {
-					if (submissionCounter.get(c) < maxSubmissions) {
+					if (submissionCounter.get(c) < maxResubmissions) {
 						Logger.getLogger(
 								MpaxsResubmissionCompletionService.class
 										.getName()).log(
 								Level.INFO,
 								"Resubmitting " + c + " for try "
 										+ (submissionCounter.get(c) + 1) + "/"
-										+ maxSubmissions);
+										+ maxResubmissions);
 						submissionCounter.put(c, submissionCounter.get(c) + 1);
 						submission.add(c);
 					} else {
@@ -184,7 +184,7 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
 							"submitted jobs: " + submitted
 									+ " | finished jobs: " + finished
 									+ " | total failed jobs (after "
-									+ maxSubmissions + " tries): " + failed);
+									+ maxResubmissions + " tries): " + failed);
 					return new ArrayList<T>(results);
 				} else {
 					long timeOut = mcs.getTimeToWaitForTasks();
