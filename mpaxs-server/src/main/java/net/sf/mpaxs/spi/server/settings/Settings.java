@@ -55,16 +55,16 @@ public class Settings {
     //configuration keys
     //default values
     private static final int DEFAULT_LOCAL_PORT = 1099;
-    private static final String DEFAULT_BASE_DIR = System.getProperty("user.dir")+File.separator+"maltcms" + File.separator + "masterServer";
+    private static final String DEFAULT_BASE_DIR = System.getProperty("user.dir")+File.separator+"mpaxs" + File.separator + "masterServer";
     private static String DEFAULT_CODEBASE = DEFAULT_BASE_DIR + File.separator + "codebase";
     private static final String DEFAULT_POLICY_NAME = DEFAULT_BASE_DIR + File.separator + "wideopen.policy";
     private static final String DEFAULT_NAME = "MasterServer";
     private static final String DEFAULT_LOCAL_IP = getOwnIP();
     private static final int DEFAULT_SCHEDULE_WAIT_TIME = 5;
     private static final String DEFAULT_PATH_TO_COMPUTEHOST_JAR = DEFAULT_BASE_DIR + File.separator + "computeHost" + File.separator + "ComputeHost.jar";
-    private static final String DEFAULT_COMPUTE_HOST_MAIN_CLASS = "net.sf.maltcms.execution.computehost.StartUp";
+    private static final String DEFAULT_COMPUTE_HOST_MAIN_CLASS = "net.sf.mpaxs.spi.computeHost.StartUp";
     private static final String DEFAULT_PATH_TO_JAVA = "/vol/java-1.6/bin/java";
-    private static final String DEFAULT_COMPUTE_HOST_WORKING_DIR = DEFAULT_BASE_DIR + File.separator + "computeHost" + File.separator + "working";
+    private static final String DEFAULT_COMPUTE_HOST_WORKING_DIR = DEFAULT_BASE_DIR + File.separator + "computeHost";
     private static final String DEFAULT_COMPUTE_HOST_ERROR_FILE = DEFAULT_COMPUTE_HOST_WORKING_DIR + File.separator + "error.txt";
     private static final String DEFAULT_COMPUTE_HOST_OUTPUT_FILE = DEFAULT_COMPUTE_HOST_WORKING_DIR + File.separator + "output.txt";
     private static final ExecutionType DEFAULT_EXECUTION_MODE = ExecutionType.LOCAL;
@@ -142,7 +142,7 @@ public class Settings {
                 getAbsolutePath());
         BufferedReader br = new BufferedReader(new InputStreamReader(getClass().
                 getResourceAsStream(
-                "/net/sf/maltcms/execution/masterServer/wideopen.policy")));
+                "/net/sf/mpaxs/spi/server/wideopen.policy")));
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(policyFile));
             String s = null;

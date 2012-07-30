@@ -38,7 +38,7 @@ public class Version {
 
     public static String getVersion() throws IOException {
         Properties props = new Properties();
-        props.load(Version.class.getResourceAsStream("/net/sf/maltcms/execution/api/version.properties"));
+        props.load(Version.class.getResourceAsStream("/net/sf/mpaxs/api/version.properties"));
         return props.getProperty("api.version");
 
     }
