@@ -28,6 +28,8 @@
 package net.sf.mpaxs.test;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -39,6 +41,10 @@ import net.sf.mpaxs.api.ConfigurationKeys;
 import net.sf.mpaxs.api.ExecutionType;
 import net.sf.mpaxs.api.Impaxs;
 import net.sf.mpaxs.spi.concurrent.ComputeServerFactory;
+import net.sf.mpaxs.test.DrmaaExecution;
+import net.sf.mpaxs.test.DrmaaExecution;
+import net.sf.mpaxs.test.LocalHostExecution;
+import net.sf.mpaxs.test.LocalHostExecution;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.ggf.drmaa.SessionFactory;
 
@@ -52,18 +58,22 @@ public class ImpaxsExecution {
     public final static String hash = "#";
 
     public static void main(String[] args) {
-        URL u = ImpaxsExecution.class.getProtectionDomain().getCodeSource().getLocation();
-        System.out.println("ImpaxsExecution invoked from " + u);
+        String version;
         try {
-            URI uri = u.toURI();
+            version = net.sf.mpaxs.api.Version.getVersion();
+            System.out.println("Running mpaxs "+version);
+//            File computeHostJarLocation = new File(System.getProperty("user.dir"), "lib/mpaxs-computeHost-" + version + ".jar");
+            File computeHostJarLocation = new File(System.getProperty("user.dir"), "mpaxs.jar");
+            if (!computeHostJarLocation.exists() || !computeHostJarLocation.isFile()) {
+                throw new IOException("Could not locate mpaxs.jar in "+System.getProperty("user.dir"));
+            }
             final PropertiesConfiguration pc = new PropertiesConfiguration();
             pc.setProperty(ConfigurationKeys.KEY_EXECUTION_MODE, ExecutionType.DRMAA);
-            pc.setProperty(ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR, new File(uri).getAbsolutePath());//
+            pc.setProperty(ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR, computeHostJarLocation);
             pc.setProperty(ConfigurationKeys.KEY_MASTER_SERVER_EXIT_ON_SHUTDOWN, false);
-            pc.setProperty(ConfigurationKeys.KEY_MAX_NUMBER_OF_CHOSTS, "5");
-            final int maxJobs = 20;
+            pc.setProperty(ConfigurationKeys.KEY_MAX_NUMBER_OF_CHOSTS, "2");
+            final int maxJobs = 10;
             Executors.newSingleThreadExecutor().submit(new Runnable() {
-
                 @Override
                 public void run() {
                     printMessage("Running Within VM Execution");
@@ -77,12 +87,12 @@ public class ImpaxsExecution {
                     } catch (Exception ex) {
                         Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    
-                    try {
-                        System.out.println("Drmaa Implementation: "+SessionFactory.getFactory().getSession().getDrmaaImplementation());
-                    }catch(Error e) {
-                        System.err.println(e.toString());
-                    }
+
+//                    try {
+//                        System.out.println("Drmaa Implementation: "+SessionFactory.getFactory().getSession().getDrmaaImplementation());
+//                    }catch(Error e) {
+//                        System.err.println(e.toString());
+//                    }
                     Impaxs impxs = ComputeServerFactory.getComputeServer();
 
                     printMessage("Running Distributed Host RMI Execution");
@@ -118,11 +128,9 @@ public class ImpaxsExecution {
                     System.exit(0);
                 }
             });
-        } catch (URISyntaxException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-
     }
 
     public static void printMessage(String message) {
