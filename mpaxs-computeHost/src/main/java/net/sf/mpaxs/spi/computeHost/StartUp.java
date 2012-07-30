@@ -25,7 +25,7 @@
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
  * under licenses/ for details.
  */
-package net.sf.mpaxs.spi.computehost;
+package net.sf.mpaxs.spi.computeHost;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -96,7 +96,7 @@ public class StartUp {
             BufferedReader br = new BufferedReader(
                     new InputStreamReader(
                     StartUp.class.getResourceAsStream(
-                    "/net/sf/maltcms/execution/computehost/wideopen.policy")));
+                    "/net/sf/mpaxs/spi/computeHost/wideopen.policy")));
             try {
                 BufferedWriter bw = new BufferedWriter(new FileWriter(
                         policyFile));

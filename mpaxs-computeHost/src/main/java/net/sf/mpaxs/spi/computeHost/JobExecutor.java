@@ -25,7 +25,7 @@
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
  * under licenses/ for details.
  */
-package net.sf.mpaxs.spi.computehost;
+package net.sf.mpaxs.spi.computeHost;
 
 import java.rmi.RemoteException;
 import java.util.concurrent.ExecutorService;

@@ -25,11 +25,12 @@
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
  * under licenses/ for details.
  */
-package net.sf.mpaxs.spi.computehost;
+package net.sf.mpaxs.spi.server;
 
 import java.util.logging.Logger;
 import net.sf.mpaxs.api.ExecutionType;
 import net.sf.mpaxs.api.server.IComputeHostLauncher;
+import net.sf.mpaxs.spi.computeHost.StartUp;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationUtils;
 

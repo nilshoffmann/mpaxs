@@ -55,7 +55,7 @@ public class DrmaaExecution implements Callable<List<String>>{
         csf.setTimeOut(1);
         csf.setTimeUnit(TimeUnit.SECONDS);
         csf.setBlockingWait(false);
-        final ICompletionService<String> mcs = csf.createMpaxsCompletionService();
+        final ICompletionService<String> mcs = csf.newDistributedCompletionService();
         for(int i = 0; i< maxJobs; i++) {
             mcs.submit(new TestCallable());
         }
