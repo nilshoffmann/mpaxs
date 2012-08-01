@@ -28,7 +28,10 @@
 package net.sf.mpaxs.spi.computeHost;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import net.sf.mpaxs.api.computeHost.IRemoteHost;
 import net.sf.mpaxs.spi.computeHost.consoleInput.Input;
 import java.net.MalformedURLException;
@@ -51,17 +54,24 @@ import org.apache.commons.io.FileUtils;
 public class Host implements IRemoteHost {
 
     private Settings settings = null;
-    private ScheduledExecutorService scheduler = Executors.
-            newScheduledThreadPool(1);
+    private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private UUID authToken = null;
 
     @Override
     public void configure(Configuration cfg) {
         settings = new Settings(cfg);
-        System.out.println("Running ComputeHost at IP "+settings.getLocalIp());
-//        if(authToken==null) {
-//            authToken = UUID.fromString(settings.getOption(ConfigurationKeys.KEY_AUTH_TOKEN));
-//        }
+        System.out.println("Running ComputeHost at IP " + settings.getLocalIp());
+        File baseDir = new File(
+                settings.getOption(ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR));
+        baseDir.mkdirs();
+        settings.setOption(ConfigurationKeys.KEY_COMPUTE_HOST_ERROR_FILE, new File(baseDir,"error.txt").getAbsolutePath());
+        settings.setOption(ConfigurationKeys.KEY_COMPUTE_HOST_OUTPUT_FILE, new File(baseDir,"output.txt").getAbsolutePath());
+        try {
+            System.setErr(new PrintStream(new FileOutputStream(settings.getOption(ConfigurationKeys.KEY_COMPUTE_HOST_ERROR_FILE))));
+            System.setOut(new PrintStream(new FileOutputStream(settings.getOption(ConfigurationKeys.KEY_COMPUTE_HOST_OUTPUT_FILE))));
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Host.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -75,19 +85,18 @@ public class Host implements IRemoteHost {
     }
 
     /**
-     * Meldet diesen Host beim Masterserver an. Nach erfolgreicher
-     * Anmeldung kann der Masterserver Jobs an diesen Host vergeben.
+     * Meldet diesen Host beim Masterserver an. Nach erfolgreicher Anmeldung
+     * kann der Masterserver Jobs an diesen Host vergeben.
      */
     private void connectToMasterServer() {
-        final ScheduledExecutorService ses = Executors.
-                newSingleThreadScheduledExecutor();
+        final ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
         final long startUpAt = System.currentTimeMillis();
         final long failAfter = 5000;
         ses.scheduleAtFixedRate(new Runnable() {
 
             @Override
             public void run() {
-                System.out.println("Trying to connect to MasterServer from IP "+settings.getLocalIp());
+                System.out.println("Trying to connect to MasterServer from IP " + settings.getLocalIp());
                 long currentTime = System.currentTimeMillis();
                 if (currentTime - startUpAt >= failAfter) {
                     System.out.println(
@@ -95,13 +104,9 @@ public class Host implements IRemoteHost {
                     System.exit(1);
                 }
                 try {
-                    System.out.println("Trying to bind to MasterServer at " + settings.
-                            getMasterServerIP() + ":" + settings.getMasterServerPort()+" with name: "+settings.
-                            getMasterServerName());
-                    IRemoteServer remRef = (IRemoteServer) Naming.lookup("//" + settings.
-                            getMasterServerIP()
-                            + ":" + settings.getMasterServerPort() + "/" + settings.
-                            getMasterServerName());
+                    System.out.println("Trying to bind to MasterServer at " + settings.getMasterServerIP() + ":" + settings.getMasterServerPort() + " with name: " + settings.getMasterServerName());
+                    IRemoteServer remRef = (IRemoteServer) Naming.lookup("//" + settings.getMasterServerIP()
+                            + ":" + settings.getMasterServerPort() + "/" + settings.getMasterServerName());
                     settings.setRemoteReference(remRef);
                     UUID hostID = remRef.addHost(authToken, settings.getName(),
                             settings.getLocalIp(), settings.getCores());
@@ -150,20 +155,19 @@ public class Host implements IRemoteHost {
                             shutdown(settings.getRemoteReference());
                         }
                     }
-                }, settings.getMasterServerTimeout(), settings.
-                getMasterServerTimeout(), TimeUnit.SECONDS);
+                }, settings.getMasterServerTimeout(), settings.getMasterServerTimeout(), TimeUnit.SECONDS);
     }
 
     /**
      * Meldet diesen Host vom Server ab.
+     *
      * @return true = erfolgreich abgemeldet, false = Abmeldung fehlgeschlagen
      */
     @Override
     public boolean disconnectFromMasterServer() {
         boolean ret = false;
         try {
-            ret = settings.getRemoteReference().delHost(authToken, settings.
-                    getHostID());
+            ret = settings.getRemoteReference().delHost(authToken, settings.getHostID());
         } catch (RemoteException ex) {
             Logger.getLogger(Host.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -176,15 +180,13 @@ public class Host implements IRemoteHost {
      * ComputeHoste gesendet werden.
      */
     private void getReadyForClients() {
-        System.out.println("Trying to create registry at "+settings.getLocalIp()+":"+settings.getLocalPort());
+        System.out.println("Trying to create registry at " + settings.getLocalIp() + ":" + settings.getLocalPort());
         try {
             LocateRegistry.createRegistry(settings.getLocalPort());
-            System.out.println("Started own RMI-Registry on port " + settings.
-                    getLocalPort());
+            System.out.println("Started own RMI-Registry on port " + settings.getLocalPort());
         } catch (RemoteException ex) {
             if (!settings.getSilentMode()) {
-                System.out.println("RMI-Registry already running on port " + settings.
-                        getLocalPort() + ".");
+                System.out.println("RMI-Registry already running on port " + settings.getLocalPort() + ".");
                 System.out.println(
                         "ComputeHost will use the already running Registry.");
             }
@@ -193,8 +195,7 @@ public class Host implements IRemoteHost {
 
             // RemoteObject erstellen
             IComputeHost remObj = new ComputeHostImpl(this, settings);
-            String bindString = "//" + settings.getLocalIp() + ":" + settings.
-                    getLocalPort() + "/" + settings.getName();
+            String bindString = "//" + settings.getLocalIp() + ":" + settings.getLocalPort() + "/" + settings.getName();
             System.out.println("Trying to bind " + bindString);
             Naming.bind(bindString, remObj);
         } catch (Exception ex) {
@@ -205,6 +206,7 @@ public class Host implements IRemoteHost {
 
     /**
      * Meldet das RemoteObject ab und schließt danach das Programm.
+     *
      * @param obj RemoteObject
      */
     @Override
@@ -233,11 +235,13 @@ public class Host implements IRemoteHost {
                     Logger.getLogger(Host.class.getName()).log(Level.SEVERE,
                             null, ex);
                 }
-                File baseDir = new File(settings.getOption(ConfigurationKeys.KEY_BASE_DIR));
-                try {
-                    FileUtils.forceDeleteOnExit(baseDir);
-                } catch (IOException ex) {
-                    Logger.getLogger(Host.class.getName()).log(Level.SEVERE, null, ex);
+                if (settings.getOption(ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR) != null) {
+                    File baseDir = new File(settings.getOption(ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR));
+                    try {
+                        FileUtils.forceDeleteOnExit(baseDir);
+                    } catch (IOException ex) {
+                        Logger.getLogger(Host.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
                 System.exit(0);
             }
@@ -246,7 +250,7 @@ public class Host implements IRemoteHost {
 
     @Override
     public void uncaughtException(Thread t, Throwable e) {
-        System.err.println("Unknown error: "+e.toString());
+        System.err.println("Unknown error: " + e.toString());
         System.exit(1);
     }
 

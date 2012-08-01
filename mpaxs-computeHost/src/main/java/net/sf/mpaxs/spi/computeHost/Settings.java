@@ -122,12 +122,19 @@ public class Settings {
     public void setOption(String key, String value) {
         this.config.setProperty(key, value);
     }
-
+    
     public String getOption(String key) {
+        return getOption(key, null);
+    }
+
+    public String getOption(String key, String defaultValue) {
         if (this.config.containsKey(key)) {
             return this.config.getString(key);
         }
-        throw new NullPointerException("Key "+key+" not bound in configuration!");
+        if(defaultValue==null) {
+            throw new NullPointerException("Key "+key+" not bound in configuration!");
+        }
+        return defaultValue;
     }
 
 //    public Configuration getOption(String key) {

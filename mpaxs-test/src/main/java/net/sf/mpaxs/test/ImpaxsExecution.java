@@ -29,10 +29,6 @@ package net.sf.mpaxs.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -41,12 +37,7 @@ import net.sf.mpaxs.api.ConfigurationKeys;
 import net.sf.mpaxs.api.ExecutionType;
 import net.sf.mpaxs.api.Impaxs;
 import net.sf.mpaxs.spi.concurrent.ComputeServerFactory;
-import net.sf.mpaxs.test.DrmaaExecution;
-import net.sf.mpaxs.test.DrmaaExecution;
-import net.sf.mpaxs.test.LocalHostExecution;
-import net.sf.mpaxs.test.LocalHostExecution;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.ggf.drmaa.SessionFactory;
 
 /**
  *
