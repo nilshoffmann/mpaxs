@@ -4,11 +4,11 @@
     <parent>
         <artifactId>mpaxs</artifactId>
         <groupId>net.sf.mpaxs</groupId>
-        <version>1.6.10-SNAPSHOT</version>
+        <version>1.6.10</version>
     </parent>
     <groupId>net.sf.mpaxs</groupId>
     <artifactId>mpaxs-distribution</artifactId>
-    <version>1.6.10-SNAPSHOT</version>
+    <version>1.6.10</version>
     <name>mpaxs-distribution</name>
     <url>http://maven.apache.org</url>
     <packaging>pom</packaging>
@@ -110,10 +110,10 @@
 
                             <target name="zip-deploy" description="Deploy zip distribution to sourceforge" depends="credentials">
                                 <exec command="rsync" inputstring="">
-                                    <arg value="-avtruP"/>
-                                    <arg value="-e ssh "/>
-                                    <arg value="${project.build.directory}/mpaxs-${project.version}.zip"/>
-                                    <arg value="${sf.username},mpaxs@frs.sourceforge.net:/home/frs/project/mpaxs/${project.version}"/>
+                                    <arg value="-avtruP" />
+                                    <arg value="-e ssh " />
+                                    <arg value="${project.build.directory}/mpaxs-${project.version}.zip" />
+                                    <arg value="${sf.username},mpaxs@frs.sourceforge.net:/home/frs/project/mpaxs/${project.version}" />
                                 </exec>
                             </target>
 
