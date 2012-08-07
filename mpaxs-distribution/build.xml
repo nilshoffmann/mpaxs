@@ -19,7 +19,7 @@
             <arg value="-avtruP"/>
             <arg value="-e ssh "/>
             <arg value="target/mpaxs-${project.version}.zip"/>
-            <arg value="${sf.username},mpaxs@frs.sourceforge.net:/home/frs/project/mpaxs/release/${project.version}/"/>
+            <arg value="${sf.username},mpaxs@frs.sourceforge.net:/home/frs/project/mpaxs/${project.version}/"/>
         </exec>
     </target>
 
