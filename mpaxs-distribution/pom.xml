@@ -4,11 +4,11 @@
     <parent>
         <artifactId>mpaxs</artifactId>
         <groupId>net.sf.mpaxs</groupId>
-        <version>1.6.8</version>
+        <version>1.6.9-SNAPSHOT</version>
     </parent>
     <groupId>net.sf.mpaxs</groupId>
     <artifactId>mpaxs-distribution</artifactId>
-    <version>1.6.8</version>
+    <version>1.6.9-SNAPSHOT</version>
     <name>mpaxs-distribution</name>
     <url>http://maven.apache.org</url>
     <packaging>pom</packaging>
