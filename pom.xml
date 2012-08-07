@@ -13,7 +13,7 @@
         <connection>http://hg.code.sf.net/p/mpaxs/code</connection>
         <developerConnection>ssh://hg.code.sf.net/p/mpaxs/code</developerConnection>
         <url>https://sourceforge.net/p/mpaxs/code</url>
-      <tag>HEAD</tag>
+      	<tag>HEAD</tag>
   </scm>
     <distributionManagement>
         <repository>

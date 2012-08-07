@@ -86,6 +86,8 @@
                     </execution>
                 </executions>
                 <configuration>
+		    <finalName>mpaxs-${project.version}</finalName>
+		    <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
                         <descriptor>src/main/assembly/install.xml</descriptor>
                     </descriptors>
