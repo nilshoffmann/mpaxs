@@ -31,7 +31,7 @@
         <site>
             <id>mpaxs.sf.net</id>
             <name>mpaxs.sf.net</name>
-            <url>scp://web.sourceforge.net/home/project-web/mpaxs/htdocs/maven/${project.version}</url>
+            <url>scp://shell.sourceforge.net/home/project-web/mpaxs/htdocs/maven/${project.version}</url>
         </site>
     </distributionManagement>
     
