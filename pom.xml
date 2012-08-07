@@ -28,11 +28,11 @@
             <url>http://maltcms.de:8080/artifactory/libs-snapshot-local</url>
         </snapshotRepository>
         
-<!--        <site>
+        <site>
             <id>mpaxs.sf.net</id>
             <name>mpaxs.sf.net</name>
             <url>scp://web.sourceforge.net/home/project-web/mpaxs/htdocs/maven/${project.version}</url>
-        </site>-->
+        </site>
     </distributionManagement>
     
     <licenses>
