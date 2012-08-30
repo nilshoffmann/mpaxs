@@ -45,6 +45,21 @@
             <url>http://www.eclipse.org/org/documents/epl-v10.php</url>
         </license>
     </licenses>
+    
+    <repositories>
+        <repository>
+            <id>artifactory</id>
+            <layout>default</layout>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+            </snapshots>
+            <url>http://maltcms.de:8080/artifactory/repo</url>
+        </repository>
+    </repositories>
         
     <dependencies>
         <dependency>

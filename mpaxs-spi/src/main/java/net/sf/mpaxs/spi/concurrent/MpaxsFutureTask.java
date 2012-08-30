@@ -51,8 +51,6 @@ public class MpaxsFutureTask<V> implements
 
     private final IJob<V> job;
     private final Impaxs computeServer = ComputeServerFactory.getComputeServer();
-    private Lock lock = new ReentrantLock(true);
-    private Condition completed = lock.newCondition();
     private BlockingQueue<V> intermediateQueue = new LinkedBlockingQueue<V>(1);
     private BlockingQueue<V> resultQueue = new LinkedBlockingQueue<V>(1);
     private V result = null;
@@ -84,36 +82,12 @@ public class MpaxsFutureTask<V> implements
 
     @Override
     public V get() throws InterruptedException, ExecutionException, CancellationException {
-//        System.out.println("Retrieving result with blocking get()");
-//        Status status = job.getStatus();
-//        if (status == Status.DONE) {
-//            return resultQueue.take();
-//        }
-//        if (job.getStatus() == Status.CANCELED) {
-//            throw new CancellationException();
-//        }
-//        if (job.getStatus() == Status.ERROR) {
-//            throw new ExecutionException("Job terminated with exception!", job.getThrowable());
-//        }
-//        throw new InterruptedException("Job is not done yet!");
         return resultQueue.take();
     }
 
     @Override
     public V get(long l, TimeUnit tu) throws InterruptedException, ExecutionException, CancellationException, TimeoutException {
-//        System.out.println("Retrieving result with non-blocking get()");
         return resultQueue.poll(l, tu);
-//        Status status = job.getStatus();
-//        if (status == Status.DONE) {
-//            return resultQueue.poll(l, tu);
-//        }
-//        if (status == Status.CANCELED) {
-//            throw new CancellationException();
-//        }
-//        if (status == Status.ERROR) {
-//            throw new ExecutionException("Job terminated with exception!", job.getThrowable());
-//        }
-//        throw new InterruptedException("Job is not done yet!");
     }
 
     @Override
