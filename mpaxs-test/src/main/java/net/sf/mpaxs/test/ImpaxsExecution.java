@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,7 +23,7 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.test;
 
@@ -41,11 +41,17 @@ import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  *
- * @author nilshoffmann
+ * @author Nils Hoffmann
  */
 public class ImpaxsExecution {
 
+    /**
+     *
+     */
     public final static String eightyHashes = "################################################################################";
+    /**
+     *
+     */
     public final static String hash = "#";
 
     public static void main(String[] args) {
@@ -53,16 +59,19 @@ public class ImpaxsExecution {
         try {
             version = net.sf.mpaxs.api.Version.getVersion();
             System.out.println("Running mpaxs "+version);
-//            File computeHostJarLocation = new File(System.getProperty("user.dir"), "lib/mpaxs-computeHost-" + version + ".jar");
             File computeHostJarLocation = new File(System.getProperty("user.dir"), "mpaxs.jar");
             if (!computeHostJarLocation.exists() || !computeHostJarLocation.isFile()) {
                 throw new IOException("Could not locate mpaxs.jar in "+System.getProperty("user.dir"));
             }
             final PropertiesConfiguration pc = new PropertiesConfiguration();
+            //set default execution type
             pc.setProperty(ConfigurationKeys.KEY_EXECUTION_MODE, ExecutionType.DRMAA);
+            //set location of compute host jar
             pc.setProperty(ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR, computeHostJarLocation);
+            //do not exit to console when master server shuts down
             pc.setProperty(ConfigurationKeys.KEY_MASTER_SERVER_EXIT_ON_SHUTDOWN, false);
-            pc.setProperty(ConfigurationKeys.KEY_MAX_NUMBER_OF_CHOSTS, "2");
+            //limit the number of used compute hosts
+            pc.setProperty(ConfigurationKeys.KEY_MAX_NUMBER_OF_CHOSTS, Runtime.getRuntime().availableProcessors()-1);
             final int maxJobs = 10;
             Executors.newSingleThreadExecutor().submit(new Runnable() {
                 @Override
@@ -71,50 +80,30 @@ public class ImpaxsExecution {
                     /*
                      * LOCAL within VM execution
                      */
-                    LocalHostExecution lhe = new LocalHostExecution(maxJobs);
+                    WithinVmExecution lhe = new WithinVmExecution(maxJobs);
                     List<String> leResults;
                     try {
                         leResults = lhe.call();
+                        Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.INFO, "Results: "+leResults);
                     } catch (Exception ex) {
                         Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    } 
 
-//                    try {
-//                        System.out.println("Drmaa Implementation: "+SessionFactory.getFactory().getSession().getDrmaaImplementation());
-//                    }catch(Error e) {
-//                        System.err.println(e.toString());
-//                    }
                     Impaxs impxs = ComputeServerFactory.getComputeServer();
 
                     printMessage("Running Distributed Host RMI Execution");
                     /*
-                     * Grid Engine (DRMAA API) distributed RMI execution
+                     * Grid Engine (DRMAA API) or local host distributed RMI execution
                      */
                     impxs.startMasterServer(pc);
-                    DrmaaExecution de = new DrmaaExecution(maxJobs);
+                    DistributedRmiExecution de = new DistributedRmiExecution(maxJobs);
                     List<String> deResults;
                     try {
                         deResults = de.call();
+                        Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.INFO, "Results: "+deResults);
                     } catch (Exception ex) {
                         Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.SEVERE, null, ex);
                     }
-
-                    //impxs.stopMasterServer();
-
-//                printMessage("Running Local Host RMI Execution");
-//                /*
-//                 *  LOCAL RMI-based execution 
-//                 */
-//                pc.setProperty(ConfigurationKeys.KEY_EXECUTION_MODE, ExecutionType.LOCAL);
-//                impxs.startMasterServer(pc);
-//                DrmaaExecution de3 = new DrmaaExecution();
-//                List<String> de3Results;
-//                try {
-//                    de3Results = de3.call();
-//                } catch (Exception ex) {
-//                    Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                impxs.stopMasterServer();
                     impxs.stopMasterServer();
                     System.exit(0);
                 }
@@ -124,6 +113,10 @@ public class ImpaxsExecution {
         }
     }
 
+    /**
+     *
+     * @param message
+     */
     public static void printMessage(String message) {
         System.out.println(eightyHashes);
         System.out.println(hash + " " + message);

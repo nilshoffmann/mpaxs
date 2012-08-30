@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,18 +23,18 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.api.computeHost;
 
-import net.sf.mpaxs.api.job.IJob;
 import java.rmi.Remote;
 import java.util.UUID;
+import net.sf.mpaxs.api.job.IJob;
 import org.apache.commons.configuration.Configuration;
 
 /**
  *
- * @author nilshoffmann
+ * @author Nils Hoffmann
  */
 public interface IRemoteHost extends Thread.UncaughtExceptionHandler{
 
@@ -44,6 +44,10 @@ public interface IRemoteHost extends Thread.UncaughtExceptionHandler{
      */
     boolean disconnectFromMasterServer();
 
+    /**
+     *
+     * @param job
+     */
     void sendDoneJob(IJob job);
 
     /**
@@ -52,6 +56,11 @@ public interface IRemoteHost extends Thread.UncaughtExceptionHandler{
      */
     void shutdown(Remote obj);
 
+    /**
+     *
+     * @param t
+     * @param e
+     */
     @Override
     void uncaughtException(Thread t, Throwable e);
 
@@ -63,10 +72,21 @@ public interface IRemoteHost extends Thread.UncaughtExceptionHandler{
      */
     void setAuthenticationToken(UUID authToken);
 
+    /**
+     *
+     * @return
+     */
     UUID getAuthenticationToken();
 
+    /**
+     *
+     */
     void startComputeHost();
     
+    /**
+     *
+     * @param cfg
+     */
     void configure(Configuration cfg);
 
 }

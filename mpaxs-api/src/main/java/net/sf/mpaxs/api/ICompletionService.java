@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,7 +23,7 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.api;
 
@@ -34,14 +34,33 @@ import java.util.concurrent.RejectedExecutionException;
 
 /**
  *
- * @author nilshoffmann
+ * @author Nils Hoffmann
  */
 public interface ICompletionService<T> extends Callable<List<T>> {
 
+    /**
+     *
+     * @return
+     */
     List<Callable<T>> getFailedTasks();
     
+    /**
+     *
+     * @param c
+     * @return
+     * @throws RejectedExecutionException
+     * @throws NullPointerException
+     */
     Future<T> submit(Callable<T> c) throws RejectedExecutionException, NullPointerException;
     
+    /**
+     *
+     * @param r
+     * @param t
+     * @return
+     * @throws RejectedExecutionException
+     * @throws NullPointerException
+     */
     Future<T> submit(Runnable r, T t) throws RejectedExecutionException, NullPointerException;
     
 }

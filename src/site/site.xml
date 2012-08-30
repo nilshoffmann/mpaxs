@@ -3,7 +3,7 @@
 <!--
     Document   : site.xml
     Created on : 1. November 2011, 11:24
-    Author     : nilshoffmann
+    Author     : Nils Hoffmann
     Description:
         Base file for maven site documentation.
 -->
@@ -34,7 +34,7 @@
             <span>
                 Copyright 2010-2012,
             </span>
-            <a title="Contact" href="http://sourceforge.net/users/nilshoffmann">Nils Hoffmann</a> - Mpaxs is hosted by
+            <a title="Contact" href="http://sourceforge.net/users/Nils Hoffmann">Nils Hoffmann</a> - Mpaxs is hosted by
             <a title="Hosting by sourceforge.net" href="http://sourceforge.net/">sourceforge.net</a> | 
             <a href="http://maven.apache.org">Built by Maven 3</a>
         </footer>

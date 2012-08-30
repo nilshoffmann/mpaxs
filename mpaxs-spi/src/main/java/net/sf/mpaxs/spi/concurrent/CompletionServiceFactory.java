@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,7 +23,7 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.spi.concurrent;
 
@@ -35,7 +35,7 @@ import net.sf.mpaxs.api.ICompletionService;
 
 /**
  *
- * @author nilshoffmann
+ * @author Nils Hoffmann
  */
 @Data
 public class CompletionServiceFactory<T extends Serializable> {
@@ -45,18 +45,32 @@ public class CompletionServiceFactory<T extends Serializable> {
     private boolean blockingWait = false;
     private int maxThreads = 1;
     
+    /**
+     *
+     * @return
+     */
     public ICompletionService<T> newLocalCompletionService() {
         MpaxsCompletionService<T> mcs = new MpaxsCompletionService<T>(Executors.newFixedThreadPool(maxThreads),
                 timeOut, timeUnit, blockingWait);
         return mcs;
     }
     
+    /**
+     *
+     * @return
+     */
     public ICompletionService<T> newDistributedCompletionService() {
         MpaxsCompletionService<T> mcs = new MpaxsCompletionService<T>(new MpaxsExecutorService(),
                 timeOut, timeUnit, blockingWait);
         return mcs;
     }
     
+    /**
+     *
+     * @param ics
+     * @param maxResubmissions
+     * @return
+     */
     public ICompletionService<T> asResubmissionService(MpaxsCompletionService<T> ics, int maxResubmissions) {
     	MpaxsResubmissionCompletionService<T> mrcs = new MpaxsResubmissionCompletionService<T>(ics);
         mrcs.setMaxResubmissions(maxResubmissions);

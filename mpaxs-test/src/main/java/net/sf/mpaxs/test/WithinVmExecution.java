@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,7 +23,7 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.test;
 
@@ -38,13 +38,13 @@ import net.sf.mpaxs.spi.concurrent.CompletionServiceFactory;
 
 /**
  *
- * @author hoffmann
+ * @author Nils Hoffmann
  */
-public class DrmaaExecution implements Callable<List<String>>{
+public class WithinVmExecution implements Callable<List<String>>{
     
     private final int maxJobs;
     
-    public DrmaaExecution(int maxJobs) {
+    public WithinVmExecution(int maxJobs) {
         this.maxJobs = maxJobs;
     }
     
@@ -54,21 +54,20 @@ public class DrmaaExecution implements Callable<List<String>>{
         CompletionServiceFactory<String> csf = new CompletionServiceFactory<String>();
         csf.setTimeOut(1);
         csf.setTimeUnit(TimeUnit.SECONDS);
-        csf.setBlockingWait(false);
-        final ICompletionService<String> mcs = csf.newDistributedCompletionService();
+
+        final ICompletionService<String> mcs2 = csf.newLocalCompletionService();
         for(int i = 0; i< maxJobs; i++) {
-            mcs.submit(new TestCallable());
+            mcs2.submit(new TestCallable());
         }
 
         try {
-            results = mcs.call();
-            System.out.println("MCS1 Results (RMI execution): " + results);
+            results = mcs2.call();
+            System.out.println("MCS2 Results (Local Host execution): " + results);
         } catch (Exception ex) {
-            Logger.getLogger(DrmaaExecution.class.getName()).
+            Logger.getLogger(WithinVmExecution.class.getName()).
                     log(Level.SEVERE, null, ex);
+            throw ex;
         }
-        
         return results;
     }
-    
 }

@@ -13,7 +13,7 @@
         <connection>scm:hg:http://hg.code.sf.net/p/mpaxs/code</connection>
         <developerConnection>scm:hg:https://hg.code.sf.net/p/mpaxs/code</developerConnection>
         <url>https://sourceforge.net/p/mpaxs/code</url>
-      	<tag>HEAD</tag>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <repository>
@@ -153,6 +153,34 @@
                         </nonFilteredFileExtensions>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <inherited>true</inherited>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>2.2</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <inherited>true</inherited>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.8.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -163,16 +191,6 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <preparationGoals>clean install</preparationGoals>
-<!--                    <checkModificationExcludes>
-         Intellij project files 
-                        <exclude>**/*.iml</exclude>
-         JRebel configuration files 
-                        <exclude>**/rebel.xml</exclude>
-         Coverage measurement files 
-                        <exclude>**/coverage_hack/*</exclude>
-         JavaDB log files 
-                        <exclude>**/derby.log</exclude>
-                    </checkModificationExcludes>-->
                 </configuration>
                 <dependencies> 
                     <dependency> 
@@ -182,26 +200,12 @@
                     </dependency> 
                 </dependencies>
             </plugin>
-<!--            <plugin>
-                <inherited>true</inherited>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
             <plugin>
                 <inherited>true</inherited>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <version>3.0</version>
                 <configuration>
-<!--                        <templateFile>src/site/siteTemplate.vm</templateFile>-->
                     <reportPlugins>
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
@@ -211,7 +215,7 @@
                                 <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
                                 <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                             </configuration>
-              <!-- simpler configuration without reportSets available for usual cases -->
+                            <!-- simpler configuration without reportSets available for usual cases -->
                             <reports>
                                 <report>dependencies</report>
                                 <report>project-team</report>
@@ -232,55 +236,16 @@
                                 </links>
                             </configuration>
                         </plugin>
-<!--                            <plugin>
-                                <groupId>org.codehaus.mojo</groupId>
-                                <artifactId>jxr-maven-plugin</artifactId>
-                                <version>2.3</version>
-                                <configuration>
-                                    <aggregate>true</aggregate>
-                                </configuration>
-                            </plugin> -->
-<!--                            <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-changelog-plugin</artifactId>
-                                <version>2.2</version>
-                            </plugin>-->
-<!--                            <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-checkstyle-plugin</artifactId>
-                                <version>2.7</version>
-                                <configuration>
-                                    <configLocation>config/sun_checks.xml</configLocation>
-                                </configuration>
-                            </plugin>-->
                     </reportPlugins>
                 </configuration>
-		<dependencies>
-		        <dependency>
-			        <groupId>org.apache.maven.wagon</groupId>
-			        <artifactId>wagon-ssh</artifactId>
-			        <version>2.2</version>
-		        </dependency>
-		</dependencies>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-ssh</artifactId>
+                        <version>2.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
-<!--            
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pdf-plugin</artifactId>
-                <version>1.1</version>
-                <executions>
-                    <execution>
-                        <id>pdf</id>
-                        <phase>site</phase>
-                        <goals>
-                            <goal>pdf</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
         </plugins>
     </build>
 
