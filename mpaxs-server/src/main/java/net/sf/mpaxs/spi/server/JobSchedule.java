@@ -127,9 +127,11 @@ public class JobSchedule implements Runnable, IComputeHostEventListener {
         }
     }
 
+    @Override
     public void hostAdded(Host host) {
     }
 
+    @Override
     public void hostRemoved(Host host) {
     }
 }
