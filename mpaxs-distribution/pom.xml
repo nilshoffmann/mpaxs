@@ -107,7 +107,7 @@
                         <descriptor>src/main/assembly/install.xml</descriptor>
                     </descriptors>
                     <updateOnly>true</updateOnly>
-                    <attach>false</attach>
+                    <attach>true</attach>
                 </configuration>
             </plugin>
         </plugins>
