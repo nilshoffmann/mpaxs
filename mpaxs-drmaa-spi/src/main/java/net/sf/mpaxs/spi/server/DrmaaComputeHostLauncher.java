@@ -130,6 +130,10 @@ public class DrmaaComputeHostLauncher implements IComputeHostLauncher {
 
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public ExecutionType getExecutionType() {
         return ExecutionType.DRMAA;

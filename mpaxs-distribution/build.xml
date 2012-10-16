@@ -14,12 +14,12 @@
         <input addproperty="project.version">Please enter project version:</input>
     </target>
 
-    <target name="site-deploy" description="Deploy site to sourceforge" depends="credentials">
+    <target name="release-deploy" description="Deploy release to sourceforge" depends="credentials">
         <exec command="rsync" inputstring="">
             <arg value="-avtruP"/>
             <arg value="-e ssh "/>
-            <arg value="target/staging/"/>
-            <arg value="${sf.username},mpaxs@web.sourceforge.net:htdocs/maven/${project.version}"/>
+            <arg value="target/mpaxs-${project.version}.zip"/>
+            <arg value="${sf.username},mpaxs@frs.sourceforge.net:/home/frs/project/mpaxs/${project.version}/"/>
         </exec>
     </target>
 

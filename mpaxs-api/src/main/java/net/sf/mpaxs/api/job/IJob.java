@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,15 +23,15 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.api.job;
 
-import net.sf.mpaxs.api.concurrent.ConfigurableRunnable;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.UUID;
+import net.sf.mpaxs.api.concurrent.ConfigurableRunnable;
 
 /**
  * T must implement Serializable, however, this is not enforceable 
@@ -39,35 +39,91 @@ import java.util.UUID;
  * Thus, a runtime exception is thrown whenever a job with a type of T 
  * is created/submitted, which is not Serializable.
  * 
- * @author nilshoffmann
+ * @author Nils Hoffmann
  */
 public interface IJob<T> extends Serializable {
 
+    /**
+     *
+     */
     void errorOccurred();
 
+    /**
+     *
+     * @return
+     */
     ConfigurableRunnable<T> getClassToExecute();
 
+    /**
+     *
+     * @return
+     */
     String getConfigurationFile();
 
+    /**
+     *
+     * @return
+     */
     int getErrorCounter();
 
+    /**
+     *
+     * @return
+     */
     UUID getId();
 
+    /**
+     *
+     * @return
+     */
     String getJobConfigFile();
 
+    /**
+     *
+     * @return
+     */
     Status getStatus();
 
+    /**
+     *
+     * @param jobConfigFile
+     */
     void setJobConfigFile(String jobConfigFile);
 
+    /**
+     *
+     * @param status
+     */
     void setStatus(Status status);
     
+    /**
+     *
+     * @param jobConfigFile
+     * @throws ClassNotFoundException
+     * @throws MalformedURLException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     */
     void setClassToExecute(String jobConfigFile) throws ClassNotFoundException,
             MalformedURLException, InstantiationException, IllegalAccessException, IOException;
     
+    /**
+     *
+     * @param cr
+     */
     void setClassToExecute(ConfigurableRunnable<T> cr);
     
+    /**
+     *
+     * @param t
+     */
     void setThrowable(Throwable t);
     
+    /**
+     *
+     * @return
+     */
     Throwable getThrowable();
 
 }

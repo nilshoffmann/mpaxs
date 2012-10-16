@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,43 +23,68 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.api;
 
-import net.sf.mpaxs.api.computeHost.IRemoteHost;
-import net.sf.mpaxs.api.server.IComputeHostLauncher;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
+import net.sf.mpaxs.api.computeHost.IRemoteHost;
+import net.sf.mpaxs.api.server.IComputeHostLauncher;
 
 /**
  *
- * @author nilshoffmann
+ * @author Nils Hoffmann
  */
 public class ExecutionFactory {
 
+    /**
+     *
+     * @return
+     */
     public static Impaxs getDefaultComputeServer() {
         return getComputeServerProviders().get(0);
     }
 
+    /**
+     *
+     * @return
+     */
     public static IRemoteHost getDefaultComputeHost() {
         return getComputeHostProviders().get(0);
     }
     
+    /**
+     *
+     * @return
+     */
     public static IComputeHostLauncher getDefaultComputeHostLauncher() {
         return getComputeHostLaunchers(ExecutionType.LOCAL).get(0);
     }
 
+    /**
+     *
+     * @return
+     */
     public static List<Impaxs> getComputeServerProviders() {
         return getServiceProviders(Impaxs.class);
     }
     
+    /**
+     *
+     * @return
+     */
     public static List<IRemoteHost> getComputeHostProviders() {
         return getServiceProviders(IRemoteHost.class);
     }
     
+    /**
+     *
+     * @param et
+     * @return
+     */
     public static List<IComputeHostLauncher> getComputeHostLaunchers(ExecutionType et) {
         List<IComputeHostLauncher> l = getServiceProviders(IComputeHostLauncher.class);
         //System.out.println("Retrieving computeHost providers: "+l);
@@ -77,6 +102,12 @@ public class ExecutionFactory {
         return retl;
     }
     
+    /**
+     *
+     * @param <T>
+     * @param c
+     * @return
+     */
     public static <T> List<T> getServiceProviders(Class<T> c) {
         System.out.println("Loading service providers for "+c.getSimpleName());
         ServiceLoader<T> sl = ServiceLoader.load(c);

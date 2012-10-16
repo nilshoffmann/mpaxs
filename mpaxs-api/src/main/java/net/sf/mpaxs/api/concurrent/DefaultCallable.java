@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,11 +23,10 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.api.concurrent;
 
-import net.sf.mpaxs.api.concurrent.ConfigurableRunnable;
 import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
@@ -36,7 +35,7 @@ import net.sf.mpaxs.api.job.Progress;
 
 /**
  *
- * @author nilshoffmann
+ * @author Nils Hoffmann
  */
 public class DefaultCallable<V> implements ConfigurableRunnable<V> {
     private final Progress p = new Progress();
@@ -47,6 +46,10 @@ public class DefaultCallable<V> implements ConfigurableRunnable<V> {
     private boolean done = false;
     private Throwable t;
 
+    /**
+     *
+     * @param c
+     */
     public DefaultCallable(Callable<V> c) {
         if (!(c instanceof Serializable)) {
             throw new IllegalArgumentException("Callable must implement Serializable!");
@@ -55,15 +58,26 @@ public class DefaultCallable<V> implements ConfigurableRunnable<V> {
         this.name = c.getClass().getName();
     }
 
+    /**
+     *
+     * @param pathToConfig
+     */
     @Override
     public void configure(File pathToConfig) {
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Progress getProgress() {
         return p;
     }
 
+    /**
+     *
+     */
     @Override
     public void run() {
 //        this.f = new FutureTask<V>(c);

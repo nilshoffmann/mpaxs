@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,7 +23,7 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.spi.concurrent;
 
@@ -44,15 +44,13 @@ import net.sf.mpaxs.api.job.Status;
 
 /**
  *
- * @author nilshoffmann
+ * @author Nils Hoffmann
  */
 public class MpaxsFutureTask<V> implements
         RunnableFuture<V>, IJobEventListener {
 
     private final IJob<V> job;
     private final Impaxs computeServer = ComputeServerFactory.getComputeServer();
-    private Lock lock = new ReentrantLock(true);
-    private Condition completed = lock.newCondition();
     private BlockingQueue<V> intermediateQueue = new LinkedBlockingQueue<V>(1);
     private BlockingQueue<V> resultQueue = new LinkedBlockingQueue<V>(1);
     private V result = null;
@@ -84,36 +82,12 @@ public class MpaxsFutureTask<V> implements
 
     @Override
     public V get() throws InterruptedException, ExecutionException, CancellationException {
-//        System.out.println("Retrieving result with blocking get()");
-//        Status status = job.getStatus();
-//        if (status == Status.DONE) {
-//            return resultQueue.take();
-//        }
-//        if (job.getStatus() == Status.CANCELED) {
-//            throw new CancellationException();
-//        }
-//        if (job.getStatus() == Status.ERROR) {
-//            throw new ExecutionException("Job terminated with exception!", job.getThrowable());
-//        }
-//        throw new InterruptedException("Job is not done yet!");
         return resultQueue.take();
     }
 
     @Override
     public V get(long l, TimeUnit tu) throws InterruptedException, ExecutionException, CancellationException, TimeoutException {
-//        System.out.println("Retrieving result with non-blocking get()");
         return resultQueue.poll(l, tu);
-//        Status status = job.getStatus();
-//        if (status == Status.DONE) {
-//            return resultQueue.poll(l, tu);
-//        }
-//        if (status == Status.CANCELED) {
-//            throw new CancellationException();
-//        }
-//        if (status == Status.ERROR) {
-//            throw new ExecutionException("Job terminated with exception!", job.getThrowable());
-//        }
-//        throw new InterruptedException("Job is not done yet!");
     }
 
     @Override
