@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,15 +23,15 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.api;
 
+import java.awt.Container;
+import java.util.UUID;
 import net.sf.mpaxs.api.event.IJobEventListener;
 import net.sf.mpaxs.api.job.IJob;
 import net.sf.mpaxs.api.job.Progress;
-import java.awt.Container;
-import java.util.UUID;
 import org.apache.commons.configuration.Configuration;
 
 /**
@@ -122,6 +122,10 @@ public interface Impaxs {
      */
     public void removeJobEventListener(IJobEventListener listener);
 
+    /**
+     *
+     * @return
+     */
     public UUID getAuthenticationToken();
 
 }

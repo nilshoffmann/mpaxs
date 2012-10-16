@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,7 +23,7 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.spi.computeHost;
 
@@ -122,12 +122,19 @@ public class Settings {
     public void setOption(String key, String value) {
         this.config.setProperty(key, value);
     }
-
+    
     public String getOption(String key) {
+        return getOption(key, null);
+    }
+
+    public String getOption(String key, String defaultValue) {
         if (this.config.containsKey(key)) {
             return this.config.getString(key);
         }
-        throw new NullPointerException("Key "+key+" not bound in configuration!");
+        if(defaultValue==null) {
+            throw new NullPointerException("Key "+key+" not bound in configuration!");
+        }
+        return defaultValue;
     }
 
 //    public Configuration getOption(String key) {

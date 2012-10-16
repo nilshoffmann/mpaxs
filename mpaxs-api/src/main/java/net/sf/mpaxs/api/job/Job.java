@@ -2,7 +2,7 @@
  * Mpaxs, modular parallel execution system. 
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
- * Project Administrator: nilshoffmann A T users.sourceforge.net
+ * Project website: http://mpaxs.sf.net
  *
  * Mpaxs may be used under the terms of either the
  *
@@ -23,11 +23,10 @@
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
- * under licenses/ for details.
+ * for details.
  */
 package net.sf.mpaxs.api.job;
 
-import net.sf.mpaxs.api.concurrent.ConfigurableRunnable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,6 +40,7 @@ import java.util.jar.Attributes;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.mpaxs.api.ConfigurationKeys;
+import net.sf.mpaxs.api.concurrent.ConfigurableRunnable;
 
 /**
  *
@@ -60,17 +60,33 @@ public class Job<T> implements IJob<T> {
     private int errorCounter = 0;
     private Throwable throwable = null;
 
+    /**
+     *
+     * @param jobConfigFile
+     * @throws ClassNotFoundException
+     * @throws MalformedURLException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     */
     public Job(final String jobConfigFile) throws ClassNotFoundException,
             MalformedURLException, InstantiationException, IllegalAccessException, IOException {
         this();
         setClassToExecute(jobConfigFile);
     }
 
+    /**
+     *
+     * @param classToExecute
+     */
     public Job(ConfigurableRunnable<T> classToExecute) {
         this();
         setClassToExecute(classToExecute);
     }
 
+    /**
+     *
+     */
     public Job() {
         this.id = UUID.randomUUID();
     }
@@ -151,16 +167,28 @@ public class Job<T> implements IJob<T> {
         return ret;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public ConfigurableRunnable<T> getClassToExecute() {
         return classToExecute;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public UUID getId() {
         return id;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getConfigurationFile() {
         if (config.containsKey(CONFIGURATION_FILE)) {
@@ -170,42 +198,79 @@ public class Job<T> implements IJob<T> {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String getJobConfigFile() {
         return jobConfigFile;
     }
 
+    /**
+     *
+     * @param jobConfigFile
+     */
     @Override
     public void setJobConfigFile(String jobConfigFile) {
         this.jobConfigFile = jobConfigFile;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Status getStatus() {
         return status;
     }
 
+    /**
+     *
+     * @param status
+     */
     @Override
     public void setStatus(Status status) {
         this.status = status;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int getErrorCounter() {
         return errorCounter;
     }
 
+    /**
+     *
+     */
     @Override
     public void errorOccurred() {
         errorCounter++;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         String ret = id.toString();
         return ret;
     }
 
+    /**
+     *
+     * @param jobConfigFile
+     * @throws ClassNotFoundException
+     * @throws MalformedURLException
+     * @throws InstantiationException
+     * @throws IllegalAccessException
+     * @throws IOException
+     * @throws IllegalStateException
+     */
     @Override
     public void setClassToExecute(final String jobConfigFile) throws ClassNotFoundException,
             MalformedURLException, InstantiationException, IllegalAccessException, IOException, IllegalStateException {
@@ -227,6 +292,11 @@ public class Job<T> implements IJob<T> {
         }
     }
 
+    /**
+     *
+     * @param cr
+     * @throws IllegalStateException
+     */
     @Override
     public void setClassToExecute(ConfigurableRunnable<T> cr) throws IllegalStateException {
         if (classToExecute != null) {
@@ -235,6 +305,11 @@ public class Job<T> implements IJob<T> {
         this.classToExecute = cr;
     }
 
+    /**
+     *
+     * @param obj
+     * @return
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -250,6 +325,10 @@ public class Job<T> implements IJob<T> {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public int hashCode() {
         int hash = 3;
@@ -257,11 +336,19 @@ public class Job<T> implements IJob<T> {
         return hash;
     }
 
+    /**
+     *
+     * @param t
+     */
     @Override
     public void setThrowable(Throwable t) {
         this.throwable = t;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Throwable getThrowable() {
         return this.throwable;
