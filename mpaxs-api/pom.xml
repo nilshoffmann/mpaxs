@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>mpaxs</artifactId>
@@ -10,38 +11,19 @@
     <artifactId>mpaxs-api</artifactId>
     <version>1.6.11-SNAPSHOT</version>
     <name>mpaxs-api</name>
-    <url>http://maven.apache.org</url>
     <packaging>jar</packaging>
     <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/site/apt</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*.apt</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/site/xdoc</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/site</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>site.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
-    <dependencies />
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

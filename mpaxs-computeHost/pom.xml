@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>mpaxs</artifactId>
@@ -10,7 +11,6 @@
     <artifactId>mpaxs-computeHost</artifactId>
     <version>1.6.11-SNAPSHOT</version>
     <name>mpaxs-computeHost</name>
-    <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -30,33 +30,6 @@
     </dependencies>
     <packaging>jar</packaging>
     <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/site/apt</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*.apt</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/site/xdoc</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/site</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>site.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
