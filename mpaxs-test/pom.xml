@@ -4,11 +4,11 @@
     <parent>
         <artifactId>mpaxs</artifactId>
         <groupId>net.sf.mpaxs</groupId>
-        <version>1.6.11</version>
+        <version>1.6.12-SNAPSHOT</version>
     </parent>
     <groupId>net.sf.mpaxs</groupId>
     <artifactId>mpaxs-test</artifactId>
-    <version>1.6.11</version>
+    <version>1.6.12-SNAPSHOT</version>
     <name>mpaxs-test</name>
     <url>http://maven.apache.org</url>
     <dependencies>
