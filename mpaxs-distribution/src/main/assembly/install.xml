@@ -1,0 +1,120 @@
+
+<!--
+ Copyright (C) 2008-2012 Nils Hoffmann
+ Nils.Hoffmann A T CeBiTec.Uni-Bielefeld.DE
+
+ This file is part of Cross/Maltcms.
+
+ Cross/Maltcms is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Lesser General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ Cross/Maltcms is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with Cross/Maltcms.  If not, see &lt;http://www.gnu.org/licenses/>.
+
+ $Id: install.xml 471 2012-05-14 13:15:16Z Nils Hoffmann $
+
+-->
+<assembly
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+    <id>bin</id>
+    <formats>
+        <format>dir</format>
+        <format>zip</format>
+<!--        <format>tar.gz</format>-->
+    </formats>
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <dependencySets>
+        <!-- Inclusion of all dependencies -->
+        <dependencySet>
+            <unpack>false</unpack>
+            <excludes>
+                <!-- exclude other dependencies for unpacking -->
+                <exclude>net.sf.mpaxs:*:pom</exclude>
+            </excludes>
+            <fileMode>0644</fileMode>
+            <directoryMode>0755</directoryMode>
+            <outputDirectory>lib/</outputDirectory>
+        </dependencySet>
+
+<!--        <dependencySet>
+             unpack resources jar 
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <unpack>true</unpack>
+            <includes>
+                <include>net.sf.maltcms:maltcms-resources:jar</include>
+            </includes>
+            <unpackOptions>
+                <excludes>
+                    <exclude>META-INF/**</exclude>
+                </excludes>
+            </unpackOptions>
+            <fileMode>0644</fileMode>
+            <directoryMode>0755</directoryMode>
+            <outputDirectory>/</outputDirectory>
+        </dependencySet>-->
+        <!-- configuration options from other packages -->
+<!--        <dependencySet>
+             unpack fragment command jars with configurations 
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <useProjectArtifact>true</useProjectArtifact>
+            <unpack>true</unpack>
+            <includes>
+                <include>net.sf.mpaxs:maltcms-chroma:jar</include>
+                <include>net.sf.maltcms:maltcms-chroma4D:jar</include>
+                <include>net.sf.maltcms:maltcms-chroma4D-srg:jar</include>
+                <include>net.sf.maltcms:maltcms-chroma4D-cwt:jar</include>
+                <include>net.sf.maltcms:maltcms-evaluation:jar</include>
+                <include>net.sf.maltcms:maltcms-spectratyping:jar</include>
+            </includes>
+            <fileMode>0644</fileMode>
+            <directoryMode>0755</directoryMode>
+            <unpackOptions>
+                <excludes>
+                    <exclude>META-INF/**</exclude>
+                </excludes>
+                <includes>
+                    <include>**/cfg/**</include>
+                </includes>
+            </unpackOptions>
+            <outputDirectory>/</outputDirectory>
+        </dependencySet>-->
+    </dependencySets>
+    <fileSets>
+    <fileSet>
+      <directory>${project.basedir}</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>README*</include>
+        <include>LICENSE*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/src/main/resource/licenses</directory>
+      <outputDirectory>/licenses</outputDirectory>
+      <includes>
+        <include>*</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+        <include>mpaxs.jar</include>
+      </includes>
+    </fileSet>
+<!--    <fileSet>
+      <directory>${project.build.directory}/site</directory>
+      <outputDirectory>docs</outputDirectory>
+    </fileSet>-->
+  </fileSets>
+</assembly>
+

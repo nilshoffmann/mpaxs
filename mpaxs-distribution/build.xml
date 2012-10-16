@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="help" name="MpaxsSiteDeploy">
+
+    <target name="help" description="Prints usage info using -projecthelp">
+        <java classname="org.apache.tools.ant.Main">
+            <arg value="-buildfile" />
+            <arg value="${ant.file}" />
+            <arg value="-projecthelp" />
+        </java>
+    </target>
+
+    <target name="credentials" description="Ask for user credentials">
+        <input addproperty="sf.username">Please enter sourceforge username:</input>
+        <input addproperty="project.version">Please enter project version:</input>
+    </target>
+
+    <target name="release-deploy" description="Deploy release to sourceforge" depends="credentials">
+        <exec command="rsync" inputstring="">
+            <arg value="-avtruP"/>
+            <arg value="-e ssh "/>
+            <arg value="target/mpaxs-${project.version}.zip"/>
+            <arg value="${sf.username},mpaxs@frs.sourceforge.net:/home/frs/project/mpaxs/${project.version}/"/>
+        </exec>
+    </target>
+
+</project>
