@@ -36,7 +36,7 @@ import net.sf.mpaxs.api.job.Progress;
  *
  * @author Nils Hoffmann
  */
-public class TestConfigurableCallable implements ConfigurableRunnable<Long>{
+public class TestConfigurableRunnable implements ConfigurableRunnable<Long>{
 
     private Progress progress = new Progress();
     private long finished = -1l;
@@ -61,9 +61,9 @@ public class TestConfigurableCallable implements ConfigurableRunnable<Long>{
         progress.setMessage("Starting computation");
         for(int i = 0;i<10; i++) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(1000);
             } catch (InterruptedException ex) {
-                //Logger.getLogger(TestConfigurableCallable.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(TestConfigurableRunnable.class.getName()).log(Level.SEVERE, null, ex);
             }
             progress.setProgress(i*10);
         }

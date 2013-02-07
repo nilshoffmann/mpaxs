@@ -27,6 +27,7 @@
  */
 package net.sf.mpaxs.test;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -34,41 +35,52 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.mpaxs.api.ICompletionService;
+import net.sf.mpaxs.api.Impaxs;
 import net.sf.mpaxs.spi.concurrent.CompletionServiceFactory;
+import net.sf.mpaxs.spi.concurrent.ComputeServerFactory;
+import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
  *
  * @author Nils Hoffmann
  */
-public class DistributedRmiExecution implements Callable<List<String>>{
-    
+public class DistributedRmiExecution implements Callable<Double>, Serializable {
+
     private final int maxJobs;
-    
-    public DistributedRmiExecution(int maxJobs) {
+    private final PropertiesConfiguration cfg;
+
+    public DistributedRmiExecution(PropertiesConfiguration cfg, int maxJobs) {
+        this.cfg = cfg;
         this.maxJobs = maxJobs;
     }
-    
+
     @Override
-    public List<String> call() throws Exception {
-        List<String> results = Collections.emptyList();
-        CompletionServiceFactory<String> csf = new CompletionServiceFactory<String>();
+    public Double call() throws Exception {
+        /*
+         * Compute Server is only required for VM external execution
+         */
+        Impaxs impxs = ComputeServerFactory.getComputeServer();
+        impxs.startMasterServer(cfg);
+        CompletionServiceFactory<Double> csf = new CompletionServiceFactory<Double>();
         csf.setTimeOut(1);
         csf.setTimeUnit(TimeUnit.SECONDS);
         csf.setBlockingWait(false);
-        final ICompletionService<String> mcs = csf.newDistributedCompletionService();
-        for(int i = 0; i< maxJobs; i++) {
+        final ICompletionService<Double> mcs = csf.newDistributedCompletionService();
+        for (int i = 0; i < maxJobs; i++) {
             mcs.submit(new TestCallable());
         }
-
+        double result = 0.0d;
         try {
-            results = mcs.call();
+            List<Double> results = mcs.call();
+            for (Double double1 : results) {
+                result+=double1;
+            }
         } catch (Exception ex) {
             Logger.getLogger(DistributedRmiExecution.class.getName()).
                     log(Level.SEVERE, null, ex);
             throw ex;
         }
-        
-        return results;
+        impxs.stopMasterServer();
+        return result;
     }
-    
 }

@@ -27,6 +27,7 @@
  */
 package net.sf.mpaxs.test;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -40,34 +41,39 @@ import net.sf.mpaxs.spi.concurrent.CompletionServiceFactory;
  *
  * @author Nils Hoffmann
  */
-public class WithinVmExecution implements Callable<List<String>>{
+public class WithinVmExecution implements Callable<Double>, Serializable {
     
     private final int maxJobs;
+    private final int maxThreads;
     
-    public WithinVmExecution(int maxJobs) {
+    public WithinVmExecution(int maxJobs, int maxThreads) {
         this.maxJobs = maxJobs;
+        this.maxThreads = maxThreads;
     }
     
     @Override
-    public List<String> call() throws Exception {
-        List<String> results = Collections.emptyList();
-        CompletionServiceFactory<String> csf = new CompletionServiceFactory<String>();
-        csf.setTimeOut(1);
-        csf.setTimeUnit(TimeUnit.SECONDS);
+    public Double call() throws Exception {
+        CompletionServiceFactory<Double> csf = new CompletionServiceFactory<Double>();
+        csf.setTimeOut(500);
+        csf.setTimeUnit(TimeUnit.MILLISECONDS);
+        csf.setMaxThreads(maxThreads);
 
-        final ICompletionService<String> mcs2 = csf.newLocalCompletionService();
+        final ICompletionService<Double> mcs2 = csf.newLocalCompletionService();
         for(int i = 0; i< maxJobs; i++) {
             mcs2.submit(new TestCallable());
         }
-
+        double result = 0.0d;
         try {
-            results = mcs2.call();
+            List<Double> results = mcs2.call();
             System.out.println("MCS2 Results (Local Host execution): " + results);
+            for (Double double1 : results) {
+                result+=double1;
+            }
         } catch (Exception ex) {
             Logger.getLogger(WithinVmExecution.class.getName()).
                     log(Level.SEVERE, null, ex);
             throw ex;
         }
-        return results;
+        return result;
     }
 }

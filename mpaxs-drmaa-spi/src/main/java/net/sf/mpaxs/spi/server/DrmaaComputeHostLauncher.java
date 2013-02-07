@@ -64,8 +64,6 @@ public class DrmaaComputeHostLauncher implements IComputeHostLauncher {
         }
         
         List<String> arguments = new ArrayList<String>();
-        //arguments.add("-cp");
-        //arguments.add(System.getProperty("java.class.path"));
         arguments.add("-cp");
         arguments.add(cfg.getString(
                 ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR));
@@ -77,21 +75,13 @@ public class DrmaaComputeHostLauncher implements IComputeHostLauncher {
         } catch (MalformedURLException ex) {
             Logger.getLogger(DrmaaComputeHostLauncher.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //arguments.add(cfg.getString(ConfigurationKeys.KEY_LOCAL_IP));
-        //arguments.add(cfg.getInt(ConfigurationKeys.KEY_LOCAL_PORT) + "");
-//        settings.setOption("authToken", authToken.toString());
-        //arguments.add(cfg.getString(ConfigurationKeys.KEY_AUTH_TOKEN));
         Logger.getLogger(this.getClass().getName()).log(Level.INFO,
                 "ComputeHost configuration: "+ConfigurationUtils.toString(cfg));
         try {
             SessionFactory factory = SessionFactory.getFactory();
             Session session = factory.getSession();
-            Logger.getLogger(this.getClass().getName()).log(Level.INFO, session.
-                    getDrmSystem());
-            Logger.getLogger(this.getClass().getName()).log(Level.INFO, session.
-                    getDrmaaImplementation());
-            Logger.getLogger(this.getClass().getName()).log(Level.INFO, session.
-                    getVersion().toString());
+            Logger.getLogger(this.getClass().getName()).log(Level.INFO, "DRM System: "+session.
+                    getDrmSystem()+" Implementation: "+session.getDrmaaImplementation()+" Version: "+session.getVersion());
             session.init("");
             JobTemplate jt = session.createJobTemplate();
             Logger.getLogger(this.getClass().getName()).log(Level.INFO,
@@ -117,7 +107,7 @@ public class DrmaaComputeHostLauncher implements IComputeHostLauncher {
             jt.setOutputPath(":" + cfg.getString(
                     ConfigurationKeys.KEY_OUTPUT_FILE));
             jt.setNativeSpecification(cfg.getString(
-                    ConfigurationKeys.KEY_NATIVE_SPEC,"-q all.q@@qics"));
+                    ConfigurationKeys.KEY_NATIVE_SPEC,""));
             session.runJob(jt);
             session.deleteJobTemplate(jt);
             session.exit();

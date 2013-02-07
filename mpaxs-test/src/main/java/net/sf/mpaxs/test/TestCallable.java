@@ -28,23 +28,26 @@
 package net.sf.mpaxs.test;
 
 import java.io.Serializable;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 /**
  *
  * @author Nils Hoffmann
  */
-public class TestCallable implements Callable<String>, Serializable {
+public class TestCallable implements Callable<Double>, Serializable {
 
     @Override
-    public String call() throws Exception {
-        for (int i = 0; i < 10; i++) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ex) {
+    public Double call() throws Exception {
+        Random sr = new Random(System.nanoTime());
+        //generate a random double between 0 and 1
+        double randomNumber = sr.nextDouble();
+        //sleep between 0 and 1000 milliseconds
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException ex) {
 //                Logger.getLogger(TestCallable.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
-        return "TestCallable"+System.nanoTime();
+        return randomNumber;
     }
 }

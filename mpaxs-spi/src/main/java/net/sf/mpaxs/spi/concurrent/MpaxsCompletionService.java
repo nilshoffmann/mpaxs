@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -102,9 +103,8 @@ public class MpaxsCompletionService<T extends Serializable> implements
         done = 0;
         failed = 0;
         cancelled = 0;
-        futureToTaskMap = Collections.synchronizedMap(new LinkedHashMap<Future<T>, Callable<T>>());
+        futureToTaskMap = new ConcurrentHashMap<Future<T>, Callable<T>>();
         futures = new LinkedBlockingQueue<Future<T>>();
-        // e = Executors.newFixedThreadPool(myMaxThreads);
     }
 
     /**
@@ -140,17 +140,15 @@ public class MpaxsCompletionService<T extends Serializable> implements
         if (e.isShutdown() || e.isTerminated()) {
             throw new IllegalStateException("Executor was already shut down!");
         }
+        //take no more submissions
         e.shutdown();
         List<T> results = new LinkedList<T>();
         try {
             int i = 0;
-            //System.out.println("Received "+callables+" tasks, "+failed+" failed, "+cancelled+" were cancelled!");
             // count up to the number of submitted tasks minus the number
             // of failed tasks, irrespective of submission order
             while (i < (callables - (failed + cancelled))) {
-                //System.out.println("i: "+i+" callables: "+callables+" failed+cancelled:"+(failed+cancelled));
                 if (retrieveResult(results)) {
-                    //System.out.println("Retrieved result "+i);
                     i++;
                 }
             }
@@ -219,35 +217,25 @@ public class MpaxsCompletionService<T extends Serializable> implements
             T t = null;
             try {
                 if (myBlockingWait) {
-                    //System.out.println(
-                    //        "Waiting forever for computation to complete");
                     try {
                         t = f.get();
                     } catch (InterruptedException ie) {
                         Thread.currentThread().interrupt();
-                        //System.out.println("Interrupted while waiting forever!");
                         return false;
                     }
 
                 } else {
-//                    System.out.println(
-//                            "Waiting for " + myTimeToWaitForTasks + " "
-//                            + myTimeUnitToWaitForTasks
-//                            + " for computation to complete");
                     try {
                         t = f.get(myTimeToWaitForTasks,
                                 myTimeUnitToWaitForTasks);
                     } catch (InterruptedException ie) {
-//                        System.out.println("Interrupted while waiting for some time!");
                         Logger.getLogger(
                                 MpaxsCompletionService.class.getName()).log(Level.WARNING, "Interrupted while waiting "
                                 + myTimeToWaitForTasks + " "
                                 + myTimeUnitToWaitForTasks
                                 + " for computation to finish!");
-                        //Thread.currentThread().interrupt();
                         return false;
                     } catch (TimeoutException te) {
-//                        System.out.println("Timeout while waiting for some time!");
                         Logger.getLogger(
                                 MpaxsCompletionService.class.getName()).log(Level.WARNING, "Timed out while waiting "
                                 + myTimeToWaitForTasks + " "
@@ -259,10 +247,7 @@ public class MpaxsCompletionService<T extends Serializable> implements
 
                 // only add result if t != null
                 if (t != null) {
-//                    System.out.println("Retrieved a valid result");
                     done++;
-                    // System.out.println(
-                    // getClass().getSimpleName() + ":
                     Logger.getLogger(
                             MpaxsCompletionService.class.getName()).log(
                             Level.INFO,

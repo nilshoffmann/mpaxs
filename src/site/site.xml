@@ -14,9 +14,24 @@
         <src>images/MpaxsLogo.png</src>
         <href>https://sf.net/projects/mpaxs</href>
     </bannerLeft>
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.3.0</version>
+    </skin>
+    <custom>
+        <fluidoSkin>
+            <topBarEnabled>false</topBarEnabled>
+            <sideBarEnabled>true</sideBarEnabled>
+            <sourceLineNumbersEnabled>true</sourceLineNumbersEnabled>
+        </fluidoSkin>
+    </custom>
     <publishDate position="right"/>
     <version position="right"/>
     <body>
+        <breadcrumbs>
+            <item name="Home" href="index.html" />
+        </breadcrumbs>
         <links>
             <item name="Mpaxs Home" href="https://sf.net/projects/mpaxs" />
         </links>
@@ -30,13 +45,13 @@
         <menu ref="modules" />
 
         <menu ref="reports"/>
-        <footer>
-            <span>
+        <!--<footer/>-->
+<!--            <span>
                 Copyright 2010-2012,
             </span>
             <a title="Contact" href="http://sourceforge.net/users/Nils Hoffmann">Nils Hoffmann</a> - Mpaxs is hosted by
             <a title="Hosting by sourceforge.net" href="http://sourceforge.net/">sourceforge.net</a> | 
             <a href="http://maven.apache.org">Built by Maven 3</a>
-        </footer>
+        </footer>-->
     </body>
 </project>

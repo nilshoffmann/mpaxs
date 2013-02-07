@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import lombok.extern.slf4j.Slf4j;
+import net.sf.mpaxs.api.Impaxs;
 
 /**
  *
@@ -48,6 +48,15 @@ import lombok.extern.slf4j.Slf4j;
 public class MpaxsExecutorService extends AbstractExecutorService {
 
     private ExecutorService es = Executors.newSingleThreadExecutor();
+    private final Impaxs computeServer;
+
+    public MpaxsExecutorService() {
+        this(ComputeServerFactory.getComputeServer());
+    }
+
+    public MpaxsExecutorService(Impaxs executionServer) {
+        this.computeServer = executionServer;
+    }
 
     @Override
     public void shutdown() {
@@ -71,14 +80,14 @@ public class MpaxsExecutorService extends AbstractExecutorService {
 
     @Override
     protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
-        return new MpaxsFutureTask<T>(runnable, value);
+        return new MpaxsFutureTask<T>(computeServer, runnable, value);
     }
 
     @Override
     protected <T> RunnableFuture<T> newTaskFor(Callable<T> callable) {
         Logger.getLogger(MpaxsExecutorService.class.getName()).log(Level.FINER,
                 "Creating new FutureTask for {}", callable.getClass());
-        return new MpaxsFutureTask<T>(callable);
+        return new MpaxsFutureTask<T>(computeServer, callable);
     }
 
     @Override

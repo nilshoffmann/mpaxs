@@ -7,285 +7,52 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="300"
-   height="100"
+   width="440.15692"
+   height="272.00439"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="MpaxsLogo.png">
+   sodipodi:docname="MpaxsLogo.svg"
+   inkscape:export-filename="/home/hoffmann/Uni/projects/sf/mpaxs/mpaxs-code/src/site/resources/images/MpaxsLogo.png"
+   inkscape:export-xdpi="33.82"
+   inkscape:export-ydpi="33.82">
   <defs
-     id="defs4">
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient5342">
-      <stop
-         style="stop-color:#000000;stop-opacity:1;"
-         offset="0"
-         id="stop5344" />
-      <stop
-         style="stop-color:#000000;stop-opacity:0;"
-         offset="1"
-         id="stop5346" />
-    </linearGradient>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5342"
-       id="linearGradient5348"
-       x1="145"
-       y1="134"
-       x2="145"
-       y2="3"
-       gradientUnits="userSpaceOnUse" />
-    <filter
-       id="filter5364"
-       style="color-interpolation-filters:sRGB;"
-       inkscape:label="Drop Shadow">
-      <feFlood
-         id="feFlood5366"
-         flood-opacity="0.5"
-         flood-color="rgb(0,0,0)"
-         result="flood" />
-      <feComposite
-         id="feComposite5368"
-         in2="SourceGraphic"
-         in="flood"
-         operator="in"
-         result="composite1" />
-      <feGaussianBlur
-         id="feGaussianBlur5370"
-         in="composite"
-         stdDeviation="2"
-         result="blur" />
-      <feOffset
-         id="feOffset5372"
-         dx="2"
-         dy="4"
-         result="offset" />
-      <feComposite
-         id="feComposite5374"
-         in2="offset"
-         in="SourceGraphic"
-         operator="over"
-         result="fbSourceGraphic" />
-      <feColorMatrix
-         result="fbSourceGraphicAlpha"
-         in="fbSourceGraphic"
-         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
-         id="feColorMatrix5376" />
-      <feFlood
-         id="feFlood5378"
-         flood-opacity="0.5"
-         flood-color="rgb(0,0,0)"
-         result="flood"
-         in="fbSourceGraphic" />
-      <feComposite
-         id="feComposite5380"
-         in2="fbSourceGraphic"
-         in="flood"
-         operator="in"
-         result="composite1" />
-      <feGaussianBlur
-         id="feGaussianBlur5382"
-         in="composite"
-         stdDeviation="2"
-         result="blur" />
-      <feOffset
-         id="feOffset5384"
-         dx="2"
-         dy="4"
-         result="offset" />
-      <feComposite
-         id="feComposite5386"
-         in2="offset"
-         in="fbSourceGraphic"
-         operator="over"
-         result="composite2" />
-    </filter>
-    <filter
-       id="filter5523"
-       style="color-interpolation-filters:sRGB;"
-       inkscape:label="Drop Shadow">
-      <feFlood
-         id="feFlood5525"
-         flood-opacity="0.5"
-         flood-color="rgb(0,0,0)"
-         result="flood" />
-      <feComposite
-         id="feComposite5527"
-         in2="SourceGraphic"
-         in="flood"
-         operator="in"
-         result="composite1" />
-      <feGaussianBlur
-         id="feGaussianBlur5529"
-         in="composite"
-         stdDeviation="2"
-         result="blur" />
-      <feOffset
-         id="feOffset5531"
-         dx="2"
-         dy="4"
-         result="offset" />
-      <feComposite
-         id="feComposite5533"
-         in2="offset"
-         in="SourceGraphic"
-         operator="over"
-         result="composite2" />
-    </filter>
-    <filter
-       color-interpolation-filters="sRGB"
-       id="filter5364-6"
-       inkscape:label="Drop Shadow">
-      <feFlood
-         id="feFlood5366-1"
-         flood-opacity="0.5"
-         flood-color="rgb(0,0,0)"
-         result="flood" />
-      <feComposite
-         id="feComposite5368-9"
-         in2="SourceGraphic"
-         in="flood"
-         operator="in"
-         result="composite1" />
-      <feGaussianBlur
-         id="feGaussianBlur5370-6"
-         stdDeviation="2"
-         result="blur" />
-      <feOffset
-         id="feOffset5372-6"
-         dx="2"
-         dy="4"
-         result="offset" />
-      <feComposite
-         id="feComposite5374-7"
-         in2="offset"
-         in="SourceGraphic"
-         operator="over"
-         result="fbSourceGraphic" />
-      <feColorMatrix
-         result="fbSourceGraphicAlpha"
-         in="fbSourceGraphic"
-         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
-         id="feColorMatrix5376-3" />
-      <feFlood
-         id="feFlood5378-6"
-         flood-opacity="0.5"
-         flood-color="rgb(0,0,0)"
-         result="flood"
-         in="fbSourceGraphic" />
-      <feComposite
-         id="feComposite5380-4"
-         in2="fbSourceGraphic"
-         in="flood"
-         operator="in"
-         result="composite1" />
-      <feGaussianBlur
-         id="feGaussianBlur5382-7"
-         stdDeviation="2"
-         result="blur" />
-      <feOffset
-         id="feOffset5384-2"
-         dx="2"
-         dy="4"
-         result="offset" />
-      <feComposite
-         id="feComposite5386-4"
-         in2="offset"
-         in="fbSourceGraphic"
-         operator="over"
-         result="composite2" />
-    </filter>
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient5342-4"
-       id="linearGradient5348-1"
-       x1="145"
-       y1="134"
-       x2="145"
-       y2="3"
-       gradientUnits="userSpaceOnUse" />
-    <linearGradient
-       inkscape:collect="always"
-       id="linearGradient5342-4">
-      <stop
-         style="stop-color:#000000;stop-opacity:1;"
-         offset="0"
-         id="stop5344-8" />
-      <stop
-         style="stop-color:#000000;stop-opacity:0;"
-         offset="1"
-         id="stop5346-1" />
-    </linearGradient>
-    <filter
-       color-interpolation-filters="sRGB"
-       id="filter5523-3"
-       inkscape:label="Drop Shadow">
-      <feFlood
-         id="feFlood5525-8"
-         flood-opacity="0.5"
-         flood-color="rgb(0,0,0)"
-         result="flood" />
-      <feComposite
-         id="feComposite5527-1"
-         in2="SourceGraphic"
-         in="flood"
-         operator="in"
-         result="composite1" />
-      <feGaussianBlur
-         id="feGaussianBlur5529-9"
-         stdDeviation="2"
-         result="blur" />
-      <feOffset
-         id="feOffset5531-5"
-         dx="2"
-         dy="4"
-         result="offset" />
-      <feComposite
-         id="feComposite5533-8"
-         in2="offset"
-         in="SourceGraphic"
-         operator="over"
-         result="composite2" />
-    </filter>
-  </defs>
+     id="defs4" />
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
      bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
+     borderopacity="1"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="3.6662092"
-     inkscape:cx="160.82916"
-     inkscape:cy="24.148726"
+     inkscape:zoom="2.5490042"
+     inkscape:cx="220.53641"
+     inkscape:cy="136.0128"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="true"
-     inkscape:snap-global="true"
-     inkscape:window-width="1920"
-     inkscape:window-height="1176"
+     showguides="false"
+     fit-margin-top="20"
+     fit-margin-left="20"
+     fit-margin-right="20"
+     fit-margin-bottom="20"
+     inkscape:window-width="1600"
+     inkscape:window-height="1171"
      inkscape:window-x="0"
-     inkscape:window-y="24"
-     inkscape:window-maximized="1">
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     borderlayer="false">
     <inkscape:grid
        type="xygrid"
-       id="grid5266"
+       id="grid2985"
        empspacing="5"
        visible="true"
        enabled="true"
-       snapvisiblegridlinesonly="false"
-       dotted="true" />
-    <inkscape:grid
-       type="xygrid"
-       id="grid5268"
-       empspacing="5"
-       visible="true"
-       enabled="false"
-       snapvisiblegridlinesonly="true" />
+       snapvisiblegridlinesonly="true"
+       originx="93.008145px"
+       originy="-848.9872px" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -303,78 +70,54 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-952.36218)" />
-  <g
-     inkscape:groupmode="layer"
-     id="layer4"
-     inkscape:label="Ebene#1"
-     style="display:inline">
-    <rect
-       style="fill:url(#linearGradient5348);fill-opacity:1;stroke-width:1;stroke-miterlimit:1.45000005;stroke-dasharray:none"
-       id="rect5340"
-       width="292"
-       height="91"
-       x="3"
-       y="3" />
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer2"
-     inkscape:label="Ebene"
-     style="display:inline">
-    <g
-       id="g5400"
-       style="display:inline;filter:url(#filter5523);stroke:#000000;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none">
-      <path
-         inkscape:connector-curvature="0"
-         id="rect2986-60"
-         d="m 3.1369962,3 0,86.718751 -0.1994962,0 0,4.874998 292.0625,0 0,-4.874998 -276.302292,0 L 18.697708,3 3.1369962,3 z"
-         style="fill:#37abc8;fill-opacity:1;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round" />
-      <path
-         inkscape:connector-curvature="0"
-         id="rect2986-75"
-         d="m 5.0150002,4 0,86.71875 -0.1975243,0 0,4.875001 289.1756241,0 0,-4.875001 -273.571203,0 0,-86.71875 -15.4068968,0 z"
-         style="fill:#4bb2cd;fill-opacity:1;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round" />
-      <path
-         inkscape:connector-curvature="0"
-         id="rect2986-6"
-         d="m 7.1604499,5 0,86.718754 -0.1953696,0 0,4.875001 286.0211297,0 0,-4.875001 -270.58693,0 L 22.39928,5 7.1604499,5 z"
-         style="fill:#6ac0d6;fill-opacity:1;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round" />
-      <path
-         inkscape:connector-curvature="0"
-         id="rect2986-7"
-         d="m 9.1413762,6 0,86.71875 -0.1933369,0 0,4.875 283.0312707,0 0,-4.875 -267.75841,0 L 24.2209,6 9.1413661,6 z"
-         style="fill:#89cedf;fill-opacity:1;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round" />
-      <path
-         inkscape:connector-curvature="0"
-         id="rect2986"
-         d="m 11.054342,7 0,86.71875 -0.191326,0 0,4.875 280.109404,0 0,-4.875 -264.994213,0 0,-86.71875 -14.923859,0 z"
-         style="fill:#afdde9;fill-opacity:1;stroke-width:0.5;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1;stroke-linejoin:round;stroke-linecap:round" />
-    </g>
-  </g>
-  <g
-     inkscape:groupmode="layer"
-     id="layer3"
-     inkscape:label="Text"
-     style="display:inline">
-    <text
-       xml:space="preserve"
-       style="font-size:39.78874588px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#37abc8;fill-opacity:1;stroke:none;filter:url(#filter5364);font-family:Luxi Sans;-inkscape-font-specification:Luxi Sans"
-       x="20.176157"
-       y="89.524673"
-       id="text5270"
-       sodipodi:linespacing="125%"
-       transform="matrix(0.93308882,0,0,1.0053094,7.9964671,-10)"><tspan
-         sodipodi:role="line"
-         id="tspan5272"
-         x="20.176157"
-         y="89.524673"
-         style="font-size:81.56692505px;font-weight:normal;-inkscape-font-specification:Luxi Sans"><tspan
-           style="font-size:81.56692505px;font-weight:normal;fill:#000000;fill-opacity:1;stroke:#ecab16;stroke-opacity:1;-inkscape-font-specification:Luxi Sans"
-           id="tspan5278">M</tspan><tspan
-           style="fill:#ecab16;fill-opacity:1;stroke:#000000;stroke-opacity:1"
-           id="tspan5350">PAX</tspan><tspan
-           style="font-size:81.56692505px;font-weight:normal;fill:#000000;fill-opacity:1;stroke:#ecab16;stroke-opacity:1;-inkscape-font-specification:Luxi Sans"
-           id="tspan5332">S</tspan></tspan></text>
+     transform="translate(93.008145,68.629404)">
+    <path
+       style="fill:#73945b;fill-opacity:1;fill-rule:nonzero;stroke:#2d5016;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 57.99999,-47.637811 -59.9999999,100 -70.0000001,0 14.15625,15 -14.15625,15 70.0000001,0 59.9999999,100.000001 60,0 14.15625,-15 -14.15625,-15 -60,0 -42,-70.000001 102,0 14.15625,-15 -14.15625,-15 -102,0 42,-70 60,0 14.15625,-15 -14.15625,-15 -60,0 z"
+       id="rect2989"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
+       inkscape:export-xdpi="33.740002"
+       inkscape:export-ydpi="33.740002" />
+    <path
+       style="fill:#aade87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -72,2.3621856 14.15625,15.0000004 -14.15625,15 10,0 60,0 60,99.999994 59.99999,0 14.15625,-15 -14.15625,-15 -59.99999,0 -60,-99.9999944 -60,0 -10,0 z"
+       id="rect2989-4"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
+       inkscape:export-xdpi="33.740002"
+       inkscape:export-ydpi="33.740002" />
+    <path
+       style="fill:#5c7394;fill-opacity:1;fill-rule:nonzero;stroke:#323232;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 122,-47.637811 14.15625,15 -14.15625,15 10,0 60,0 42,70 -112,0 14.15625,15 -14.15625,15 112,0 -42,70.000001 -60,0 -10,0 14.15625,15 -14.15625,15 10,0 60,0 60,-100.000001 60,0 14.15625,-15 -14.15625,-15 -60,0 -60,-100 -60,0 -10,0 z"
+       id="path3393"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
+       inkscape:export-xdpi="33.740002"
+       inkscape:export-ydpi="33.740002" />
+    <path
+       inkscape:export-ydpi="33.740002"
+       inkscape:export-xdpi="33.740002"
+       inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
+       inkscape:connector-curvature="0"
+       id="path3840"
+       d="m 122,2.3621856 14.15625,15.0000004 -14.15625,15 10,0 60,0 60,99.999994 59.99999,0 14.15625,-15 -14.15625,-15 -59.99999,0 -60,-99.9999944 -60,0 -10,0 z"
+       style="fill:#afc6e9;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+    <path
+       style="fill:#aade87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="M 58,2.3621896 -2,102.36219 l -60,0 -10,0 14.15625,15 -14.15625,15 10,0 60,0 60,-100 59.99999,0 14.15625,-15 -14.15625,-15.0000004 -59.99999,0 z"
+       id="rect2993"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
+       inkscape:export-xdpi="33.740002"
+       inkscape:export-ydpi="33.740002" />
+    <path
+       inkscape:export-ydpi="33.740002"
+       inkscape:export-xdpi="33.740002"
+       inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
+       inkscape:connector-curvature="0"
+       id="path3842"
+       d="m 252,2.3621896 -60,100.0000004 -60,0 -10,0 14.15625,15 -14.15625,15 10,0 60,0 60,-100 59.99999,0 14.15625,-15 -14.15625,-15.0000004 -59.99999,0 z"
+       style="fill:#afc6e9;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
 </svg>

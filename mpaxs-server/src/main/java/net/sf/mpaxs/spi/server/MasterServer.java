@@ -146,7 +146,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    public synchronized void submitJob(IJob job) {
+    public void submitJob(IJob job) {
         if (!isShutdown) {
             job.setStatus(Status.WAITING);
             undoneJobs.offer(job);
@@ -261,7 +261,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
         return failedJobs;
     }
 
-    public synchronized void addDoneJob(IJob job) {
+    public void addDoneJob(IJob job) {
         if (!this.isShutdown) {
             Host host = getHostJobIsRunningOn(job.getId());
             File tmp = new File(job.getJobConfigFile());
@@ -278,7 +278,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    public synchronized IJob getUndoneJob() {
+    public IJob getUndoneJob() {
         if (!this.isShutdown) {
             IJob ret = undoneJobs.poll();
             return ret;
@@ -439,7 +439,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
         return null;
     }
 
-    public synchronized void jobOnHost(IJob job, Host host) {
+    public void jobOnHost(IJob job, Host host) {
         if (!isShutdown) {
             jobRunningOnHost.put(job.getId(), host);
         } else {

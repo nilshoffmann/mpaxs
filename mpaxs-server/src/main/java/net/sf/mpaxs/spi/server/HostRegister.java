@@ -98,7 +98,7 @@ public class HostRegister {
      * @param id Host ID of the Host that should be remove
      * @return true if remove action was succesfull, false if not
      */
-    public synchronized boolean removeHost(final UUID id) {
+    public boolean removeHost(final UUID id) {
         if (hosts.containsKey(id)) {
             hostRemoved(hosts.get(id));
             hosts.remove(id);
@@ -141,13 +141,12 @@ public class HostRegister {
             @Override
             public void run() {
 
-//                System.out.println("Starting new host " + ichl.getClass().
-//                        getName());
+                System.out.println("Starting new compute host");
 
-//                System.out.println("Maximum allowed number of chosts: " + settings.
-//                        getMaxNumberOfChosts());
-//                System.out.println(
-//                        "Current number of chosts: " + getNumberOfHosts());
+                System.out.println("Maximum allowed number of compute hosts: " + settings.
+                        getMaxNumberOfChosts());
+                System.out.println(
+                        "Current number of compute hosts: " + getNumberOfHosts());
                 if (settings.getMaxNumberOfChosts() > getNumberOfHosts()) {
                     ExecutionType et = settings.getExecutionMode();
                     System.out.println("Execution mode: " + et);
@@ -155,9 +154,9 @@ public class HostRegister {
                             get(0);
 //                        try {
                     System.out.println("Preparing to launch host " + (getNumberOfHosts() + 1) + "/" + settings.getMaxNumberOfChosts());
-                    String nativeSpec = "-q all.q@@qics";//-l \"idle=1\" -q all.q@@qics";
-                    if (settings.getOption("nativeSpec") != null) {
-                        nativeSpec = settings.getString("nativeSpec");
+                    String nativeSpec = "";
+                    if (settings.getOption(ConfigurationKeys.KEY_NATIVE_SPEC) != null) {
+                        nativeSpec = settings.getString(ConfigurationKeys.KEY_NATIVE_SPEC);
                     }
                     System.out.println("Setting up host configuration");
                     PropertiesConfiguration hostConfiguration = new PropertiesConfiguration();
@@ -276,7 +275,7 @@ public class HostRegister {
      *
      * @param host Host that should be released
      */
-    public synchronized void releaseHost(Host host) {
+    public void releaseHost(Host host) {
         if (usedHosts.containsKey(host.getId())) {
             host.oneCoreUnused();
             usedHosts.remove(host.getId());

@@ -50,19 +50,21 @@ public class MpaxsFutureTask<V> implements
         RunnableFuture<V>, IJobEventListener {
 
     private final IJob<V> job;
-    private final Impaxs computeServer = ComputeServerFactory.getComputeServer();
+    private final Impaxs computeServer;
     private BlockingQueue<V> intermediateQueue = new LinkedBlockingQueue<V>(1);
     private BlockingQueue<V> resultQueue = new LinkedBlockingQueue<V>(1);
     private V result = null;
 
-    public MpaxsFutureTask(Callable<V> callable) {
-        job = new Job<V>(new DefaultCallable<V>(callable));
+    public MpaxsFutureTask(Impaxs computeServer, Callable<V> callable) {
+        this.computeServer = computeServer;
         computeServer.addJobEventListener(this);
+        job = new Job<V>(new DefaultCallable<V>(callable));
     }
 
-    public MpaxsFutureTask(Runnable r, V v) {
-        job = new Job<V>(new DefaultRunnable<V>(r, v));
+    public MpaxsFutureTask(Impaxs computeServer, Runnable r, V v) {
+        this.computeServer = computeServer;
         computeServer.addJobEventListener(this);
+        job = new Job<V>(new DefaultRunnable<V>(r, v));
     }
 
     @Override

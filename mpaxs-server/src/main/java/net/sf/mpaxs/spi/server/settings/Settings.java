@@ -63,7 +63,7 @@ public class Settings {
     private static final int DEFAULT_SCHEDULE_WAIT_TIME = 5;
     private static final String DEFAULT_PATH_TO_COMPUTEHOST_JAR = DEFAULT_BASE_DIR + File.separator + "computeHost" + File.separator + "ComputeHost.jar";
     private static final String DEFAULT_COMPUTE_HOST_MAIN_CLASS = "net.sf.mpaxs.spi.computeHost.StartUp";
-    private static final String DEFAULT_PATH_TO_JAVA = "/vol/java-1.6/bin/java";
+    private static final String DEFAULT_PATH_TO_JAVA = "java";
     private static final String DEFAULT_COMPUTE_HOST_WORKING_DIR = DEFAULT_BASE_DIR + File.separator + "computeHost";
     private static final String DEFAULT_COMPUTE_HOST_ERROR_FILE = DEFAULT_COMPUTE_HOST_WORKING_DIR + File.separator + "error.txt";
     private static final String DEFAULT_COMPUTE_HOST_OUTPUT_FILE = DEFAULT_COMPUTE_HOST_WORKING_DIR + File.separator + "output.txt";

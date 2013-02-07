@@ -35,12 +35,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.mpaxs.api.ConfigurationKeys;
 import net.sf.mpaxs.api.ExecutionType;
-import net.sf.mpaxs.api.Impaxs;
-import net.sf.mpaxs.spi.concurrent.ComputeServerFactory;
-import net.sf.mpaxs.test.DrmaaExecution;
-import net.sf.mpaxs.test.DrmaaExecution;
-import net.sf.mpaxs.test.LocalHostExecution;
-import net.sf.mpaxs.test.LocalHostExecution;
+import net.sf.mpaxs.spi.computeHost.StartUp;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 /**
@@ -58,57 +60,105 @@ public class ImpaxsExecution {
      */
     public final static String hash = "#";
 
+    public enum Mode {
+
+        ALL, LOCAL, DISTRIBUTED
+    };
+
     public static void main(String[] args) {
+        Options options = new Options();
+        Option[] optionArray = new Option[]{
+            OptionBuilder.withArgName("nhosts").
+            hasArg().withDescription("Number of hosts for parallel processing").create("n"),
+            OptionBuilder.withArgName("mjobs").
+            hasArg().withDescription("Number of jobs to run in parallel").create("m"),
+            OptionBuilder.withArgName("runmode").
+            hasArg().withDescription("The mode in which to operate: one of <ALL,LOCAL,DISTRIBUTED>").create("r")
+        };
+        for (Option opt : optionArray) {
+            options.addOption(opt);
+        }
+        if (args.length == 0) {
+            HelpFormatter hf = new HelpFormatter();
+            hf.printHelp(
+                    StartUp.class.getCanonicalName(), options,
+                    true);
+            System.exit(1);
+        }
+        GnuParser gp = new GnuParser();
+        int nhosts = 1;
+        int mjobs = 10;
+        Mode mode = Mode.ALL;
+        try {
+            CommandLine cl = gp.parse(options, args);
+            if (cl.hasOption("n")) {
+                nhosts = Integer.parseInt(cl.getOptionValue("n"));
+            }
+            if (cl.hasOption("m")) {
+                mjobs = Integer.parseInt(cl.getOptionValue("m"));
+            }
+            if (cl.hasOption("r")) {
+                mode = Mode.valueOf(cl.getOptionValue("r"));
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
+            HelpFormatter hf = new HelpFormatter();
+            hf.printHelp(
+                    StartUp.class.getCanonicalName(), options,
+                    true);
+            System.exit(1);
+        }
+
         String version;
         try {
             version = net.sf.mpaxs.api.Version.getVersion();
-            System.out.println("Running mpaxs "+version);
+            System.out.println("Running mpaxs " + version);
             File computeHostJarLocation = new File(System.getProperty("user.dir"), "mpaxs.jar");
             if (!computeHostJarLocation.exists() || !computeHostJarLocation.isFile()) {
-                throw new IOException("Could not locate mpaxs.jar in "+System.getProperty("user.dir"));
+                throw new IOException("Could not locate mpaxs.jar in " + System.getProperty("user.dir"));
             }
-            final PropertiesConfiguration pc = new PropertiesConfiguration();
+            final PropertiesConfiguration cfg = new PropertiesConfiguration();
             //set default execution type
-            pc.setProperty(ConfigurationKeys.KEY_EXECUTION_MODE, ExecutionType.DRMAA);
+            cfg.setProperty(ConfigurationKeys.KEY_EXECUTION_MODE, ExecutionType.DRMAA);
             //set location of compute host jar
-            pc.setProperty(ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR, computeHostJarLocation);
+            cfg.setProperty(ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR, computeHostJarLocation);
             //do not exit to console when master server shuts down
-            pc.setProperty(ConfigurationKeys.KEY_MASTER_SERVER_EXIT_ON_SHUTDOWN, false);
+            cfg.setProperty(ConfigurationKeys.KEY_MASTER_SERVER_EXIT_ON_SHUTDOWN, false);
             //limit the number of used compute hosts
-            pc.setProperty(ConfigurationKeys.KEY_MAX_NUMBER_OF_CHOSTS, Runtime.getRuntime().availableProcessors()-1);
-            final int maxJobs = 10;
+            cfg.setProperty(ConfigurationKeys.KEY_MAX_NUMBER_OF_CHOSTS, nhosts);
+            cfg.setProperty(ConfigurationKeys.KEY_NATIVE_SPEC, "");
+            final int maxJobs = mjobs;
+            final int maxThreads = nhosts;
+            final Mode runMode = mode;
+            printMessage("Run mode: "+runMode);
             Executors.newSingleThreadExecutor().submit(new Runnable() {
                 @Override
                 public void run() {
-                    printMessage("Running Within VM Execution");
-                    /*
-                     * LOCAL within VM execution
-                     */
-                    WithinVmExecution lhe = new WithinVmExecution(maxJobs);
-                    List<String> leResults;
-                    try {
-                        leResults = lhe.call();
-                        Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.INFO, "Results: "+leResults);
-                    } catch (Exception ex) {
-                        Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.SEVERE, null, ex);
-                    } 
-
-                    Impaxs impxs = ComputeServerFactory.getComputeServer();
-
-                    printMessage("Running Distributed Host RMI Execution");
-                    /*
-                     * Grid Engine (DRMAA API) or local host distributed RMI execution
-                     */
-                    impxs.startMasterServer(pc);
-                    DistributedRmiExecution de = new DistributedRmiExecution(maxJobs);
-                    List<String> deResults;
-                    try {
-                        deResults = de.call();
-                        Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.INFO, "Results: "+deResults);
-                    } catch (Exception ex) {
-                        Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.SEVERE, null, ex);
+                    if (runMode == Mode.ALL || runMode == Mode.LOCAL) {
+                        printMessage("Running Within VM Execution");
+                        /*
+                         * LOCAL within VM execution
+                         */
+                        WithinVmExecution lhe = new WithinVmExecution(maxJobs, maxThreads);
+                        try {
+                            Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.INFO, "Sum is: " + lhe.call());
+                        } catch (Exception ex) {
+                            Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }
-                    impxs.stopMasterServer();
+
+                    if (runMode == Mode.ALL || runMode == Mode.DISTRIBUTED) {
+                        printMessage("Running Distributed Host RMI Execution");
+                        /*
+                         * Grid Engine (DRMAA API) or local host distributed RMI execution
+                         */
+                        DistributedRmiExecution de = new DistributedRmiExecution(cfg, maxJobs);
+                        try {
+                            Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.INFO, "Sum is: " + de.call());
+                        } catch (Exception ex) {
+                            Logger.getLogger(ImpaxsExecution.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
                     System.exit(0);
                 }
             });
