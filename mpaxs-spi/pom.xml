@@ -4,11 +4,11 @@
     <parent>
         <artifactId>mpaxs</artifactId>
         <groupId>net.sf.mpaxs</groupId>
-        <version>1.6.12-SNAPSHOT</version>
+        <version>1.6.12</version>
     </parent>
     <groupId>net.sf.mpaxs</groupId>
     <artifactId>mpaxs-spi</artifactId>
-    <version>1.6.12-SNAPSHOT</version>
+    <version>1.6.12</version>
     <name>mpaxs-spi</name>
     <dependencies>
         <dependency>
