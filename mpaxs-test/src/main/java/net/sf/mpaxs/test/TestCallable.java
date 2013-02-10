@@ -27,8 +27,8 @@
  */
 package net.sf.mpaxs.test;
 
+import java.io.IOException;
 import java.io.Serializable;
-import java.util.Random;
 import java.util.concurrent.Callable;
 
 /**
@@ -39,15 +39,13 @@ public class TestCallable implements Callable<Double>, Serializable {
 
     @Override
     public Double call() throws Exception {
-        Random sr = new Random(System.nanoTime());
-        //generate a random double between 0 and 1
-        double randomNumber = sr.nextDouble();
-        //sleep between 0 and 1000 milliseconds
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException ex) {
-//                Logger.getLogger(TestCallable.class.getName()).log(Level.SEVERE, null, ex);
+        long sum = 0;
+        for(int i = Integer.MIN_VALUE;i<Integer.MAX_VALUE;i++) {
+            sum+=i;
         }
-        return randomNumber;
+        if(Math.random()>0.9) {
+            throw new IOException("Failed on io due to simulated random error!");
+        }
+        return Long.valueOf(sum).doubleValue();
     }
 }

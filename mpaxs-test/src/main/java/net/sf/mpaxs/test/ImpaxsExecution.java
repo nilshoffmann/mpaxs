@@ -73,7 +73,9 @@ public class ImpaxsExecution {
             OptionBuilder.withArgName("mjobs").
             hasArg().withDescription("Number of jobs to run in parallel").create("m"),
             OptionBuilder.withArgName("runmode").
-            hasArg().withDescription("The mode in which to operate: one of <ALL,LOCAL,DISTRIBUTED>").create("r")
+            hasArg().withDescription("The mode in which to operate: one of <ALL,LOCAL,DISTRIBUTED>").create("r"),
+//            OptionBuilder.withArgName("gui").
+//            withDescription("Create gui for distributed execution").create("g")
         };
         for (Option opt : optionArray) {
             options.addOption(opt);
@@ -88,6 +90,7 @@ public class ImpaxsExecution {
         GnuParser gp = new GnuParser();
         int nhosts = 1;
         int mjobs = 10;
+        boolean gui = false;
         Mode mode = Mode.ALL;
         try {
             CommandLine cl = gp.parse(options, args);
@@ -100,6 +103,9 @@ public class ImpaxsExecution {
             if (cl.hasOption("r")) {
                 mode = Mode.valueOf(cl.getOptionValue("r"));
             }
+//            if (cl.hasOption("g")) {
+//                gui = true;
+//            }
         } catch (Exception ex) {
             Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
             HelpFormatter hf = new HelpFormatter();
@@ -127,10 +133,11 @@ public class ImpaxsExecution {
             //limit the number of used compute hosts
             cfg.setProperty(ConfigurationKeys.KEY_MAX_NUMBER_OF_CHOSTS, nhosts);
             cfg.setProperty(ConfigurationKeys.KEY_NATIVE_SPEC, "");
+            cfg.setProperty(ConfigurationKeys.KEY_GUI_MODE,gui);
             final int maxJobs = mjobs;
             final int maxThreads = nhosts;
             final Mode runMode = mode;
-            printMessage("Run mode: "+runMode);
+            printMessage("Run mode: " + runMode);
             Executors.newSingleThreadExecutor().submit(new Runnable() {
                 @Override
                 public void run() {

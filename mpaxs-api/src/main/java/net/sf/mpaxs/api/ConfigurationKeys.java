@@ -64,6 +64,7 @@ public class ConfigurationKeys {
     public static final String KEY_MAX_ERROR_PER_JOB = "MAX_ERROR_PER_JOB";
     public static final String KEY_MAX_JOBS_PER_HOST = "MAX_JOBS_PER_HOST";
     public static final String KEY_MAX_NUMBER_OF_CHOSTS = "MAX_NUMBER_OF_CHOSTS";
+    public static final String KEY_EXPORT_JMX = "EXPORT_JMX";
     
     //common keys
     public static final String KEY_AUTH_TOKEN = "AUTH_TOKEN";

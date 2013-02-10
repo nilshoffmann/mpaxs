@@ -30,6 +30,7 @@ package net.sf.mpaxs.api.concurrent;
 import java.io.File;
 import java.io.Serializable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import net.sf.mpaxs.api.job.Progress;
 
 /**
@@ -41,7 +42,7 @@ public class DefaultRunnable<V> implements ConfigurableRunnable<V> {
     private final Runnable r;
     private final Progress p = new Progress();
     private final V result;
-    private boolean done = false;
+    private AtomicBoolean done = new AtomicBoolean(false);
     private Throwable t;
 
     /**
@@ -84,7 +85,7 @@ public class DefaultRunnable<V> implements ConfigurableRunnable<V> {
         try {
             this.r.run();
             p.setProgress(100);
-            done = true;
+            done.set(true);
         } catch (Exception ex) {
             t = ex;
         }
@@ -95,7 +96,7 @@ public class DefaultRunnable<V> implements ConfigurableRunnable<V> {
         if(t!=null) {
             throw new ExecutionException("Computation of result failed!",t);
         }
-        if(!done) {
+        if(!done.get()) {
             throw new InterruptedException("Result not yet available!");
         }
         return result;

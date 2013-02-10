@@ -27,13 +27,17 @@
  */
 package net.sf.mpaxs.test;
 
+import java.awt.BorderLayout;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import net.sf.mpaxs.api.ConfigurationKeys;
 import net.sf.mpaxs.api.ICompletionService;
 import net.sf.mpaxs.api.Impaxs;
 import net.sf.mpaxs.spi.concurrent.CompletionServiceFactory;
@@ -60,7 +64,24 @@ public class DistributedRmiExecution implements Callable<Double>, Serializable {
          * Compute Server is only required for VM external execution
          */
         Impaxs impxs = ComputeServerFactory.getComputeServer();
-        impxs.startMasterServer(cfg);
+        if(cfg.getBoolean(ConfigurationKeys.KEY_GUI_MODE,false)) {
+            final JFrame jf = new JFrame();
+            jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            JPanel controlPanel = new JPanel();
+            jf.add(controlPanel);
+            controlPanel.setLayout(new BorderLayout());
+            impxs.startMasterServer(cfg, controlPanel);
+            SwingUtilities.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    jf.setVisible(true);
+                    jf.pack();
+                }
+            });
+        }else{
+            impxs.startMasterServer(cfg);
+        }
         CompletionServiceFactory<Double> csf = new CompletionServiceFactory<Double>();
         csf.setTimeOut(1);
         csf.setTimeUnit(TimeUnit.SECONDS);
@@ -72,6 +93,7 @@ public class DistributedRmiExecution implements Callable<Double>, Serializable {
         double result = 0.0d;
         try {
             List<Double> results = mcs.call();
+            System.out.println("Distributed execution: " + results);
             for (Double double1 : results) {
                 result+=double1;
             }

@@ -65,7 +65,7 @@ public class JobSchedule implements Runnable, IComputeHostEventListener {
     public void run() {
         while (true) {
             if (currentSubmitted) {
-                current = master.getUndoneJob();
+                current = master.getPendingJob();
                 currentSubmitted = false;
             }
             //System.out.println("Looking whether a new host needs to be started!");

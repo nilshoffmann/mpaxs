@@ -30,8 +30,6 @@ package net.sf.mpaxs.spi.concurrent;
 import net.sf.mpaxs.api.ICompletionService;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +40,6 @@ import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -67,7 +64,6 @@ public class MpaxsCompletionService<T extends Serializable> implements
     private ExecutorService e = null;
     private ExecutorCompletionService<T> es = null;
     private Map<Future<T>, Callable<T>> futureToTaskMap = null;
-    private LinkedBlockingQueue<Future<T>> futures = null;
 
     public MpaxsCompletionService() {
         super();
@@ -104,7 +100,6 @@ public class MpaxsCompletionService<T extends Serializable> implements
         failed = 0;
         cancelled = 0;
         futureToTaskMap = new ConcurrentHashMap<Future<T>, Callable<T>>();
-        futures = new LinkedBlockingQueue<Future<T>>();
     }
 
     /**
@@ -237,7 +232,7 @@ public class MpaxsCompletionService<T extends Serializable> implements
                         return false;
                     } catch (TimeoutException te) {
                         Logger.getLogger(
-                                MpaxsCompletionService.class.getName()).log(Level.WARNING, "Timed out while waiting "
+                                MpaxsCompletionService.class.getName()).log(Level.FINE, "Timed out while waiting "
                                 + myTimeToWaitForTasks + " "
                                 + myTimeUnitToWaitForTasks
                                 + " for computation to finish!");
@@ -256,7 +251,6 @@ public class MpaxsCompletionService<T extends Serializable> implements
                             + " jobs failed, " + cancelled
                             + " were cancelled!");
                     futureToTaskMap.remove(f);
-                    futures.remove(f);
                     results.add(t);
                     return true;
                 }
@@ -276,7 +270,7 @@ public class MpaxsCompletionService<T extends Serializable> implements
     }
 
     private Future<T> getActiveFuture() {
-        return futures.peek();
+        return es.poll();
     }
 
     @Override
@@ -288,7 +282,6 @@ public class MpaxsCompletionService<T extends Serializable> implements
         }
         Future<T> f = es.submit(c);
         futureToTaskMap.put(f, c);
-        futures.add(f);
         callables++;
         return f;
     }
@@ -306,7 +299,6 @@ public class MpaxsCompletionService<T extends Serializable> implements
         }
         Future<T> f = es.submit(r, t);
         futureToTaskMap.put(f, Executors.callable(r, t));
-        futures.add(f);
         callables++;
         return f;
     }

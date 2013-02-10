@@ -38,7 +38,6 @@ import javax.management.MalformedObjectNameException;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectName;
 import net.sf.mpaxs.api.ConfigurationKeys;
-import net.sf.mpaxs.spi.server.jmx.Server;
 import net.sf.mpaxs.spi.server.settings.Settings;
 
 /**
@@ -47,7 +46,9 @@ import net.sf.mpaxs.spi.server.settings.Settings;
  */
 public class StartUp {
 
-    /** Starts the MasterServer.
+    /**
+     * Starts the MasterServer.
+     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
@@ -62,7 +63,7 @@ public class StartUp {
         Settings.setConfigFile(configFile);
         return startUP(null);
     }
-    
+
     public static void setOption(String name, String value) {
         Settings.getInstance().setOption(name, value);
     }
@@ -97,29 +98,6 @@ public class StartUp {
 
         // Start MasterServer
         MasterServer ms = new MasterServer(c);
-//        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-//
-//        // Construct the ObjectName for the MBean we will register
-//        ObjectName name;
-//        try {
-//            name = new ObjectName("net.sf.maltcms.execution.masterServer.jmx:type=Server");
-//            // Create the Hello World MBean
-//            Server mbean = new Server(ms);
-//
-//            // Register the Hello World MBean
-//            mbs.registerMBean(mbean, name);
-//        } catch (InstanceAlreadyExistsException ex) {
-//            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (MBeanRegistrationException ex) {
-//            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (NotCompliantMBeanException ex) {
-//            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (MalformedObjectNameException ex) {
-//            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (NullPointerException ex) {
-//            Logger.getLogger(StartUp.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-
         return ms;
     }
 }

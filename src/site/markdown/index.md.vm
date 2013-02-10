@@ -1,0 +1,11 @@
+<h2>Welcome to Mpaxs</h2>
+Mpaxs is a light parallelization framework for Java that allows for transparent submission and execution
+of serializable Runnable and Callable tasks on local or remote virtual machines. Tasks are transparently submitted using
+<code>java.util.concurrent.ExecutorService</code>. 
+Mpaxs automatically comissions new compute hosts via its compute host launcher infrastructure for grid- and cloud-based execution
+to dynamically adapt to changing workload.
+
+* [Getting Started](./gettingStarted.html)
+* [Download](./download.html)
+* [Javadoc API](./apidocs/index.html)
+* [Help](https://sourceforge.net/projects/mpaxs/support)

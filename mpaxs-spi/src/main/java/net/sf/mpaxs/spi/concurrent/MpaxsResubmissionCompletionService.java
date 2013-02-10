@@ -220,7 +220,6 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
                     long timeOut = mcs.getTimeToWaitForTasks();
                     TimeUnit timeUnit = mcs.getTimeUnitToWaitForTasks();
                     boolean blockingWait = mcs.isBlockingWait();
-                    // int maxThreads = mcs.getMaxThreads();
 
                     mcs = new MpaxsCompletionService<T>(null, timeOut,
                             timeUnit, blockingWait);

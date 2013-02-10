@@ -1,0 +1,134 @@
+<h2>Getting Started</h2>
+
+1. Please download and install [Java Runtime Environment (JRE) or JDK version 1.6.0 or newer](http://www.oracle.com/technetwork/java/javase/downloads/index.html) for 
+          your specific platform and operating system.
+
+2. Then [download Mpaxs](./download.html) and follow the installation instructions.
+
+<h3>Installation Instructions</h3>
+  
+Download the zip-distribution of Mpaxs and include the jar files in the lib/ folder on the classpath of 
+your project. 
+
+<h3>Demonstration</h3>
+  
+The zip-distribution of Mpaxs includes a self-contained demo that may be run from the command line: 
+
+    > java -jar mpaxs.jar
+
+This will print the available options:
+
+    usage: net.sf.mpaxs.spi.computeHost.StartUp [-m <mjobs>] [-n <nhosts>] [-r
+           <runmode>]
+    -m <mjobs>     Number of jobs to run in parallel
+    -n <nhosts>    Number of hosts for parallel processing
+    -r <runmode>   The mode in which to operate: one of
+                   <ALL,LOCAL,DISTRIBUTED>
+
+In order to run mpaxs demo locally within the active virtual machine with 100 jobs and 1 thread, type in the following:
+
+    > java -jar mpaxs.jar -m 100 -n 1 -r LOCAL
+
+<p class="alert alert-info">
+<b>Note:</b><br/>
+Mpaxs will try to launch new compute hosts using the drmaa api 
+by default. If no drmaa-compatible scheduling system, such as Globus, SGE/OGE,
+Torque, or PBS is installed on your system, mpaxs will automatically fall back 
+to launch the compute hosts on your local system within seperate processes. 
+</p>
+
+If you have a cluster scheduling system installed, you can try to run mpaxs demo with 
+a larger maximum number of hosts and jobs in distributed mode:
+
+    > java -jar mpaxs.jar -m 100000 -n 3 -r DISTRIBUTED
+
+<p class="alert alert-info">
+<b>Note:</b><br/>
+Compute hosts are launched on demand by mpaxs. Thus, if the active compute hosts can easily 
+cater for the submitted jobs, mpaxs will not launch any new hosts. If a compute host is idle 
+for a pre-defined time, it will initiate an orderly shutdown of itself and deregister with the 
+master server.
+</p>
+
+<h3>Launching a local execution with non-blocking wait</h3>
+
+    CompletionServiceFactory<Long> csf = new CompletionServiceFactory<Long>();
+    csf.setTimeOut(1);
+    csf.setTimeUnit(TimeUnit.SECONDS);
+    csf.setMaxThreads(maxThreads);
+    csf.setBlockingWait(false);
+
+    final ICompletionService<Long> cs = csf.newLocalCompletionService();
+    for(int i = 0; i< maxJobs; i++) {
+        //!!! this callable is NOT serializable !!!
+        cs.submit(new Callable<Long>() {
+            @Override
+            public Long call() throws Exception {
+                long sum = 0;
+                for (int i = Integer.MIN_VALUE; i < Integer.MAX_VALUE; i++) {
+                    sum += i;
+                }
+                if (Math.random() > 0.9) {
+                    throw new IOException("Failed on io due to simulated random error!");
+                }
+                return Long.valueOf(sum);
+            }
+        });
+    }
+    List<Long> results = mcs2.call();
+    System.out.println("Local Results (Local Host execution): " + results);
+
+If you want automatic resubmission of failed jobs, wrap the completion service before submitting 
+jobs to it:
+
+    //try to rerun failed tasks up to three times to catch 
+    //randomly occurring runtime exceptions
+    final ICompletionService<Long> rcs = csf.asResubmissionService(cs,3);
+
+<h3>Launching a remote execution</h3>
+
+You need to have a local DRMAA-comatible grid engine locally installed. There are a number 
+of different implementations available. For Ubuntu Linux, you may want to install the [Open Grid Scheduler](https://launchpad.net/ubuntu/+source/gridengine) packages 
+following [this tutorial](http://helms-deep.cable.nu/~rwh/blog/?p=159). Do not forget to install the drmaa java api bindings.
+
+Users that want to use the grid engine should alter their own <code>.profile</code> or the admin could add a script file under <code>/etc/profile.d/</code> to add 
+<code>export SGE_ROOT="/var/lib/gridengine"</code> (under Ubuntu) and <code>export SGE_CELL="CELL"</code>, where you should replace <code>CELL</code> with the cell name you entered 
+during package installation.
+
+<p class="alert alert-info">
+<b>Note:</b><br/>
+If you have problems starting up either the master or the exec instances,
+have a look at your <code>/etc/hosts</code> file. It seems, that the implementation only works if your host's IP (may be 127.0.0.1 for local only operation) with hostname (NOT localhost) is the first entry.
+If that is missing, try to insert a new entry at the top of the file with your current IP and hostname. 
+</p>
+
+We have successfully used Mpaxs with Oracle Grid Engine on Solaris and the Open Grid Scheduler on Linux with +50 hosts and > 200000 jobs. 
+
+    //Define the location of the compute host jar, this could be your own extended version
+    File computeHostJarLocation = new File(System.getProperty("user.dir"), "mpaxs.jar");
+    if (!computeHostJarLocation.exists() || !computeHostJarLocation.isFile()) {
+        throw new IOException("Could not locate mpaxs.jar in " + System.getProperty("user.dir"));
+    }
+    final PropertiesConfiguration cfg = new PropertiesConfiguration();
+    //set execution type
+    cfg.setProperty(ConfigurationKeys.KEY_EXECUTION_MODE, ExecutionType.DRMAA);
+    //set location of compute host jar
+    cfg.setProperty(ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR, computeHostJarLocation);
+    //exit to console when master server shuts down
+    cfg.setProperty(ConfigurationKeys.KEY_MASTER_SERVER_EXIT_ON_SHUTDOWN, true);
+    //limit the number of used compute hosts
+    cfg.setProperty(ConfigurationKeys.KEY_MAX_NUMBER_OF_CHOSTS, 3);
+    //native specs for the drmaa api
+    cfg.setProperty(ConfigurationKeys.KEY_NATIVE_SPEC, "");
+
+    Impaxs impxs = ComputeServerFactory.getComputeServer();
+    impxs.startMasterServer(cfg);
+    CompletionServiceFactory<Double> csf = new CompletionServiceFactory<Double>();
+    final ICompletionService<Double> mcs = csf.newDistributedCompletionService();
+    for (int i = 0; i < maxJobs; i++) {
+        //TestCallable is within the mpaxs-test module, net.sf.mpaxs.test
+        mcs.submit(new TestCallable());
+    }
+    List<Double> results = mcs.call();
+    System.out.println("Distributed execution: " + results);
+    impxs.stopMasterServer();

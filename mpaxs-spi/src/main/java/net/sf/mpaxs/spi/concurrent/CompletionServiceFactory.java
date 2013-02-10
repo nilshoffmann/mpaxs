@@ -49,7 +49,7 @@ public class CompletionServiceFactory<T extends Serializable> {
      *
      * @return
      */
-    public ICompletionService<T> newLocalCompletionService() {
+    public MpaxsCompletionService<T> newLocalCompletionService() {
         MpaxsCompletionService<T> mcs = new MpaxsCompletionService<T>(Executors.newFixedThreadPool(maxThreads),
                 timeOut, timeUnit, blockingWait);
         return mcs;
@@ -59,7 +59,7 @@ public class CompletionServiceFactory<T extends Serializable> {
      *
      * @return
      */
-    public ICompletionService<T> newDistributedCompletionService() {
+    public MpaxsCompletionService<T> newDistributedCompletionService() {
         MpaxsCompletionService<T> mcs = new MpaxsCompletionService<T>(new MpaxsExecutorService(),
                 timeOut, timeUnit, blockingWait);
         return mcs;

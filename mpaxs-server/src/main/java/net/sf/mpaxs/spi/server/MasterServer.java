@@ -77,7 +77,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
     private HashMap<UUID, IJob> canceledJobs = new HashMap<UUID, IJob>();
     private HashMap<UUID, Host> jobRunningOnHost = new HashMap<UUID, Host>();
     private ArrayList<String> failedJobs = new ArrayList<String>();
-    private MyConcurrentLinkedJobQueue undoneJobs = new MyConcurrentLinkedJobQueue();
+    private MyConcurrentLinkedJobQueue pendingJobs = new MyConcurrentLinkedJobQueue();
     private ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
     private ArrayList<IJobEventListener> listeners = new ArrayList<IJobEventListener>();
     private MainFrame main;
@@ -116,8 +116,8 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
     }
 
     /**
-     * Startet eine RMI-Registry und bindet das HostRegister an diese. In diesem
-     * können sich dann ComputeHosts eintragen.
+     * Creates a RMI-Registry and binds the host register on the given Port. This 
+     * facilitates registration of compute host.
      */
     private void bindHostRegister(UUID authToken) {
         try {
@@ -149,7 +149,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
     public void submitJob(IJob job) {
         if (!isShutdown) {
             job.setStatus(Status.WAITING);
-            undoneJobs.offer(job);
+            pendingJobs.offer(job);
             jobChanged(job);
         } else {
             throw new IllegalStateException("MasterServer instance was already shutdown, can not accept new jobs!");
@@ -169,7 +169,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
     }
 
     public MyConcurrentLinkedJobQueue getPendingJobs() {
-        return undoneJobs;
+        return pendingJobs;
     }
 
     public HashMap<UUID, IJob> getCanceledJobs() {
@@ -202,11 +202,6 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
             EventLogger.getInstance().getLogger().log(Level.SEVERE, "Exception while shutting down hosts!", e);
             throw new RuntimeException(e);
         }
-
-//        new Thread() {
-//
-//            @Override
-//            public void run() {
         try {
             Logger.getLogger(MasterServer.class.getName()).log(Level.INFO, "Waiting for MasterServer to shut down!");
             scheduler.awaitTermination(5, TimeUnit.SECONDS);
@@ -226,8 +221,6 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
             EventLogger.getInstance().getLogger().log(Level.INFO, "exitOnShutdown: " + exitOnShutdown);
             System.exit(0);
         }
-//            }
-//        }.start();
     }
 
     public Progress getJobProgress(UUID jobID) {
@@ -242,7 +235,7 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
                 ret = remRef.getJobProgress(UUID.fromString(settings.getString(ConfigurationKeys.KEY_AUTH_TOKEN)), jobID);
                 /*
                  * All errors must be caught! If not, a poor programmed run
-                 * method in a job could crash the hole server!
+                 * method in a job could crash the whole server!
                  */
             } catch (Exception ex) {
                 ret = null;
@@ -278,9 +271,9 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
         }
     }
 
-    public IJob getUndoneJob() {
+    public IJob getPendingJob() {
         if (!this.isShutdown) {
-            IJob ret = undoneJobs.poll();
+            IJob ret = pendingJobs.poll();
             return ret;
         } else {
             throw new IllegalStateException("MasterServer instance was already shutdown, can not accept new jobs!");
@@ -368,8 +361,8 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
                     return false;
                 }
             }
-            if (undoneJobs.containsJobWithID(jobId)) {
-                undoneJobs.remove(jobId);
+            if (pendingJobs.containsJobWithID(jobId)) {
+                pendingJobs.remove(jobId);
                 afterCancel(job);
                 return true;
             }
@@ -424,8 +417,8 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
     }
 
     public IJob findJob(UUID jobId) {
-        if (undoneJobs.containsJobWithID(jobId)) {
-            return undoneJobs.getJob(jobId);
+        if (pendingJobs.containsJobWithID(jobId)) {
+            return pendingJobs.getJob(jobId);
         }
         if (runningJobs.containsKey(jobId)) {
             return runningJobs.get(jobId);

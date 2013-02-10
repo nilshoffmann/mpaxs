@@ -118,7 +118,8 @@ public class HostRegister {
      * @return instance of the free host
      */
     public Host getFreeHost() {
-        if (hosts.isEmpty() && hostsLaunched == 0) {
+//        if (hosts.isEmpty() && hostsLaunched == 0) {
+        if (hostsLaunched < settings.getMaxNumberOfChosts()) {
             launchNewHost();
         }
         Host host = null;
@@ -137,7 +138,6 @@ public class HostRegister {
 
     protected void launchNewHost() {
         Runnable r = new Runnable() {
-
             @Override
             public void run() {
 
@@ -208,7 +208,7 @@ public class HostRegister {
 //                                log(Level.SEVERE, null, e);
 //                    }
                 } else {
-//                    System.out.println("Not launching new compute host: maximum number of active hosts reached (max: "+settings.getMaxNumberOfChosts()+" current: "+ getNumberOfHosts()+")");
+                    System.out.println("Not launching new compute host: maximum number of active hosts reached (max: " + settings.getMaxNumberOfChosts() + " current: " + getNumberOfHosts() + ")");
                 }
             }
         };

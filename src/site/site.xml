@@ -37,6 +37,7 @@
         </links>
 
         <menu name="Mpaxs">
+            <item name="About Mpaxs" href="index.html"/>
             <item name="Download" href="download.html"/>
             <item name="Getting Started" href="gettingStarted.html"/>
             <!--<item name="Contributing" href="contribution.html"/>-->
