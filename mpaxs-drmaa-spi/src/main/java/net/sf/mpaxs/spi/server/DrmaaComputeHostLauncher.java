@@ -108,6 +108,7 @@ public class DrmaaComputeHostLauncher implements IComputeHostLauncher {
                     ConfigurationKeys.KEY_OUTPUT_FILE));
             jt.setNativeSpecification(cfg.getString(
                     ConfigurationKeys.KEY_NATIVE_SPEC,""));
+            jt.setJobName("mpaxs-chost");
             session.runJob(jt);
             session.deleteJobTemplate(jt);
             session.exit();
