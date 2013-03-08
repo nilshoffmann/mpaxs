@@ -1,2 +1,14 @@
 Mpaxs - Modular Parallel Execution System
+=========================================
+
+Please visit http://mpaxs.sf.net/maven/1.6.13 for more details.
+
+Changes:
+========
+Release 1.6.13
+- Fixed an issue in mpaxs-server when trying to launch more than
+  one compute host
+- Fixed a performance issue in mpaxs-spi when waiting for tasks to
+  finish
+- Updated site documentation and added quick start code
 

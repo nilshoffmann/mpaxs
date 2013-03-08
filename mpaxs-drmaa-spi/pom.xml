@@ -19,7 +19,6 @@
         <dependency>
             <groupId>org.gff.drmaa</groupId>
             <artifactId>sun-drmaa-impl-osgi</artifactId>
-            <version>1.0.0</version>
         </dependency>
     </dependencies>
     <packaging>jar</packaging>
