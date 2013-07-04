@@ -28,9 +28,6 @@
 package net.sf.mpaxs.spi.concurrent;
 
 import java.util.concurrent.*;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,77 +44,86 @@ import net.sf.mpaxs.api.job.Status;
  * @author Nils Hoffmann
  */
 public class MpaxsFutureTask<V> implements
-        RunnableFuture<V>, IJobEventListener {
+		RunnableFuture<V>, IJobEventListener {
 
-    private final IJob<V> job;
-    private final Impaxs computeServer;
-    private BlockingQueue<V> intermediateQueue = new LinkedBlockingQueue<V>(1);
-    private BlockingQueue<V> resultQueue = new LinkedBlockingQueue<V>(1);
-    private V result = null;
+	private final IJob<V> job;
+	private final Impaxs computeServer;
+	private BlockingQueue<V> intermediateQueue = new LinkedBlockingQueue<V>(1);
+	private BlockingQueue<V> resultQueue = new LinkedBlockingQueue<V>(1);
+	private V result = null;
 
-    public MpaxsFutureTask(Impaxs computeServer, Callable<V> callable) {
-        this.computeServer = computeServer;
-        computeServer.addJobEventListener(this);
-        job = new Job<V>(new DefaultCallable<V>(callable));
-    }
+	public MpaxsFutureTask(Impaxs computeServer, Callable<V> callable) {
+		this.computeServer = computeServer;
+		computeServer.addJobEventListener(this);
+		job = new Job<V>(new DefaultCallable<V>(callable));
+	}
 
-    public MpaxsFutureTask(Impaxs computeServer, Runnable r, V v) {
-        this.computeServer = computeServer;
-        computeServer.addJobEventListener(this);
-        job = new Job<V>(new DefaultRunnable<V>(r, v));
-    }
+	public MpaxsFutureTask(Impaxs computeServer, Runnable r, V v) {
+		this.computeServer = computeServer;
+		computeServer.addJobEventListener(this);
+		job = new Job<V>(new DefaultRunnable<V>(r, v));
+	}
 
-    @Override
-    public boolean cancel(boolean bln) {
-        return computeServer.cancelJob(job.getId());
-    }
+	@Override
+	public boolean cancel(boolean bln) {
+		return computeServer.cancelJob(job.getId());
+	}
 
-    @Override
-    public boolean isCancelled() {
-        return job.getStatus() == Status.CANCELED;
-    }
+	@Override
+	public boolean isCancelled() {
+		return job.getStatus() == Status.CANCELED;
+	}
 
-    @Override
-    public boolean isDone() {
-        return (job.getStatus() == Status.DONE) && (resultQueue.isEmpty());
-    }
+	@Override
+	public boolean isDone() {
+		return (job.getStatus() == Status.DONE) && (resultQueue.isEmpty()) || (job.getStatus() == Status.ERROR);
+	}
 
-    @Override
-    public V get() throws InterruptedException, ExecutionException, CancellationException {
-        return resultQueue.take();
-    }
+	@Override
+	public V get() throws InterruptedException, ExecutionException, CancellationException {
+		if (job.getStatus() == Status.ERROR) {
+			throw new ExecutionException(job.getThrowable());
+		}
+		V res = resultQueue.take();
+		computeServer.removeJobEventListener(this);
+		return res;
+	}
 
-    @Override
-    public V get(long l, TimeUnit tu) throws InterruptedException, ExecutionException, CancellationException, TimeoutException {
-        return resultQueue.poll(l, tu);
-    }
+	@Override
+	public V get(long l, TimeUnit tu) throws InterruptedException, ExecutionException, CancellationException, TimeoutException {
+		if (job.getStatus() == Status.ERROR) {
+			throw new ExecutionException(job.getThrowable());
+		}
+		V res = resultQueue.poll(l, tu);
+		computeServer.removeJobEventListener(this);
+		return res;
+	}
 
-    @Override
-    public void run() {
-        computeServer.submitJob(job);
-        try {
-//            System.out.println("Submitted job, waiting for result!");
-            result = intermediateQueue.take();
-//            System.out.println("Receieved result, passing to resultQueue!");
-            resultQueue.put(result);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+	@Override
+	public void run() {
+		computeServer.submitJob(job);
+		try {
+			//            System.out.println("Submitted job, waiting for result!");
+			result = intermediateQueue.take();
+			resultQueue.put(result);
+		} catch (InterruptedException ex) {
+			Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
+		}
+	}
 
-    @Override
-    public void jobChanged(final IJob job) {
-        if (job.getStatus() == Status.DONE) {
-            try {
-//                System.out.println("Adding result to queue!");
-                intermediateQueue.put((V) job.getClassToExecute().get());
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ExecutionException ex) {
-                Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
-    
-    
+	@Override
+	public void jobChanged(final IJob job) {
+		if (job.getId().equals(this.job.getId())) {
+			if (job.getStatus() == Status.DONE) {
+				try {
+					//                System.out.println("Adding result to queue!");
+					intermediateQueue.put((V) job.getClassToExecute().get());
+				} catch (InterruptedException ex) {
+					Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
+				} catch (ExecutionException ex) {
+					Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
+				}
+			}
+		}
+	}
 }

@@ -83,10 +83,10 @@ public class DistributedRmiExecution implements Callable<Double>, Serializable {
             impxs.startMasterServer(cfg);
         }
         CompletionServiceFactory<Double> csf = new CompletionServiceFactory<Double>();
-        csf.setTimeOut(1);
-        csf.setTimeUnit(TimeUnit.SECONDS);
-        csf.setBlockingWait(false);
-        final ICompletionService<Double> mcs = csf.newDistributedCompletionService();
+        csf.setTimeOut(100);
+        csf.setTimeUnit(TimeUnit.MILLISECONDS);
+        csf.setBlockingWait(true);
+        final ICompletionService<Double> mcs = csf.asResubmissionService(csf.newDistributedCompletionService(),3);
         for (int i = 0; i < maxJobs; i++) {
             mcs.submit(new TestCallable());
         }
@@ -102,6 +102,27 @@ public class DistributedRmiExecution implements Callable<Double>, Serializable {
                     log(Level.SEVERE, null, ex);
             throw ex;
         }
+		
+		CompletionServiceFactory<String> csf2 = new CompletionServiceFactory<String>();
+        csf2.setTimeOut(100);
+        csf2.setTimeUnit(TimeUnit.MILLISECONDS);
+        csf2.setBlockingWait(true);
+        final ICompletionService<String> mcs2 = csf2.newDistributedCompletionService();
+        for (int i = 0; i < maxJobs; i++) {
+            mcs2.submit(new TestCallable2());
+        }
+        try {
+            List<String> results = mcs2.call();
+            System.out.println("Distributed execution: " + results);
+            for (String str : results) {
+                System.out.println("Result: "+str);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DistributedRmiExecution.class.getName()).
+                    log(Level.SEVERE, null, ex);
+            throw ex;
+        }
+		
         impxs.stopMasterServer();
         return result;
     }

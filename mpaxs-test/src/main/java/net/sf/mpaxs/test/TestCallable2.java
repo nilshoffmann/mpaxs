@@ -27,7 +27,6 @@
  */
 package net.sf.mpaxs.test;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.concurrent.Callable;
 
@@ -35,17 +34,10 @@ import java.util.concurrent.Callable;
  *
  * @author Nils Hoffmann
  */
-public class TestCallable implements Callable<Double>, Serializable {
+public class TestCallable2 implements Callable<String>, Serializable {
 
     @Override
-    public Double call() throws Exception {
-        long sum = 0;
-        for(int i = Integer.MIN_VALUE;i<Integer.MAX_VALUE;i++) {
-            sum+=i;
-        }
-//        if(Math.random()>0.9) {
-//            throw new IOException("Failed on io due to simulated random error!");
-//        }
-        return Long.valueOf(sum).doubleValue();
+    public String call() throws Exception {
+        return "abc";
     }
 }
