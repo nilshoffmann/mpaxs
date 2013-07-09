@@ -4,7 +4,7 @@
 
 	<groupId>net.sf.mpaxs</groupId>
 	<artifactId>mpaxs</artifactId>
-	<version>1.6.15-SNAPSHOT</version>
+	<version>1.6.15</version>
 	<packaging>pom</packaging>
 
 	<name>Mpaxs - Modular Parallel Execution System</name>
@@ -13,7 +13,7 @@
 		<connection>scm:hg:http://hg.code.sf.net/p/mpaxs/code</connection>
 		<developerConnection>scm:hg:https://hg.code.sf.net/p/mpaxs/code</developerConnection>
 		<url>https://sourceforge.net/p/mpaxs/code</url>
-		<tag>HEAD</tag>
+		<tag>mpaxs-1.6.15</tag>
 	</scm>
 	<distributionManagement>
 		<repository>
