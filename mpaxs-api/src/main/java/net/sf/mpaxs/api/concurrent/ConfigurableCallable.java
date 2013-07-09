@@ -33,6 +33,9 @@ import java.util.concurrent.ExecutionException;
 import net.sf.mpaxs.api.job.Progress;
 
 /**
+ * Implementation of remote callable tasks that require external configuration via 
+ * a configuration file.
+ * 
  * Take care that the type V returned is Serializable.
  * @author Nils Hoffmann
  */

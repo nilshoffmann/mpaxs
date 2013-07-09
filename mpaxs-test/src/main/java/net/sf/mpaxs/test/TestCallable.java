@@ -40,12 +40,15 @@ public class TestCallable implements Callable<Double>, Serializable {
     @Override
     public Double call() throws Exception {
         long sum = 0;
+		long start = System.currentTimeMillis();
         for(int i = Integer.MIN_VALUE;i<Integer.MAX_VALUE;i++) {
             sum+=i;
         }
-//        if(Math.random()>0.9) {
-//            throw new IOException("Failed on io due to simulated random error!");
-//        }
+		Thread.sleep(2000);
+		System.out.println("Executed sum in "+(System.currentTimeMillis()-start)+" ms");
+        if(Math.random()>0.92) {
+            throw new IOException("Failed on io due to simulated random error!");
+        }
         return Long.valueOf(sum).doubleValue();
     }
 }

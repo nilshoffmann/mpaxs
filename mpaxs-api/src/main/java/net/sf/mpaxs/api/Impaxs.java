@@ -29,6 +29,7 @@ package net.sf.mpaxs.api;
 
 import java.awt.Container;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import net.sf.mpaxs.api.event.IJobEventListener;
 import net.sf.mpaxs.api.job.IJob;
 import net.sf.mpaxs.api.job.Progress;
@@ -94,6 +95,15 @@ public interface Impaxs {
      * @param job of type shared.Job
      */
     public void submitJob(IJob job);
+	
+	/**
+     * Submit a new scheduled Job.
+     * @param job of type shared.Job
+	 * @param timeUntilStart time to wait before first execution
+	 * @param scheduleAt interval at which to schedule repeated invocations of this job
+	 * @param timeUnit the time unit for timeUntilStart and scheduleAt
+     */
+    public void submitScheduledJob(IJob job, long timeUntilStart, long scheduleAt, TimeUnit timeUnit);
 
     /**
      * Return the progress of a job currently beeing computed.
@@ -115,16 +125,31 @@ public interface Impaxs {
      * @param listener IJobEventListener that should be added.
      */
     public void addJobEventListener(IJobEventListener listener);
+	
+	/**
+     * Adds the specified Listener for the given job id. The Listener will be informed about
+     * status changes off all Jobs.
+     * @param listener IJobEventListener that should be added.
+	 * @param jobId the jobId for which to listen
+     */
+    public void addJobEventListener(IJobEventListener listener, UUID jobId);
 
     /**
      * Removes the specified Listener.
      * @param listener IJobEventListener that should be removed.
      */
     public void removeJobEventListener(IJobEventListener listener);
+	
+	/**
+     * Removes the specified Listener for the given jobId.
+     * @param listener IJobEventListener that should be removed.
+	 * @param jobId the jobId for which to listen
+     */
+    public void removeJobEventListener(IJobEventListener listener, UUID jobId);
 
     /**
-     *
-     * @return
+     * Returns the unique authentication token of this server instance.
+     * @return the authentication token
      */
     public UUID getAuthenticationToken();
 

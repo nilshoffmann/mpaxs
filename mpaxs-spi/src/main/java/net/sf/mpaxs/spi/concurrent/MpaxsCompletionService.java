@@ -270,7 +270,12 @@ public class MpaxsCompletionService<T extends Serializable> implements
     }
 
     private Future<T> getActiveFuture() {
-        return es.poll();
+		try {
+			return es.take();
+		} catch (InterruptedException ex) {
+			Thread.interrupted();
+		}
+		return null;
     }
 
     @Override

@@ -28,8 +28,10 @@
 package net.sf.mpaxs.spi.computeHost;
 
 import java.rmi.RemoteException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,9 +62,14 @@ public class JobExecutor extends Thread implements Thread.UncaughtExceptionHandl
     public void run() {
         try {
             executor = Executors.newSingleThreadExecutor(new ExceptionSafeThreadFactory(this));
-            executor.execute(job.getClassToExecute());
+            Future<?> f = executor.submit(job.getClassToExecute());
+			try {
+				Object o = f.get();
+			} catch (ExecutionException ex) {
+				job.setThrowable(ex);
+			}
             executor.shutdown();
-            executor.awaitTermination(5, TimeUnit.SECONDS);
+			executor.awaitTermination(1, TimeUnit.MICROSECONDS);
 //            IRemoteServer remRef = settings.getRemoteRefference();
             if (!this.isInterrupted() && !jobFailed) {
                 server.addDoneJob(host.getAuthenticationToken(),job);

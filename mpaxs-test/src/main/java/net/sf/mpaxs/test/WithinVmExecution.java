@@ -60,22 +60,9 @@ public class WithinVmExecution implements Callable<Double>, Serializable {
         csf.setMaxThreads(maxThreads);
         csf.setBlockingWait(false);
 
-        final ICompletionService<Double> mcs2 = csf.newLocalCompletionService();
+        final ICompletionService<Double> mcs2 = csf.asResubmissionService(csf.newLocalCompletionService(),3);
         for (int i = 0; i < maxJobs; i++) {
-//            mcs2.submit(new TestCallable());
-            mcs2.submit(new Callable<Double>() {
-                @Override
-                public Double call() throws Exception {
-                    long sum = 0;
-                    for (int i = Integer.MIN_VALUE; i < Integer.MAX_VALUE; i++) {
-                        sum += i;
-                    }
-                    if (Math.random() > 0.9) {
-                        throw new IOException("Failed on io due to simulated random error!");
-                    }
-                    return Long.valueOf(sum).doubleValue();
-                }
-            });
+            mcs2.submit(new TestCallable());
         }
         double result = 0.0d;
         try {

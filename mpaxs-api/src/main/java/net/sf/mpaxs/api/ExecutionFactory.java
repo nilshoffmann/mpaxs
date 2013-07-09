@@ -41,7 +41,7 @@ import net.sf.mpaxs.api.server.IComputeHostLauncher;
 public class ExecutionFactory {
 
     /**
-     *
+     * The first compute server provider available.
      * @return
      */
     public static Impaxs getDefaultComputeServer() {
@@ -49,7 +49,7 @@ public class ExecutionFactory {
     }
 
     /**
-     *
+     * The default compute host provider available.
      * @return
      */
     public static IRemoteHost getDefaultComputeHost() {
@@ -57,7 +57,7 @@ public class ExecutionFactory {
     }
     
     /**
-     *
+     * The default compute host launcher available.
      * @return
      */
     public static IComputeHostLauncher getDefaultComputeHostLauncher() {
@@ -65,7 +65,7 @@ public class ExecutionFactory {
     }
 
     /**
-     *
+     * The list of available compute server providers.
      * @return
      */
     public static List<Impaxs> getComputeServerProviders() {
@@ -73,7 +73,7 @@ public class ExecutionFactory {
     }
     
     /**
-     *
+     * The list of available compute host providers.
      * @return
      */
     public static List<IRemoteHost> getComputeHostProviders() {
@@ -81,9 +81,9 @@ public class ExecutionFactory {
     }
     
     /**
-     *
-     * @param et
-     * @return
+     * Returns the list of available compute host launchers for the given execution type.
+     * @param et the requested execution type
+     * @return a list of compute host launchers for the given execution type
      */
     public static List<IComputeHostLauncher> getComputeHostLaunchers(ExecutionType et) {
         List<IComputeHostLauncher> l = getServiceProviders(IComputeHostLauncher.class);
@@ -103,10 +103,10 @@ public class ExecutionFactory {
     }
     
     /**
-     *
-     * @param <T>
-     * @param c
-     * @return
+     * Available service providers for the given class.
+     * @param <T> generic type class for the requested service provider
+     * @param c the class for the requested service provider
+     * @return a list of available service providers
      */
     public static <T> List<T> getServiceProviders(Class<T> c) {
         System.out.println("Loading service providers for "+c.getSimpleName());

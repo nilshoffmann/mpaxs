@@ -40,7 +40,7 @@ import net.sf.mpaxs.api.job.Job;
 import net.sf.mpaxs.api.job.Status;
 
 /**
- *
+ * Implementation of RunnableFuture for mpaxs jobs.
  * @author Nils Hoffmann
  */
 public class MpaxsFutureTask<V> implements
@@ -54,14 +54,14 @@ public class MpaxsFutureTask<V> implements
 
 	public MpaxsFutureTask(Impaxs computeServer, Callable<V> callable) {
 		this.computeServer = computeServer;
-		computeServer.addJobEventListener(this);
 		job = new Job<V>(new DefaultCallable<V>(callable));
+		this.computeServer.addJobEventListener(this,job.getId());
 	}
 
 	public MpaxsFutureTask(Impaxs computeServer, Runnable r, V v) {
 		this.computeServer = computeServer;
-		computeServer.addJobEventListener(this);
 		job = new Job<V>(new DefaultRunnable<V>(r, v));
+		this.computeServer.addJobEventListener(this,job.getId());
 	}
 
 	@Override
@@ -83,6 +83,8 @@ public class MpaxsFutureTask<V> implements
 	public V get() throws InterruptedException, ExecutionException, CancellationException {
 		if (job.getStatus() == Status.ERROR) {
 			throw new ExecutionException(job.getThrowable());
+		} else if (job.getStatus() == Status.CANCELED) {
+			throw new CancellationException();
 		}
 		V res = resultQueue.take();
 		computeServer.removeJobEventListener(this);
@@ -93,6 +95,8 @@ public class MpaxsFutureTask<V> implements
 	public V get(long l, TimeUnit tu) throws InterruptedException, ExecutionException, CancellationException, TimeoutException {
 		if (job.getStatus() == Status.ERROR) {
 			throw new ExecutionException(job.getThrowable());
+		} else if (job.getStatus() == Status.CANCELED) {
+			throw new CancellationException();
 		}
 		V res = resultQueue.poll(l, tu);
 		computeServer.removeJobEventListener(this);
@@ -103,7 +107,7 @@ public class MpaxsFutureTask<V> implements
 	public void run() {
 		computeServer.submitJob(job);
 		try {
-			//            System.out.println("Submitted job, waiting for result!");
+			//System.out.println("Submitted job, waiting for result!");
 			result = intermediateQueue.take();
 			resultQueue.put(result);
 		} catch (InterruptedException ex) {
@@ -116,12 +120,12 @@ public class MpaxsFutureTask<V> implements
 		if (job.getId().equals(this.job.getId())) {
 			if (job.getStatus() == Status.DONE) {
 				try {
-					//                System.out.println("Adding result to queue!");
 					intermediateQueue.put((V) job.getClassToExecute().get());
 				} catch (InterruptedException ex) {
-					Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
+					Thread.interrupted();
 				} catch (ExecutionException ex) {
-					Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
+					//we can ignore this exception, it is stored in the job and will
+					//be thrown by the next call to get()
 				}
 			}
 		}
