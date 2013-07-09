@@ -34,6 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.mpaxs.api.Impaxs;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import net.sf.mpaxs.api.ConfigurationKeys;
 import net.sf.mpaxs.api.job.IJob;
 import net.sf.mpaxs.api.event.IJobEventListener;
@@ -125,6 +126,11 @@ public class MpaxsImpl implements Impaxs {
         master.submitJob(job);
     }
 
+	@Override
+	public void submitScheduledJob(IJob job, long timeUntilStart, long scheduleAt, TimeUnit timeUnit) {
+		master.submitJob(job, timeUntilStart, scheduleAt, timeUnit);
+	}
+
     @Override
     public Progress getJobProgress(UUID jobId) {
         return master.getJobProgress(jobId);
@@ -138,6 +144,16 @@ public class MpaxsImpl implements Impaxs {
     @Override
     public void removeJobEventListener(IJobEventListener listener) {
         master.removeListener(listener);
+    }
+	
+	@Override
+    public void addJobEventListener(IJobEventListener listener, UUID jobId) {
+        master.addListener(listener, jobId);
+    }
+
+    @Override
+    public void removeJobEventListener(IJobEventListener listener, UUID jobId) {
+        master.removeListener(listener, jobId);
     }
 
     @Override
