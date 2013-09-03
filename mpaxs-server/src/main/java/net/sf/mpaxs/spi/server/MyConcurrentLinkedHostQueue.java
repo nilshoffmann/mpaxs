@@ -29,13 +29,14 @@ package net.sf.mpaxs.spi.server;
 
 import java.util.HashMap;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
  * @author Kai Bernd Stadermann
  */
-public class MyConcurrentLinkedHostQueue extends ConcurrentLinkedQueue<Host> {
+public class MyConcurrentLinkedHostQueue extends LinkedBlockingQueue<Host> {
 
     private HashMap<UUID, Host> queueBack = new HashMap<UUID, Host>();
 
@@ -62,6 +63,40 @@ public class MyConcurrentLinkedHostQueue extends ConcurrentLinkedQueue<Host> {
         return host;
 
     }
+
+	@Override
+	public void put(Host e) throws InterruptedException {
+		super.put(e);
+		queueBack.put(e.getId(), e);
+	}
+
+	@Override
+	public boolean offer(Host e, long timeout, TimeUnit unit) throws InterruptedException {
+		if(super.offer(e, timeout, unit)) {
+			queueBack.put(e.getId(), e);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public Host take() throws InterruptedException {
+		Host host = super.take(); 
+		queueBack.remove(host.getId());
+		return host;
+	}
+
+	@Override
+	public Host poll(long timeout, TimeUnit unit) throws InterruptedException {
+		Host host = super.poll(timeout, unit); 
+		queueBack.remove(host.getId());
+		return host;
+	}
+
+	@Override
+	public Host peek() {
+		return super.peek(); 
+	}
 
     @Override
     public boolean offer(Host host) {

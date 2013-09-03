@@ -32,10 +32,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -65,6 +67,7 @@ public class HostRegister {
     private HashMap<UUID, Host> usedHosts = new HashMap<UUID, Host>();
     private ArrayList<IComputeHostEventListener> listeners = new ArrayList<IComputeHostEventListener>();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
+	private ExecutorService eventService = Executors.newCachedThreadPool();
     private int hostsLaunched = 0;
     private int hostLaunchRetries = 0;
     private int maxHostLaunchRetries = 1;
@@ -123,7 +126,11 @@ public class HostRegister {
             launchNewHost();
         }
         Host host = null;
-        host = hosts.poll();
+		try {
+			host = hosts.take();
+		} catch (InterruptedException ex) {
+			Logger.getLogger(HostRegister.class.getName()).log(Level.SEVERE, null, ex);
+		}
         if (host == null) {
             return null;
         }
@@ -280,6 +287,7 @@ public class HostRegister {
             host.oneCoreUnused();
             usedHosts.remove(host.getId());
             hosts.offer(host);
+			hostFree(host);
         } else {
             host.oneCoreUnused();
         }
@@ -304,16 +312,40 @@ public class HostRegister {
     public HashMap<UUID, Host> getHosts() {
         return hosts.getAll();
     }
-
-    private void hostAdded(Host host) {
+	
+	private void hostFree(final Host host) {
         for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).hostAdded(host);
+			final int j = i;
+			Runnable r = new Runnable() {
+				public void run(){
+					listeners.get(j).hostFree(host);
+				}
+			};
+			eventService.submit(r);
         }
     }
 
-    private void hostRemoved(Host host) {
+    private void hostAdded(final Host host) {
         for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).hostRemoved(host);
+			final int j = i;
+			Runnable r = new Runnable() {
+				public void run(){
+					listeners.get(j).hostAdded(host);
+				}
+			};
+			eventService.submit(r);
+        }
+    }
+
+    private void hostRemoved(final Host host) {
+        for (int i = 0; i < listeners.size(); i++) {
+			final int j = i;
+			Runnable r = new Runnable() {
+				public void run(){
+					listeners.get(j).hostRemoved(host);
+				}
+			};
+			eventService.submit(r);
         }
     }
 

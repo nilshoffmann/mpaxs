@@ -435,4 +435,9 @@ public class MainFrame implements IReceiver, IJobEventListener,
             ((JFrame) this.c).pack();
         }
     }
+
+	@Override
+	public void hostFree(Host host) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 }

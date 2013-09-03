@@ -38,5 +38,7 @@ public interface IComputeHostEventListener {
     public void hostAdded(Host host);
 
     public void hostRemoved(Host host);
+	
+	public void hostFree(Host host);
 
 }

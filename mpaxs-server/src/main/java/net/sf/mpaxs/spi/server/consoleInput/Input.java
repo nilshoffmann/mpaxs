@@ -138,4 +138,9 @@ public class Input implements Runnable, IReceiver, IJobEventListener, IComputeHo
         System.out.println("Type \"exit\" to end program.");
         readCommand();
     }
+
+	@Override
+	public void hostFree(Host host) {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
 }

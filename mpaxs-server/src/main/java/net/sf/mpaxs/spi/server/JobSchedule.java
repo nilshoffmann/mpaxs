@@ -33,7 +33,13 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.UUID;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sf.mpaxs.api.ConfigurationKeys;
 import net.sf.mpaxs.spi.server.logging.EventLogger;
 import net.sf.mpaxs.spi.server.messages.IComputeHostEventListener;
@@ -48,90 +54,99 @@ import net.sf.mpaxs.api.job.Status;
  */
 public class JobSchedule implements Runnable, IComputeHostEventListener {
 
-    private MasterServer master;
-    private HostRegister register;
-    private Settings settings = Settings.getInstance();
-    private Reporter reporter = Reporter.getInstance();
+	private MasterServer master;
+	private HostRegister register;
+	private Settings settings = Settings.getInstance();
+	private Reporter reporter = Reporter.getInstance();
 //    private Drmaa drmaa = new Drmaa();
-    private IJob current;
-    private boolean currentSubmitted = true;
+	private IJob current;
+	private AtomicBoolean readyForSubmission = new AtomicBoolean(true);
 
-    public JobSchedule(MasterServer master, HostRegister register) {
-        this.master = master;
-        this.register = register;
-    }
+	public JobSchedule(MasterServer master, HostRegister register) {
+		this.master = master;
+		this.register = register;
+	}
 
-    @Override
-    public void run() {
-        while (true) {
-            if (currentSubmitted) {
-                current = master.getPendingJob();
-                currentSubmitted = false;
-            }
-            //System.out.println("Looking whether a new host needs to be started!");
+	@Override
+	public void run() {
+		while (true) {
+			if (readyForSubmission.get()) {
+				current = master.getPendingJob();
+				readyForSubmission.getAndSet(false);
+			}
+			//System.out.println("Looking whether a new host needs to be started!");
 //            System.out.println("Current job: " + current);
-            if (current != null && !current.getStatus().equals(Status.CANCELED)) {
-//                System.out.println("Status: " + current.getStatus());
-                //blocks until new host is available
-                Host host = register.getFreeHost();
-//                System.out.println("Retrieved host: " + host);
+			if (current != null && !current.getStatus().equals(Status.CANCELED)) {
+				//                System.out.println("Status: " + current.getStatus());
+				Host host = register.getFreeHost();
+				//                System.out.println("Retrieved host: " + host);
 
-                if (host != null) {
-                    IComputeHost remRef = null;
-                    String connectionString = "";
-                    try {
-//                        System.out.println("Trying to lookup host");
-                        connectionString = "//" + host.getIP()
-                                + ":" + settings.getLocalPort() + "/" + host.getName();
-                        remRef = (IComputeHost) Naming.lookup(
-                                connectionString);
-                        remRef.stillAlive(UUID.fromString(settings.getString(
-                                ConfigurationKeys.KEY_AUTH_TOKEN)));
-                        SubmitThread submitter = new SubmitThread(current,
-                                remRef, master, host);
-                        reporter.report(
-                                "Submitting job " + current + " for execution on host: " + connectionString);
-                        master.jobOnHost(current, host);
-                        submitter.start();
-                        currentSubmitted = true;
-                    } catch (NotBoundException ex) {
-                        reporter.report(
-                                "Error during job submission! ComputeHost may be down.");
-                        master.removeHost(host.getId());
-                        EventLogger.getInstance().getLogger().log(Level.SEVERE,
-                                null, ex);
-                    } catch (MalformedURLException ex) {
-                        reporter.report(
-                                "Error during job submission! Please check connection details: " + connectionString);
-                        master.removeHost(host.getId());
-                        EventLogger.getInstance().getLogger().log(Level.SEVERE,
-                                null, ex);
-                    } catch (RemoteException ex) {
-                        reporter.report(
-                                "Error during job submission! ComputeHost may be down.");
-                        master.removeHost(host.getId());
-                        EventLogger.getInstance().getLogger().log(Level.SEVERE,
-                                null, ex);
-                    }
-                }
-//                }
-            } else {
-                currentSubmitted = true;
-                try {
-                    Thread.sleep(settings.getScheduleWaitingTime() * 1000);
-                } catch (InterruptedException ex) {
-                    EventLogger.getInstance().getLogger().log(Level.SEVERE, null,
-                            ex);
-                }
-            }
-        }
-    }
+				if (host != null) {
+					IComputeHost remRef = null;
+					String connectionString = "";
+					try {
+						//                        System.out.println("Trying to lookup host");
+						connectionString = "//" + host.getIP()
+								+ ":" + settings.getLocalPort() + "/" + host.getName();
+						remRef = (IComputeHost) Naming.lookup(
+								connectionString);
+						remRef.stillAlive(UUID.fromString(settings.getString(
+								ConfigurationKeys.KEY_AUTH_TOKEN)));
+						SubmitThread submitter = new SubmitThread(current,
+								remRef, master, host);
+						reporter.report(
+								"Submitting job " + current + " for execution on host: " + connectionString);
+						master.jobOnHost(current, host);
+						submitter.start();
+						readyForSubmission.getAndSet(true);
+					} catch (NotBoundException ex) {
+						reporter.report(
+								"Error during job submission! ComputeHost may be down.");
+						master.removeHost(host.getId());
+						EventLogger.getInstance().getLogger().log(Level.SEVERE,
+								null, ex);
+					} catch (MalformedURLException ex) {
+						reporter.report(
+								"Error during job submission! Please check connection details: " + connectionString);
+						master.removeHost(host.getId());
+						EventLogger.getInstance().getLogger().log(Level.SEVERE,
+								null, ex);
+					} catch (RemoteException ex) {
+						reporter.report(
+								"Error during job submission! ComputeHost may be down.");
+						master.removeHost(host.getId());
+						EventLogger.getInstance().getLogger().log(Level.SEVERE,
+								null, ex);
+					}
+				} else {
+//					readyForSubmission.getAndSet(true);
+				}
+			} else {
+				readyForSubmission.getAndSet(true);
 
-    @Override
-    public void hostAdded(Host host) {
-    }
+				try {
+//					System.out.println("Waiting for "+settings.getScheduleWaitingTime()+" ms");
+					Thread.sleep(settings.getScheduleWaitingTime());
+				} catch (InterruptedException ex) {
+					EventLogger.getInstance().getLogger().log(Level.SEVERE, null, ex);
 
-    @Override
-    public void hostRemoved(Host host) {
-    }
+				}
+				//                }
+			}
+		}
+	}
+
+	@Override
+	public void hostAdded(Host host) {
+//		freeHosts.add(host);
+	}
+
+	@Override
+	public void hostRemoved(Host host) {
+	}
+
+	@Override
+	public void hostFree(Host host) {
+//		freeHosts.add(host);
+	}
 }

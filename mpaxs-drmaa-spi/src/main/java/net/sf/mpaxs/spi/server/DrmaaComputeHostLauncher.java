@@ -23,6 +23,7 @@ package net.sf.mpaxs.spi.server;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.net.URL;
 import net.sf.mpaxs.api.ExecutionType;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +65,15 @@ public class DrmaaComputeHostLauncher implements IComputeHostLauncher {
         }
         
         List<String> arguments = new ArrayList<String>();
+//		File computeHostJarLocation = new File(configLocation.getParentFile(),"lib");
+//		computeHostJarLocation.mkdirs();
+//		try {
+//			URL computeHostJarURL = new URL(cfg.getString(ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR));
+//			computeHostJarURL.getPath();
+//		} catch (MalformedURLException ex) {
+//			Logger.getLogger(DrmaaComputeHostLauncher.class.getName()).log(Level.SEVERE, null, ex);
+//		}
+//		computeHostJarLocation = new File()
         arguments.add("-cp");
         arguments.add(cfg.getString(
                 ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR));
