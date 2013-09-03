@@ -125,6 +125,7 @@ We have successfully used Mpaxs with Oracle Grid Engine on Solaris and the Open 
     impxs.startMasterServer(cfg);
     CompletionServiceFactory<Double> csf = new CompletionServiceFactory<Double>();
     final ICompletionService<Double> mcs = csf.newDistributedCompletionService();
+	int maxJobs = 200;
     for (int i = 0; i < maxJobs; i++) {
         //TestCallable is within the mpaxs-test module, net.sf.mpaxs.test
         mcs.submit(new TestCallable());
