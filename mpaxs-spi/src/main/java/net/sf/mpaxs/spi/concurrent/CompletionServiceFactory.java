@@ -30,21 +30,51 @@ package net.sf.mpaxs.spi.concurrent;
 import java.io.Serializable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import lombok.Data;
 import net.sf.mpaxs.api.ICompletionService;
 
 /**
  *
  * @author Nils Hoffmann
  */
-@Data
 public class CompletionServiceFactory<T extends Serializable> {
     
     private long timeOut = 5;
     private TimeUnit timeUnit = TimeUnit.SECONDS;
     private boolean blockingWait = false;
     private int maxThreads = 1;
-    
+
+	public long getTimeOut() {
+		return timeOut;
+	}
+
+	public void setTimeOut(long timeOut) {
+		this.timeOut = timeOut;
+	}
+
+	public TimeUnit getTimeUnit() {
+		return timeUnit;
+	}
+
+	public void setTimeUnit(TimeUnit timeUnit) {
+		this.timeUnit = timeUnit;
+	}
+
+	public boolean isBlockingWait() {
+		return blockingWait;
+	}
+
+	public void setBlockingWait(boolean blockingWait) {
+		this.blockingWait = blockingWait;
+	}
+
+	public int getMaxThreads() {
+		return maxThreads;
+	}
+
+	public void setMaxThreads(int maxThreads) {
+		this.maxThreads = maxThreads;
+	}
+	
     /**
      *
      * @return

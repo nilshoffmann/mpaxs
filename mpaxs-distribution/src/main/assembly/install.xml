@@ -35,6 +35,7 @@
     <dependencySets>
         <!-- Inclusion of all dependencies -->
         <dependencySet>
+			<useTransitiveDependencies>true</useTransitiveDependencies>
             <unpack>false</unpack>
             <excludes>
                 <!-- exclude other dependencies for unpacking -->
