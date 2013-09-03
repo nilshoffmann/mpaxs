@@ -133,3 +133,9 @@ We have successfully used Mpaxs with Oracle Grid Engine on Solaris and the Open 
     List<Double> results = mcs.call();
     System.out.println("Distributed execution: " + results);
     impxs.stopMasterServer();
+
+<h3>Low level access for distributed execution</h3>
+If you want to have better control of individual jobs, you should have a look at the 
+API of [<code>net.sf.mpaxs.api.Impxs</code>](./mpaxs-api/apidocs/index.html?net/sf/mpaxs/api/Impaxs.html). You can create your own job instances and submit
+them to the compute hosts. Additionally, the API supports the registration of event listeners
+for a job to be called when a job's status changes during its lifecycle. 
