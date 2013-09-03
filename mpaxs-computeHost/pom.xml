@@ -4,11 +4,11 @@
     <parent>
         <artifactId>mpaxs</artifactId>
         <groupId>net.sf.mpaxs</groupId>
-        <version>1.6.16-SNAPSHOT</version>
+        <version>1.6.16</version>
     </parent>
     <groupId>net.sf.mpaxs</groupId>
     <artifactId>mpaxs-computeHost</artifactId>
-    <version>1.6.16-SNAPSHOT</version>
+    <version>1.6.16</version>
     <name>mpaxs-computeHost</name>
     <dependencies>
         <dependency>
