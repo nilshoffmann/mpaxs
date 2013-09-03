@@ -41,6 +41,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,9 +56,9 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
     private HashMap<Callable<T>, Integer> submissionCounter = null;
     private Collection<Callable<T>> submission = null;
     private Collection<Callable<T>> failedJobs = null;
-    private int submitted = 0;
-    private int failed = 0;
-    private int finished = 0;
+    private AtomicInteger submitted = new AtomicInteger(0);
+    private AtomicInteger failed = new AtomicInteger(0);
+    private AtomicInteger finished = new AtomicInteger(0);
     private int maxResubmissions = 3;
 
     /**
@@ -69,9 +70,9 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
     }
 
     private void init() {
-        submitted = 0;
-        failed = 0;
-        finished = 0;
+        submitted = new AtomicInteger(0);
+        failed = new AtomicInteger(0);
+        finished = new AtomicInteger(0);
         submissionCounter = new HashMap<Callable<T>, Integer>();
         submission = new LinkedHashSet<Callable<T>>();
         failedJobs = new LinkedHashSet<Callable<T>>();
@@ -106,7 +107,7 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
      * @return
      */
     public int getFailed() {
-        return failed;
+        return failed.get();
     }
 
     /**
@@ -114,7 +115,7 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
      * @return
      */
     public int getFinished() {
-        return finished;
+        return finished.get();
     }
 
     /**
@@ -130,13 +131,25 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
      * @return
      */
     public int getSubmitted() {
-        return submitted;
+        return submitted.get();
     }
     private boolean submissionClosed = false;
 
     @Override
     public List<Callable<T>> getFailedTasks() {
         return new ArrayList<Callable<T>>(failedJobs);
+    }
+	
+	@Override
+    public List<Callable<T>> getCancelledTasks() {
+        return mcs.getCancelledTasks();
+    }
+	
+	@Override
+    public List<Callable<T>> getFailedOrCancelledTasks() {
+        ArrayList<Callable<T>> al = new ArrayList<Callable<T>>(failedJobs);
+		al.addAll(mcs.getCancelledTasks());
+		return al;
     }
 
     @Override
@@ -147,7 +160,7 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
                     "CompletionService already started execution.");
         }
         submissionCounter.put(c, 1);
-        submitted++;
+        submitted.incrementAndGet();
         return mcs.submit(c);
     }
 
@@ -159,7 +172,7 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
                     "CompletionService already started execution.");
         }
         submissionCounter.put(Executors.callable(r, t), 1);
-        submitted++;
+        submitted.incrementAndGet();
         return mcs.submit(r, t);
     }
 
@@ -182,7 +195,7 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
             try {
                 Collection<T> mcsResult = mcs.call();
                 results.addAll(mcsResult);
-                finished += mcsResult.size();
+                finished.addAndGet(mcsResult.size());
                 // System.out.println("Results: " + results);
                 Collection<Callable<T>> failedTasks = mcs.getFailedTasks();
                 // System.out.println("Failed tasks: " + failedTasks.size() +
@@ -203,9 +216,9 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
                     }
                 }
 
-                failed = failedJobs.size();
+                failed.getAndSet(failedJobs.size());
 
-                if (submitted == (finished + failed)) {
+                if (submitted.get() == (finished.get() + failed.get())) {
                     allJobsDone = true;
                     Logger.getLogger(
                             MpaxsResubmissionCompletionService.class

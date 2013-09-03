@@ -41,93 +41,81 @@ import net.sf.mpaxs.api.job.Status;
 
 /**
  * Implementation of RunnableFuture for mpaxs jobs.
+ *
  * @author Nils Hoffmann
  */
-public class MpaxsFutureTask<V> implements
+public class MpaxsFutureTask<V> extends FutureTask<V> implements
 		RunnableFuture<V>, IJobEventListener {
 
 	private final IJob<V> job;
 	private final Impaxs computeServer;
-	private BlockingQueue<V> intermediateQueue = new LinkedBlockingQueue<V>(1);
-	private BlockingQueue<V> resultQueue = new LinkedBlockingQueue<V>(1);
-	private V result = null;
+	private Phaser phaser;
 
 	public MpaxsFutureTask(Impaxs computeServer, Callable<V> callable) {
+		super(callable);
 		this.computeServer = computeServer;
 		job = new Job<V>(new DefaultCallable<V>(callable));
-		this.computeServer.addJobEventListener(this,job.getId());
 	}
 
-	public MpaxsFutureTask(Impaxs computeServer, Runnable r, V v) {
+	public MpaxsFutureTask(Impaxs computeServer, Runnable runnable, V result) {
+		super(runnable, result);
 		this.computeServer = computeServer;
-		job = new Job<V>(new DefaultRunnable<V>(r, v));
-		this.computeServer.addJobEventListener(this,job.getId());
+		job = new Job<V>(new DefaultRunnable<V>(runnable, result));
 	}
 
 	@Override
 	public boolean cancel(boolean bln) {
-		return computeServer.cancelJob(job.getId());
-	}
-
-	@Override
-	public boolean isCancelled() {
-		return job.getStatus() == Status.CANCELED;
-	}
-
-	@Override
-	public boolean isDone() {
-		return (job.getStatus() == Status.DONE) && (resultQueue.isEmpty()) || (job.getStatus() == Status.ERROR);
-	}
-
-	@Override
-	public V get() throws InterruptedException, ExecutionException, CancellationException {
-		if (job.getStatus() == Status.ERROR) {
-			throw new ExecutionException(job.getThrowable());
-		} else if (job.getStatus() == Status.CANCELED) {
-			throw new CancellationException();
+		boolean superCancelled = super.cancel(bln);
+		//job status will be UNKNOWN for unsubmitted jobs
+		if (job.getStatus() != Status.CANCELED) {
+			computeServer.cancelJob(job.getId());
+			job.setStatus(Status.CANCELED);
 		}
-		V res = resultQueue.take();
-		computeServer.removeJobEventListener(this);
-		return res;
-	}
-
-	@Override
-	public V get(long l, TimeUnit tu) throws InterruptedException, ExecutionException, CancellationException, TimeoutException {
-		if (job.getStatus() == Status.ERROR) {
-			throw new ExecutionException(job.getThrowable());
-		} else if (job.getStatus() == Status.CANCELED) {
-			throw new CancellationException();
-		}
-		V res = resultQueue.poll(l, tu);
-		computeServer.removeJobEventListener(this);
-		return res;
+		return superCancelled;
 	}
 
 	@Override
 	public void run() {
+		phaser = new Phaser(1);
+		computeServer.addJobEventListener(this, job.getId());
+		job.setStatus(Status.UNKNOWN);
+		job.setThrowable(null);
 		computeServer.submitJob(job);
-		try {
-			//System.out.println("Submitted job, waiting for result!");
-			result = intermediateQueue.take();
-			resultQueue.put(result);
-		} catch (InterruptedException ex) {
-			Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
-		}
+		//wait for job changed
+		System.out.println("Waiting in thread " + Thread.currentThread().getName());
+		System.out.println("Phaser has " + phaser.getRegisteredParties() + " registered parties of which " + phaser.getUnarrivedParties() + " have not arrived yet!");
+		phaser.awaitAdvance(0);
+		System.out.println("Job is Done!");
 	}
 
 	@Override
 	public void jobChanged(final IJob job) {
 		if (job.getId().equals(this.job.getId())) {
+//			System.out.println("Job status: " + job.getStatus());
 			if (job.getStatus() == Status.DONE) {
 				try {
-					intermediateQueue.put((V) job.getClassToExecute().get());
+					V v = (V)job.getClassToExecute().get();
+					if(v!=null) {
+						set(v);
+					}
 				} catch (InterruptedException ex) {
-					Thread.interrupted();
+					Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
 				} catch (ExecutionException ex) {
-					//we can ignore this exception, it is stored in the job and will
-					//be thrown by the next call to get()
+					Logger.getLogger(MpaxsFutureTask.class.getName()).log(Level.SEVERE, null, ex);
+					setException(ex);
 				}
+				computeServer.removeJobEventListener(this, job.getId());
+				int phase = phaser.arriveAndDeregister();
+			}else if(job.getStatus() == Status.CANCELED) {
+				cancel(true);
+				computeServer.removeJobEventListener(this, job.getId());
+				int phase = phaser.arriveAndDeregister();
+			}else if(job.getStatus() == Status.ERROR) {
+				setException(job.getThrowable());
+				computeServer.removeJobEventListener(this, job.getId());
+				int phase = phaser.arriveAndDeregister();
 			}
+			
 		}
 	}
 }

@@ -36,11 +36,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
+import java.util.concurrent.Callable;
 import java.util.jar.Attributes;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import net.sf.mpaxs.api.ConfigurationKeys;
 import net.sf.mpaxs.api.concurrent.ConfigurableRunnable;
+import net.sf.mpaxs.api.concurrent.DefaultCallable;
+import net.sf.mpaxs.api.concurrent.DefaultRunnable;
 
 /**
  *
@@ -58,6 +61,9 @@ public class Job<T> implements IJob<T> {
     private String jobConfigFile = "";
     private Status status = Status.UNKNOWN;
     private int errorCounter = 0;
+	private int priority = 0;
+	public static final int MAX_PRIORITY = Integer.MAX_VALUE;
+	public static final int MIN_PRIORITY = Integer.MIN_VALUE;
     private Throwable throwable = null;
 
     /**
@@ -82,6 +88,24 @@ public class Job<T> implements IJob<T> {
     public Job(ConfigurableRunnable<T> classToExecute) {
         this();
         setClassToExecute(classToExecute);
+    }
+	
+	/**
+     *
+     * @param classToExecute
+     */
+    public Job(Runnable classToExecute, T returnObject) {
+        this();
+        setClassToExecute(new DefaultRunnable<T>(classToExecute, returnObject));
+    }
+	
+	/**
+     *
+     * @param classToExecute
+     */
+    public Job(Callable<T> classToExecute) {
+        this();
+        setClassToExecute(new DefaultCallable<T>(classToExecute));
     }
 
     /**
@@ -230,7 +254,7 @@ public class Job<T> implements IJob<T> {
      * @param status
      */
     @Override
-    public void setStatus(Status status) {
+    public synchronized void setStatus(Status status) {
         this.status = status;
     }
 
@@ -247,7 +271,7 @@ public class Job<T> implements IJob<T> {
      *
      */
     @Override
-    public void errorOccurred() {
+    public synchronized void errorOccurred() {
         errorCounter++;
     }
 
@@ -341,7 +365,7 @@ public class Job<T> implements IJob<T> {
      * @param t
      */
     @Override
-    public void setThrowable(Throwable t) {
+    public synchronized void setThrowable(Throwable t) {
         this.throwable = t;
     }
 
@@ -353,4 +377,14 @@ public class Job<T> implements IJob<T> {
     public Throwable getThrowable() {
         return this.throwable;
     }
+
+	@Override
+	public int getPriority() {
+		return this.priority;
+	}
+
+	@Override
+	public synchronized void setPriority(int priority) {
+		this.priority = priority;
+	}
 }

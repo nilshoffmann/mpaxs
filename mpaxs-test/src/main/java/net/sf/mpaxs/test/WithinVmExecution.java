@@ -76,6 +76,25 @@ public class WithinVmExecution implements Callable<Double>, Serializable {
                     log(Level.SEVERE, null, ex);
             throw ex;
         }
+		CompletionServiceFactory<String> csf2 = new CompletionServiceFactory<String>();
+        csf2.setTimeOut(1);
+        csf2.setTimeUnit(TimeUnit.SECONDS);
+        csf2.setBlockingWait(false);
+        final ICompletionService<String> mcs3 = csf2.newLocalCompletionService();
+        for (int i = 0; i < maxJobs; i++) {
+            mcs3.submit(new TestCallable2());
+        }
+        try {
+            List<String> results = mcs3.call();
+            System.out.println("Local execution: " + results);
+            for (String str : results) {
+                System.out.println("Result: "+str);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(DistributedRmiExecution.class.getName()).
+                    log(Level.SEVERE, null, ex);
+            throw ex;
+        }
         return result;
     }
 }

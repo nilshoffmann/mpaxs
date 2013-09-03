@@ -83,8 +83,8 @@ public class DistributedRmiExecution implements Callable<Double>, Serializable {
             impxs.startMasterServer(cfg);
         }
         CompletionServiceFactory<Double> csf = new CompletionServiceFactory<Double>();
-        csf.setTimeOut(100);
-        csf.setTimeUnit(TimeUnit.MILLISECONDS);
+//        csf.setTimeOut(1);
+//        csf.setTimeUnit(TimeUnit.SECONDS);
         csf.setBlockingWait(true);
         final ICompletionService<Double> mcs = csf.asResubmissionService(csf.newDistributedCompletionService(),3);
         for (int i = 0; i < maxJobs; i++) {
@@ -104,8 +104,8 @@ public class DistributedRmiExecution implements Callable<Double>, Serializable {
         }
 		
 		CompletionServiceFactory<String> csf2 = new CompletionServiceFactory<String>();
-        csf2.setTimeOut(100);
-        csf2.setTimeUnit(TimeUnit.MILLISECONDS);
+//        csf2.setTimeOut(1);
+//        csf2.setTimeUnit(TimeUnit.SECONDS);
         csf2.setBlockingWait(true);
         final ICompletionService<String> mcs2 = csf2.newDistributedCompletionService();
         for (int i = 0; i < maxJobs; i++) {

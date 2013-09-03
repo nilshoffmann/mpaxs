@@ -29,8 +29,8 @@ package net.sf.mpaxs.spi.computeHost;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import net.sf.mpaxs.api.computeHost.IComputeHost;
 import net.sf.mpaxs.api.computeHost.IRemoteHost;
 import net.sf.mpaxs.api.job.IJob;
@@ -44,7 +44,7 @@ public class ComputeHostImpl extends UnicastRemoteObject implements IComputeHost
 
     private IRemoteHost host;
     private Settings settings;
-    private HashMap<UUID, JobExecutor> jobLocation = new HashMap<UUID, JobExecutor>();
+    private ConcurrentHashMap<UUID, JobExecutor> jobLocation = new ConcurrentHashMap<UUID, JobExecutor>();
 
     public ComputeHostImpl() throws RemoteException{
 

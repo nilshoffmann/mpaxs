@@ -125,5 +125,22 @@ public interface IJob<T> extends Serializable {
      * @return
      */
     Throwable getThrowable();
+	
+	/**
+	 * The priority of this job instance.
+	 * Jobs with a lower priority will have to wait until they are scheduled for execution, 
+	 * if any jobs with higher priorities are still in the job submission queue.
+	 * @return 
+	 */
+	int getPriority();
+	
+	/**
+	 * Sets the priority of this job instance.
+	 * This does not change scheduling affinity, once the job has been 
+	 * submitted for execution.
+	 * 
+	 * @param priority 
+	 */
+	void setPriority(int priority);
 
 }

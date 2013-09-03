@@ -39,10 +39,22 @@ import java.util.concurrent.RejectedExecutionException;
 public interface ICompletionService<T> extends Callable<List<T>> {
 
     /**
-     *
+     * Returns only failed tasks.
      * @return
      */
     List<Callable<T>> getFailedTasks();
+	
+	/**
+     * Returns all failed and cancelled tasks.
+     * @return
+     */
+    List<Callable<T>> getFailedOrCancelledTasks();
+	
+	/**
+     * Returns only the cancelled tasks. 
+     * @return
+     */
+    List<Callable<T>> getCancelledTasks();
     
     /**
      *

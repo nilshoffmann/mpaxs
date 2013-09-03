@@ -29,6 +29,7 @@ package net.sf.mpaxs.test;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Random;
 import java.util.concurrent.Callable;
 
 /**
@@ -41,10 +42,11 @@ public class TestCallable implements Callable<Double>, Serializable {
     public Double call() throws Exception {
         long sum = 0;
 		long start = System.currentTimeMillis();
-        for(int i = Integer.MIN_VALUE;i<Integer.MAX_VALUE;i++) {
+		Random r = new Random(start);
+		int sumUntil = r.nextInt(Integer.MAX_VALUE);
+        for(int i = 0;i<sumUntil;i++) {
             sum+=i;
         }
-		Thread.sleep(2000);
 		System.out.println("Executed sum in "+(System.currentTimeMillis()-start)+" ms");
         if(Math.random()>0.92) {
             throw new IOException("Failed on io due to simulated random error!");
