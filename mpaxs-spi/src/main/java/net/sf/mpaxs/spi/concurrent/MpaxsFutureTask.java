@@ -1,5 +1,5 @@
 /*
- * Mpaxs, modular parallel execution system. 
+ * Mpaxs, modular parallel execution system.
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
  * Project website: http://mpaxs.sf.net
@@ -14,12 +14,12 @@
  * Eclipse Public License (EPL)
  * http://www.eclipse.org/org/documents/epl-v10.php
  *
- * As a user/recipient of Mpaxs, you may choose which license to receive the code 
- * under. Certain files or entire directories may not be covered by this 
+ * As a user/recipient of Mpaxs, you may choose which license to receive the code
+ * under. Certain files or entire directories may not be covered by this
  * dual license, but are subject to licenses compatible to both LGPL and EPL.
- * License exceptions are explicitly declared in all relevant files or in a 
+ * License exceptions are explicitly declared in all relevant files or in a
  * LICENSE file in the relevant directories.
- * 
+ *
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
@@ -27,10 +27,13 @@
  */
 package net.sf.mpaxs.spi.concurrent;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.Phaser;
+import java.util.concurrent.RunnableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import net.sf.mpaxs.api.Impaxs;
 import net.sf.mpaxs.api.concurrent.DefaultCallable;
 import net.sf.mpaxs.api.concurrent.DefaultRunnable;
@@ -43,9 +46,10 @@ import net.sf.mpaxs.api.job.Status;
  * Implementation of RunnableFuture for mpaxs jobs.
  *
  * @author Nils Hoffmann
+ * @param <V>
  */
 public class MpaxsFutureTask<V> extends FutureTask<V> implements
-		RunnableFuture<V>, IJobEventListener {
+	RunnableFuture<V>, IJobEventListener {
 
 	private final IJob<V> job;
 	private final Impaxs computeServer;
@@ -82,20 +86,19 @@ public class MpaxsFutureTask<V> extends FutureTask<V> implements
 		job.setThrowable(null);
 		computeServer.submitJob(job);
 		//wait for job changed
-		System.out.println("Waiting in thread " + Thread.currentThread().getName());
-		System.out.println("Phaser has " + phaser.getRegisteredParties() + " registered parties of which " + phaser.getUnarrivedParties() + " have not arrived yet!");
+//		System.out.println("Waiting in thread " + Thread.currentThread().getName());
+//		System.out.println("Phaser has " + phaser.getRegisteredParties() + " registered parties of which " + phaser.getUnarrivedParties() + " have not arrived yet!");
 		phaser.awaitAdvance(0);
-		System.out.println("Job is Done!");
+//		System.out.println("Job is Done!");
 	}
 
 	@Override
 	public void jobChanged(final IJob job) {
 		if (job.getId().equals(this.job.getId())) {
-//			System.out.println("Job status: " + job.getStatus());
 			if (job.getStatus() == Status.DONE) {
 				try {
-					V v = (V)job.getClassToExecute().get();
-					if(v!=null) {
+					V v = (V) job.getClassToExecute().get();
+					if (v != null) {
 						set(v);
 					}
 				} catch (InterruptedException ex) {
@@ -106,16 +109,16 @@ public class MpaxsFutureTask<V> extends FutureTask<V> implements
 				}
 				computeServer.removeJobEventListener(this, job.getId());
 				int phase = phaser.arriveAndDeregister();
-			}else if(job.getStatus() == Status.CANCELED) {
+			} else if (job.getStatus() == Status.CANCELED) {
 				cancel(true);
 				computeServer.removeJobEventListener(this, job.getId());
 				int phase = phaser.arriveAndDeregister();
-			}else if(job.getStatus() == Status.ERROR) {
+			} else if (job.getStatus() == Status.ERROR) {
 				setException(job.getThrowable());
 				computeServer.removeJobEventListener(this, job.getId());
 				int phase = phaser.arriveAndDeregister();
 			}
-			
+
 		}
 	}
 }

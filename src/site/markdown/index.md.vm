@@ -9,3 +9,8 @@ to dynamically adapt to changing workload.
 * [Download](./download.html)
 * [Javadoc API](./apidocs/index.html)
 * [Help](https://sourceforge.net/projects/mpaxs/support)
+
+<h3>Changes</h3>
+<h4>Version 1.7</h4>
+* Support for [job priorities](./gettingStarted.html#scheduledJob)
+* Support for [scheduled jobs](./gettingStarted.html#scheduledJob)

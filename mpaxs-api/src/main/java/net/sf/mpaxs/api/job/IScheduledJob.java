@@ -25,58 +25,23 @@
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
  * for details.
  */
-package net.sf.mpaxs.api;
+package net.sf.mpaxs.api.job;
 
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
-import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
+ * A scheduled job is a job that should be run repeatedly after the initial
+ * delay and with the given period.
  *
  * @author Nils Hoffmann
  * @param <T>
  */
-public interface ICompletionService<T> extends Callable<List<T>> {
+public interface IScheduledJob<T> extends IJob<T> {
 
-	/**
-	 * Returns only failed tasks.
-	 *
-	 * @return
-	 */
-	List<Callable<T>> getFailedTasks();
+	long getInitialDelay();
 
-	/**
-	 * Returns all failed and cancelled tasks.
-	 *
-	 * @return
-	 */
-	List<Callable<T>> getFailedOrCancelledTasks();
+	long getPeriod();
 
-	/**
-	 * Returns only the cancelled tasks.
-	 *
-	 * @return
-	 */
-	List<Callable<T>> getCancelledTasks();
-
-	/**
-	 *
-	 * @param c
-	 * @return
-	 * @throws RejectedExecutionException
-	 * @throws NullPointerException
-	 */
-	Future<T> submit(Callable<T> c) throws RejectedExecutionException, NullPointerException;
-
-	/**
-	 *
-	 * @param r
-	 * @param t
-	 * @return
-	 * @throws RejectedExecutionException
-	 * @throws NullPointerException
-	 */
-	Future<T> submit(Runnable r, T t) throws RejectedExecutionException, NullPointerException;
+	TimeUnit getTimeUnit();
 
 }

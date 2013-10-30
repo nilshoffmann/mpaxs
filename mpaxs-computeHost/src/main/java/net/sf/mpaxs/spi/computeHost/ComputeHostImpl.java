@@ -1,5 +1,5 @@
 /*
- * Mpaxs, modular parallel execution system. 
+ * Mpaxs, modular parallel execution system.
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
  * Project website: http://mpaxs.sf.net
@@ -14,12 +14,12 @@
  * Eclipse Public License (EPL)
  * http://www.eclipse.org/org/documents/epl-v10.php
  *
- * As a user/recipient of Mpaxs, you may choose which license to receive the code 
- * under. Certain files or entire directories may not be covered by this 
+ * As a user/recipient of Mpaxs, you may choose which license to receive the code
+ * under. Certain files or entire directories may not be covered by this
  * dual license, but are subject to licenses compatible to both LGPL and EPL.
- * License exceptions are explicitly declared in all relevant files or in a 
+ * License exceptions are explicitly declared in all relevant files or in a
  * LICENSE file in the relevant directories.
- * 
+ *
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
@@ -31,6 +31,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.sf.mpaxs.api.ConfigurationKeys;
 import net.sf.mpaxs.api.computeHost.IComputeHost;
 import net.sf.mpaxs.api.computeHost.IRemoteHost;
 import net.sf.mpaxs.api.job.IJob;
@@ -40,71 +43,81 @@ import net.sf.mpaxs.api.job.Progress;
  *
  * @author Kai Bernd Stadermann
  */
-public class ComputeHostImpl extends UnicastRemoteObject implements IComputeHost{
+public final class ComputeHostImpl extends UnicastRemoteObject implements IComputeHost {
 
-    private IRemoteHost host;
-    private Settings settings;
-    private ConcurrentHashMap<UUID, JobExecutor> jobLocation = new ConcurrentHashMap<UUID, JobExecutor>();
+	private final ConcurrentHashMap<UUID, JobExecutor> jobLocation = new ConcurrentHashMap<UUID, JobExecutor>();
+	private IRemoteHost host;
+	private Settings settings;
 
-    public ComputeHostImpl() throws RemoteException{
+	public ComputeHostImpl() throws RemoteException {
 
-    }
+	}
 
-    public ComputeHostImpl(IRemoteHost host, Settings settings) throws RemoteException{
-        this.host = host;
-        this.settings = settings;
-    }
-        
-    @Override
-    public void setHost(UUID authToken, IRemoteHost host) {
-        this.host = host;
-//        this.settings = Settings.getInstance();
-    }     
+	public ComputeHostImpl(IRemoteHost host, Settings settings) throws RemoteException {
+		this.host = host;
+		this.settings = settings;
+	}
 
-    @Override
-    public void runJob(UUID authToken, IJob job) throws RemoteException{
-        JobExecutor executor = new JobExecutor(job, host,settings.getRemoteReference());
-        jobLocation.put(job.getId(), executor);
-        executor.start();
-    }
+	protected void authenticate(UUID remoteAuthToken) throws RemoteException {
+		String authToken = settings.getOption(ConfigurationKeys.KEY_AUTH_TOKEN);
+		if (!remoteAuthToken.toString().equals(authToken)) {
+			throw new RemoteException("Authentication with token: " + remoteAuthToken + " failed!");
+		}
+	}
 
-    @Override
-    public void terminateHost(UUID authToken) throws RemoteException {
-        System.exit(1);
-    }
+	@Override
+	public void setHost(UUID authToken, IRemoteHost host) {
+		this.host = host;
+	}
 
-    @Override
-    public void masterServerShuttingDown(UUID authToken) throws RemoteException {
-        if(!settings.getSilentMode()){
-            System.out.println("MasterServer is shutting down.");
-            System.out.println("Terminating ComputeHost.");
-        }
-        host.shutdown(this);
-    }
+	@Override
+	public void runJob(UUID authToken, IJob job) throws RemoteException {
+		authenticate(authToken);
+		JobExecutor executor = new JobExecutor(job, host, settings.getRemoteReference(), jobLocation);
+		executor.start();
+	}
 
-    @Override
-    public boolean stillAlive(UUID authToken) throws RemoteException {
-        return true;
-    }
+	@Override
+	public void terminateHost(UUID authToken) throws RemoteException {
+		authenticate(authToken);
+		System.exit(1);
+	}
 
-    @Override
-    public Progress getJobProgress(UUID authToken, UUID jobID) throws RemoteException {
-        if(jobLocation.containsKey(jobID)) {
-            return jobLocation.get(jobID).getJobProgress();
-        } else {
-            return null;
-        }
-    }
+	@Override
+	public void masterServerShuttingDown(UUID authToken) throws RemoteException {
+		authenticate(authToken);
+		if (!settings.getSilentMode()) {
+			Logger.getLogger(ComputeHostImpl.class.getName()).log(Level.INFO, "MasterServer is shutting down: terminating compute host {0}", host.getHostId());
+		}
+		host.shutdown(this);
+	}
 
-    @Override
-    public boolean cancelJob(UUID authToken, UUID jobID) throws RemoteException {
-        if(jobLocation.containsKey(jobID)) {
-            jobLocation.get(jobID).interrupt();
-            jobLocation.remove(jobID);
-            return true;
-        } else {
-            return false;
-        }
-    }
+	@Override
+	public boolean stillAlive(UUID authToken) throws RemoteException {
+		authenticate(authToken);
+		return true;
+	}
+
+	@Override
+	public Progress getJobProgress(UUID authToken, UUID jobID) throws RemoteException {
+		authenticate(authToken);
+		if (jobLocation.containsKey(jobID)) {
+			return jobLocation.get(jobID).getJobProgress();
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public boolean cancelJob(UUID authToken, UUID jobID) throws RemoteException {
+		authenticate(authToken);
+		if (jobLocation.containsKey(jobID)) {
+			jobLocation.get(jobID).interrupt();
+			jobLocation.remove(jobID);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }

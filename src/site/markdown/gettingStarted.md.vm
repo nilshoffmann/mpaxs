@@ -104,6 +104,15 @@ If that is missing, try to insert a new entry at the top of the file with your c
 
 We have successfully used Mpaxs with Oracle Grid Engine on Solaris and the Open Grid Scheduler on Linux with +50 hosts and > 200000 jobs. 
 
+<p class="alert alert-warn">
+<b>Caveat:</b><br/>
+Please be aware that you may need to keep an eye on the slot capacity of your grid engine installation.
+If you request more compute hosts than slots available in your system, some compute hosts may start up only 
+after the main application has finished. After these compute hosts have been scheduled to run 
+by the grid engine, they will take some time to notice that the master server is unreachable before they shut down. Thus, you may want 
+to shut the remaining jobs down by running <code>qdel mpaxs-chost*</code> or simply wait until the compute hosts' connection attempts time out.
+</p>
+
     //Define the location of the compute host jar, this could be your own extended version
     File computeHostJarLocation = new File(System.getProperty("user.dir"), "mpaxs.jar");
     if (!computeHostJarLocation.exists() || !computeHostJarLocation.isFile()) {
@@ -134,8 +143,48 @@ We have successfully used Mpaxs with Oracle Grid Engine on Solaris and the Open 
     System.out.println("Distributed execution: " + results);
     impxs.stopMasterServer();
 
-<h3>Low level access for distributed execution</h3>
+<h3><a name="scheduledJob"></a>Low level access for distributed execution</h3>
 If you want to have better control of individual jobs, you should have a look at the 
 API of [<code>net.sf.mpaxs.api.Impxs</code>](./mpaxs-api/apidocs/index.html?net/sf/mpaxs/api/Impaxs.html). You can create your own job instances and submit
 them to the compute hosts. Additionally, the API supports the registration of event listeners
 for a job to be called when a job's status changes during its lifecycle. 
+
+<p class="alert alert-info">
+<b>Note:</b><br/>
+This example assumes, that you have created and configured an <code>Impaxs</code> instance, as in the previous example.
+</p>
+    
+    //create a job from TestScheduledRunnable returning a Boolean.TRUE on success
+    Job<Boolean> job = new Job<Boolean>(new TestScheduledRunnable(), Boolean.TRUE);
+    //increase the priority so that the job can bypass other, waiting jobs
+    job.setPriority(job.getPriority() + 1);
+    //api submission, this job will be wrapped as a ScheduledJob
+    impxs.submitScheduledJob(job, 1, 5, TimeUnit.SECONDS);
+    //alternative, direct creation of a ScheduledJob
+    //impxs.submitJob(new ScheduledJob(job, 1, 5, TimeUnit.SECONDS));
+
+The parameters for the scheduled job are the same as for Java's [<code>ScheduledExecutorService</code>](http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/ScheduledExecutorService.html)
+The example above will run a scheduled job with a priority slightly higher than the default priority of 0.
+Scheduled jobs will run off the same priority blocking queue as all one-shot jobs. Note that 
+that the requested initial time and the period are only hints to the execution system as 
+to when to enqueue a job. There is no guarantee, that the job will be executed within the 
+requested interval if the scheduler / system is under heavy load. Jobs requiring that they be executed 
+close the requested starting time / interval should use a higher priority to receive precedence over 
+normal jobs. However, if the maximum number of compute hosts has been reached and no free host is 
+immediately available, the job will have to wait for the next free host.
+
+If you are interested in receiving lifecycle events of a job, register an [<code>net.sf.mpaxs.api.event.IJobEventListener</code>](./mpaxs-api/apidocs/index.html?net/sf/mpaxs/api/event/IJobEventListener.html)
+
+    //add a listener for all jobs
+    impxs.addJobEventListener(myListener);
+    //add a listener for a specific job using the job UUID
+    impxs.addJobEventListener(myListener,jobId);
+
+The lifecycle of a job in mpaxs takes on one of the following [values](./mpaxs-api/apidocs/index.html?net/sf/mpaxs/api/job/Status.html):
+
+- UNKNOWN: initial state after job is created
+- WAITING: state after job has been enqueued for execution
+- RUNNING: state after job has been transmitted to execution host
+- DONE: state after job has finished execution successfully
+- ERROR: state after job has finished with an exception
+- CANCELED: state after job has been cancelled

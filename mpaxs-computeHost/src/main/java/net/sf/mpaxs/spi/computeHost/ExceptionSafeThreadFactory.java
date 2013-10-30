@@ -1,5 +1,5 @@
 /*
- * Mpaxs, modular parallel execution system. 
+ * Mpaxs, modular parallel execution system.
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
  * Project website: http://mpaxs.sf.net
@@ -14,12 +14,12 @@
  * Eclipse Public License (EPL)
  * http://www.eclipse.org/org/documents/epl-v10.php
  *
- * As a user/recipient of Mpaxs, you may choose which license to receive the code 
- * under. Certain files or entire directories may not be covered by this 
+ * As a user/recipient of Mpaxs, you may choose which license to receive the code
+ * under. Certain files or entire directories may not be covered by this
  * dual license, but are subject to licenses compatible to both LGPL and EPL.
- * License exceptions are explicitly declared in all relevant files or in a 
+ * License exceptions are explicitly declared in all relevant files or in a
  * LICENSE file in the relevant directories.
- * 
+ *
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
@@ -34,20 +34,20 @@ import java.util.concurrent.ThreadFactory;
  *
  * @author Kai Bernd Stadermann
  */
-public class ExceptionSafeThreadFactory implements ThreadFactory{
+public final class ExceptionSafeThreadFactory implements ThreadFactory {
 
-    private ThreadFactory threadFactory = Executors.defaultThreadFactory();
-    private Thread.UncaughtExceptionHandler handler;
+	private final ThreadFactory threadFactory = Executors.defaultThreadFactory();
+	private final Thread.UncaughtExceptionHandler handler;
 
-    public ExceptionSafeThreadFactory(Thread.UncaughtExceptionHandler handler) {
-        this.handler = handler;
-    }
+	public ExceptionSafeThreadFactory(Thread.UncaughtExceptionHandler handler) {
+		this.handler = handler;
+	}
 
-    @Override
-    public Thread newThread(Runnable r) {
-        Thread t = threadFactory.newThread(r);
-        t.setUncaughtExceptionHandler(handler);
-        return t;
-    }
+	@Override
+	public Thread newThread(Runnable r) {
+		Thread t = threadFactory.newThread(r);
+		t.setUncaughtExceptionHandler(handler);
+		return t;
+	}
 
 }

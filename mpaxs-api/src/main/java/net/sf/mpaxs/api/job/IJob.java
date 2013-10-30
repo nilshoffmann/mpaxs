@@ -1,5 +1,5 @@
 /*
- * Mpaxs, modular parallel execution system. 
+ * Mpaxs, modular parallel execution system.
  * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
  *
  * Project website: http://mpaxs.sf.net
@@ -14,12 +14,12 @@
  * Eclipse Public License (EPL)
  * http://www.eclipse.org/org/documents/epl-v10.php
  *
- * As a user/recipient of Mpaxs, you may choose which license to receive the code 
- * under. Certain files or entire directories may not be covered by this 
+ * As a user/recipient of Mpaxs, you may choose which license to receive the code
+ * under. Certain files or entire directories may not be covered by this
  * dual license, but are subject to licenses compatible to both LGPL and EPL.
- * License exceptions are explicitly declared in all relevant files or in a 
+ * License exceptions are explicitly declared in all relevant files or in a
  * LICENSE file in the relevant directories.
- * 
+ *
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
@@ -34,112 +34,114 @@ import java.util.UUID;
 import net.sf.mpaxs.api.concurrent.ConfigurableRunnable;
 
 /**
- * T must implement Serializable, however, this is not enforceable 
+ * T must implement Serializable, however, this is not enforceable
  * within the api to keep compatibility with JAVA's executor framework.
- * Thus, a runtime exception is thrown whenever a job with a type of T 
+ * Thus, a runtime exception is thrown whenever a job with a type of T
  * is created/submitted, which is not Serializable.
- * 
+ *
  * @author Nils Hoffmann
+ * @param <T> the result type that this job provides
  */
 public interface IJob<T> extends Serializable {
 
-    /**
-     *
-     */
-    void errorOccurred();
+	/**
+	 *
+	 */
+	void errorOccurred();
 
-    /**
-     *
-     * @return
-     */
-    ConfigurableRunnable<T> getClassToExecute();
+	/**
+	 *
+	 * @return
+	 */
+	ConfigurableRunnable<T> getClassToExecute();
 
-    /**
-     *
-     * @return
-     */
-    String getConfigurationFile();
+	/**
+	 *
+	 * @return
+	 */
+	String getConfigurationFile();
 
-    /**
-     *
-     * @return
-     */
-    int getErrorCounter();
+	/**
+	 *
+	 * @return
+	 */
+	int getErrorCounter();
 
-    /**
-     *
-     * @return
-     */
-    UUID getId();
+	/**
+	 *
+	 * @return
+	 */
+	UUID getId();
 
-    /**
-     *
-     * @return
-     */
-    String getJobConfigFile();
+	/**
+	 *
+	 * @return
+	 */
+	String getJobConfigFile();
 
-    /**
-     *
-     * @return
-     */
-    Status getStatus();
+	/**
+	 *
+	 * @return
+	 */
+	Status getStatus();
 
-    /**
-     *
-     * @param jobConfigFile
-     */
-    void setJobConfigFile(String jobConfigFile);
+	/**
+	 *
+	 * @param jobConfigFile
+	 */
+	void setJobConfigFile(String jobConfigFile);
 
-    /**
-     *
-     * @param status
-     */
-    void setStatus(Status status);
-    
-    /**
-     *
-     * @param jobConfigFile
-     * @throws ClassNotFoundException
-     * @throws MalformedURLException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     * @throws IOException
-     */
-    void setClassToExecute(String jobConfigFile) throws ClassNotFoundException,
-            MalformedURLException, InstantiationException, IllegalAccessException, IOException;
-    
-    /**
-     *
-     * @param cr
-     */
-    void setClassToExecute(ConfigurableRunnable<T> cr);
-    
-    /**
-     *
-     * @param t
-     */
-    void setThrowable(Throwable t);
-    
-    /**
-     *
-     * @return
-     */
-    Throwable getThrowable();
-	
+	/**
+	 *
+	 * @param status
+	 */
+	void setStatus(Status status);
+
+	/**
+	 *
+	 * @param jobConfigFile
+	 * @throws ClassNotFoundException
+	 * @throws MalformedURLException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IOException
+	 */
+	void setClassToExecute(String jobConfigFile) throws ClassNotFoundException,
+		MalformedURLException, InstantiationException, IllegalAccessException, IOException;
+
+	/**
+	 *
+	 * @param cr
+	 */
+	void setClassToExecute(ConfigurableRunnable<T> cr);
+
+	/**
+	 *
+	 * @param t
+	 */
+	void setThrowable(Throwable t);
+
+	/**
+	 *
+	 * @return
+	 */
+	Throwable getThrowable();
+
 	/**
 	 * The priority of this job instance.
-	 * Jobs with a lower priority will have to wait until they are scheduled for execution, 
+	 * Jobs with a lower priority will have to wait until they are scheduled for execution,
 	 * if any jobs with higher priorities are still in the job submission queue.
-	 * @return 
+	 *
+	 * @return
 	 */
 	int getPriority();
-	
+
 	/**
 	 * Sets the priority of this job instance.
-	 * This does not change scheduling affinity, once the job has been 
+	 * This does not change scheduling affinity, once the job has been
 	 * submitted for execution.
-	 * 
-	 * @param priority 
+	 *
+	 * @param priority
 	 */
 	void setPriority(int priority);
 
