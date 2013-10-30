@@ -51,8 +51,15 @@ import net.sf.mpaxs.api.concurrent.DefaultCallable;
 import net.sf.mpaxs.api.concurrent.DefaultRunnable;
 
 /**
+ * Default implementation of a job.
+ * A job can be created by directly passing a <code>Runnable</code> or <code>Callable</code>
+ * to the appropriate constructors, or by providing a configuration file containing
+ * the keys <code>STARTUP_CLASS</code> and <code>JAR_PATH</code> (file path to the jar containing
+ * STARTUP_CLASS). The additional property <code>CODEBASE</code> allows to define a base
+ * URL for the <code>URLClassLoader</code> to look for dependent jar files.
  *
  * @author Kai Bernd Stadermann
+ * @param <T> the result type
  */
 public class Job<T> implements IJob<T> {
 
@@ -72,8 +79,9 @@ public class Job<T> implements IJob<T> {
 	private Throwable throwable = null;
 
 	/**
+	 * Create a new Job reading the contents of the supplied job configuration file.
 	 *
-	 * @param jobConfigFile
+	 * @param jobConfigFile the job configuration file
 	 * @throws ClassNotFoundException
 	 * @throws MalformedURLException
 	 * @throws InstantiationException
@@ -87,8 +95,9 @@ public class Job<T> implements IJob<T> {
 	}
 
 	/**
+	 * Create a new Job using the supplied instance for job execution.
 	 *
-	 * @param classToExecute
+	 * @param classToExecute the instance to run
 	 */
 	public Job(ConfigurableRunnable<T> classToExecute) {
 		this();
@@ -96,8 +105,11 @@ public class Job<T> implements IJob<T> {
 	}
 
 	/**
+	 * Create a new Job using the supplied instance for job execution. The
+	 * supplied returnObject is returned when the job finishes successfully.
 	 *
-	 * @param classToExecute
+	 * @param classToExecute the instance to run
+	 * @param returnObject   the results to return on success
 	 */
 	public Job(Runnable classToExecute, T returnObject) {
 		this();
@@ -105,8 +117,10 @@ public class Job<T> implements IJob<T> {
 	}
 
 	/**
+	 * Create a new Job using the supplied instance for job execution. The
+	 * supplied instance is queried for its return value when the job finishes successfully.
 	 *
-	 * @param classToExecute
+	 * @param classToExecute the instance to run
 	 */
 	public Job(Callable<T> classToExecute) {
 		this();
@@ -114,7 +128,7 @@ public class Job<T> implements IJob<T> {
 	}
 
 	/**
-	 *
+	 * Default constructor. Creates a random unique id.
 	 */
 	public Job() {
 		this.id = UUID.randomUUID();
@@ -196,28 +210,16 @@ public class Job<T> implements IJob<T> {
 		return ret;
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
 	public ConfigurableRunnable<T> getClassToExecute() {
 		return classToExecute;
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
 	public UUID getId() {
 		return id;
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
 	public String getConfigurationFile() {
 		if (config.containsKey(CONFIGURATION_FILE)) {
@@ -227,69 +229,36 @@ public class Job<T> implements IJob<T> {
 		}
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
 	public String getJobConfigFile() {
 		return jobConfigFile;
 	}
 
-	/**
-	 *
-	 * @param jobConfigFile
-	 */
 	@Override
 	public void setJobConfigFile(String jobConfigFile) {
 		this.jobConfigFile = jobConfigFile;
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
 	public Status getStatus() {
 		return status;
 	}
 
-	/**
-	 *
-	 * @param status
-	 */
 	@Override
 	public synchronized void setStatus(Status status) {
 		this.status = status;
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
 	public int getErrorCounter() {
 		return errorCounter;
 	}
 
-	/**
-	 *
-	 */
 	@Override
 	public synchronized void errorOccurred() {
 		errorCounter++;
 	}
 
-	/**
-	 *
-	 * @param jobConfigFile
-	 * @throws ClassNotFoundException
-	 * @throws MalformedURLException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 * @throws IOException
-	 * @throws IllegalStateException
-	 */
 	@Override
 	public void setClassToExecute(final String jobConfigFile) throws ClassNotFoundException,
 		MalformedURLException, InstantiationException, IllegalAccessException, IOException, IllegalStateException {
@@ -311,11 +280,6 @@ public class Job<T> implements IJob<T> {
 		}
 	}
 
-	/**
-	 *
-	 * @param cr
-	 * @throws IllegalStateException
-	 */
 	@Override
 	public void setClassToExecute(ConfigurableRunnable<T> cr) throws IllegalStateException {
 		if (classToExecute != null) {
@@ -324,11 +288,6 @@ public class Job<T> implements IJob<T> {
 		this.classToExecute = cr;
 	}
 
-	/**
-	 *
-	 * @param obj
-	 * @return
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) {
@@ -344,10 +303,6 @@ public class Job<T> implements IJob<T> {
 		return true;
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
 	public int hashCode() {
 		int hash = 3;
@@ -355,19 +310,11 @@ public class Job<T> implements IJob<T> {
 		return hash;
 	}
 
-	/**
-	 *
-	 * @param t
-	 */
 	@Override
 	public synchronized void setThrowable(Throwable t) {
 		this.throwable = t;
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	@Override
 	public Throwable getThrowable() {
 		return this.throwable;

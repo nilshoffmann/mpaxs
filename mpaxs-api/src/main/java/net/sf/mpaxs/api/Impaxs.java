@@ -124,7 +124,7 @@ public interface Impaxs {
 	 * Return the progress of a job currently beeing computed.
 	 *
 	 * @param jobId UUID of the job you want to get the progress from.
-	 * @return Progress Object of type shared.Progress.
+	 * @return Progress Object of type Progress.
 	 */
 	public Progress getJobProgress(UUID jobId);
 

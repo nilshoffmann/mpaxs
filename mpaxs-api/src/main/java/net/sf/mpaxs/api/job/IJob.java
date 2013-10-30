@@ -50,54 +50,65 @@ public interface IJob<T> extends Serializable {
 	void errorOccurred();
 
 	/**
+	 * Returns the <code>ConfigurableRunnable</code> instance to execute.
 	 *
-	 * @return
+	 * @return the instance to execute
 	 */
 	ConfigurableRunnable<T> getClassToExecute();
 
 	/**
+	 * Returns the configuration file location used by this job instance.
 	 *
-	 * @return
+	 * @return the configuration file location
 	 */
 	String getConfigurationFile();
 
 	/**
+	 * Returns the error number.
 	 *
-	 * @return
+	 * @return the number of errors that have ocurred
 	 */
 	int getErrorCounter();
 
 	/**
+	 * Returns the unique id for this job.
 	 *
-	 * @return
+	 * @return the unique job id
 	 */
 	UUID getId();
 
 	/**
+	 * Returns the file path to the job configuration file.
 	 *
-	 * @return
+	 * @return the file path to the job configuration file
 	 */
 	String getJobConfigFile();
 
 	/**
+	 * Returns the status of this job.
 	 *
-	 * @return
+	 * @return the status of this job
 	 */
 	Status getStatus();
 
 	/**
+	 * Set the job configuration file location.
 	 *
 	 * @param jobConfigFile
 	 */
 	void setJobConfigFile(String jobConfigFile);
 
 	/**
+	 * Set the status of this job.
 	 *
 	 * @param status
 	 */
 	void setStatus(Status status);
 
 	/**
+	 * Sets a job configuration file location which should contain the
+	 * fully qualified name of the class to be executed by this job. Must
+	 * implement <code>ConfigurableRunnable</code>.
 	 *
 	 * @param jobConfigFile
 	 * @throws ClassNotFoundException
@@ -110,20 +121,23 @@ public interface IJob<T> extends Serializable {
 		MalformedURLException, InstantiationException, IllegalAccessException, IOException;
 
 	/**
+	 * Set the <code>ConfigurableRunnable</code> to execute.
 	 *
-	 * @param cr
+	 * @param cr the instance to execute
 	 */
 	void setClassToExecute(ConfigurableRunnable<T> cr);
 
 	/**
+	 * Set the throwable, if an exception has occurred.
 	 *
-	 * @param t
+	 * @param t the throwable
 	 */
 	void setThrowable(Throwable t);
 
 	/**
+	 * Get the throwable.
 	 *
-	 * @return
+	 * @return the throwable or null if no exception has occurred
 	 */
 	Throwable getThrowable();
 
@@ -132,7 +146,7 @@ public interface IJob<T> extends Serializable {
 	 * Jobs with a lower priority will have to wait until they are scheduled for execution,
 	 * if any jobs with higher priorities are still in the job submission queue.
 	 *
-	 * @return
+	 * @return the job priority
 	 */
 	int getPriority();
 
@@ -141,7 +155,7 @@ public interface IJob<T> extends Serializable {
 	 * This does not change scheduling affinity, once the job has been
 	 * submitted for execution.
 	 *
-	 * @param priority
+	 * @param priority the job priority
 	 */
 	void setPriority(int priority);
 

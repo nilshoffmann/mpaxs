@@ -137,7 +137,7 @@ public class HostRegister {
 	 * @param name  Name of the Host
 	 * @param ip    IP of the server the Host is running on
 	 * @param cores Numer of available cores
-	 * @return
+	 * @return the uuid of the new host
 	 */
 	public UUID newHost(final String name, final String ip, final int cores) {
 		UUID hostID = UUID.nameUUIDFromBytes((name + ":" + ip).getBytes());

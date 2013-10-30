@@ -184,10 +184,7 @@ public class ScheduledJob<T> implements IScheduledJob<T> {
 		if (this.timeUnit != other.timeUnit) {
 			return false;
 		}
-		if (this.delegate != other.delegate && (this.delegate == null || !this.delegate.equals(other.delegate))) {
-			return false;
-		}
-		return true;
+		return this.delegate == other.delegate || (this.delegate != null && this.delegate.equals(other.delegate));
 	}
 
 	@Override

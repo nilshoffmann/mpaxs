@@ -39,29 +39,31 @@ import org.apache.commons.configuration.Configuration;
 public interface IRemoteHost extends Thread.UncaughtExceptionHandler {
 
 	/**
-	 * Meldet diesen Host vom Server ab.
+	 * Disconnects this host from the master server.
 	 *
-	 * @return true = erfolgreich abgemeldet, false = Abmeldung fehlgeschlagen
+	 * @return true if successul, false otherwise
 	 */
 	boolean disconnectFromMasterServer();
 
 	/**
+	 * Notify the master server of a finished job
 	 *
-	 * @param job
+	 * @param job the finished job
 	 */
 	void sendDoneJob(IJob job);
 
 	/**
-	 * Meldet das RemoteObject ab und schließt danach das Programm.
+	 * Disconnect the compute host before initiating a shutdown.
 	 *
-	 * @param obj RemoteObject
+	 * @param obj the remote reference
 	 */
 	void shutdown(Remote obj);
 
 	/**
+	 * Catch uncaught exceptions.
 	 *
-	 * @param t
-	 * @param e
+	 * @param t the thread which raised the exception
+	 * @param e the throwable (exception)
 	 */
 	@Override
 	void uncaughtException(Thread t, Throwable e);
@@ -70,7 +72,7 @@ public interface IRemoteHost extends Thread.UncaughtExceptionHandler {
 	 * Sets the authentication token required to connect to the correct
 	 * master server.
 	 *
-	 * @param authToken
+	 * @param authToken the authentication token
 	 */
 	void setAuthenticationToken(UUID authToken);
 
@@ -82,19 +84,21 @@ public interface IRemoteHost extends Thread.UncaughtExceptionHandler {
 	UUID getHostId();
 
 	/**
+	 * Returns the authentication token used for the current session.
 	 *
-	 * @return
+	 * @return the authentication token
 	 */
 	UUID getAuthenticationToken();
 
 	/**
-	 *
+	 * Starts the compute host.
 	 */
 	void startComputeHost();
 
 	/**
+	 * Sets the configuration of this compute host.
 	 *
-	 * @param cfg
+	 * @param cfg the configuration
 	 */
 	void configure(Configuration cfg);
 
