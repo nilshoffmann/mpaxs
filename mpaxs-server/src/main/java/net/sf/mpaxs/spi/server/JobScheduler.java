@@ -1,6 +1,6 @@
 /*
  * Mpaxs, modular parallel execution system.
- * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
+ * Copyright (C) 2010-2013, The authors of Mpaxs. All rights reserved.
  *
  * Project website: http://mpaxs.sf.net
  *
@@ -96,8 +96,8 @@ public class JobScheduler implements Runnable, IComputeHostEventListener {
 	public void run() {
 		if (current == null) {
 			MyConcurrentLinkedJobQueue queue = master.getPendingJobs();
-			if (!queue.isEmpty()) {
-				Logger.getLogger(JobScheduler.class.getName()).log(Level.INFO, "Pending jobs: {0}", queue);
+			if (!queue.isEmpty() && Logger.getLogger(JobScheduler.class.getName()).isLoggable(Level.FINE)) {
+				Logger.getLogger(JobScheduler.class.getName()).log(Level.FINE, "Pending jobs: {0}", queue);
 			}
 			current = master.getPendingJob();
 		}

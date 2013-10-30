@@ -1,6 +1,6 @@
 /*
  * Mpaxs, modular parallel execution system.
- * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
+ * Copyright (C) 2010-2013, The authors of Mpaxs. All rights reserved.
  *
  * Project website: http://mpaxs.sf.net
  *

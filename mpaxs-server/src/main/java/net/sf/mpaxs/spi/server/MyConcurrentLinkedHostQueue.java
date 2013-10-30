@@ -1,6 +1,6 @@
 /*
- * Mpaxs, modular parallel execution system. 
- * Copyright (C) 2010-2012, The authors of Mpaxs. All rights reserved.
+ * Mpaxs, modular parallel execution system.
+ * Copyright (C) 2010-2013, The authors of Mpaxs. All rights reserved.
  *
  * Project website: http://mpaxs.sf.net
  *
@@ -14,12 +14,12 @@
  * Eclipse Public License (EPL)
  * http://www.eclipse.org/org/documents/epl-v10.php
  *
- * As a user/recipient of Mpaxs, you may choose which license to receive the code 
- * under. Certain files or entire directories may not be covered by this 
+ * As a user/recipient of Mpaxs, you may choose which license to receive the code
+ * under. Certain files or entire directories may not be covered by this
  * dual license, but are subject to licenses compatible to both LGPL and EPL.
- * License exceptions are explicitly declared in all relevant files or in a 
+ * License exceptions are explicitly declared in all relevant files or in a
  * LICENSE file in the relevant directories.
- * 
+ *
  * Mpaxs is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  * FOR A PARTICULAR PURPOSE. Please consult the relevant license documentation
@@ -38,31 +38,31 @@ import java.util.concurrent.TimeUnit;
  */
 public class MyConcurrentLinkedHostQueue extends LinkedBlockingQueue<Host> {
 
-    private HashMap<UUID, Host> queueBack = new HashMap<UUID, Host>();
+	private final HashMap<UUID, Host> queueBack = new HashMap<UUID, Host>();
 
-    public MyConcurrentLinkedHostQueue() {
-        super();
-    }
+	public MyConcurrentLinkedHostQueue() {
+		super();
+	}
 
-    public HashMap<UUID, Host> getAll() {
-        return queueBack;
-    }
+	public HashMap<UUID, Host> getAll() {
+		return queueBack;
+	}
 
-    public Host get(UUID hostId){
-        return queueBack.get(hostId);
-    }
+	public Host get(UUID hostId) {
+		return queueBack.get(hostId);
+	}
 
-    public boolean containsKey(UUID hostId){
-        return queueBack.containsKey(hostId);
-    }
+	public boolean containsKey(UUID hostId) {
+		return queueBack.containsKey(hostId);
+	}
 
-    public Host remove(UUID hostId) {
-        Host host = queueBack.get(hostId);
-        super.remove(host);
-        queueBack.remove(hostId);
-        return host;
+	public Host remove(UUID hostId) {
+		Host host = queueBack.get(hostId);
+		super.remove(host);
+		queueBack.remove(hostId);
+		return host;
 
-    }
+	}
 
 	@Override
 	public void put(Host e) throws InterruptedException {
@@ -72,7 +72,7 @@ public class MyConcurrentLinkedHostQueue extends LinkedBlockingQueue<Host> {
 
 	@Override
 	public boolean offer(Host e, long timeout, TimeUnit unit) throws InterruptedException {
-		if(super.offer(e, timeout, unit)) {
+		if (super.offer(e, timeout, unit)) {
 			queueBack.put(e.getId(), e);
 			return true;
 		}
@@ -81,45 +81,45 @@ public class MyConcurrentLinkedHostQueue extends LinkedBlockingQueue<Host> {
 
 	@Override
 	public Host take() throws InterruptedException {
-		Host host = super.take(); 
+		Host host = super.take();
 		queueBack.remove(host.getId());
 		return host;
 	}
 
 	@Override
 	public Host poll(long timeout, TimeUnit unit) throws InterruptedException {
-		Host host = super.poll(timeout, unit); 
+		Host host = super.poll(timeout, unit);
 		queueBack.remove(host.getId());
 		return host;
 	}
 
 	@Override
 	public Host peek() {
-		return super.peek(); 
+		return super.peek();
 	}
 
-    @Override
-    public boolean offer(Host host) {
-        if (super.offer(host)) {
-            queueBack.put(host.getId(), host);
-            return true;
-        } else {
-            return false;
-        }
-    }
+	@Override
+	public boolean offer(Host host) {
+		if (super.offer(host)) {
+			queueBack.put(host.getId(), host);
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-    @Override
-    public boolean add(Host host) {
-        queueBack.put(host.getId(), host);
-        return super.offer(host);
-    }
+	@Override
+	public boolean add(Host host) {
+		queueBack.put(host.getId(), host);
+		return super.offer(host);
+	}
 
-    @Override
-    public Host poll() {
-        Host ret = super.poll();
-        if (ret != null) {
-            queueBack.remove(ret.getId());
-        }
-        return ret;
-    }
+	@Override
+	public Host poll() {
+		Host ret = super.poll();
+		if (ret != null) {
+			queueBack.remove(ret.getId());
+		}
+		return ret;
+	}
 }
