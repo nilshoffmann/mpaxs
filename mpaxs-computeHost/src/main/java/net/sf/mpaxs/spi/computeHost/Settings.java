@@ -61,7 +61,12 @@ public class Settings {
 	private final PropertiesConfiguration config = new PropertiesConfiguration();
 
 	//overwrites defaults
-	public Settings(Configuration config) {
+
+	/**
+	 *
+	 * @param config
+	 */
+		public Settings(Configuration config) {
 		this();
 		//overwrite defaults
 		Iterator iter = config.getKeys();
@@ -71,6 +76,9 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 */
 	public Settings() {
 		load();
 	}
@@ -96,14 +104,30 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @param key
+	 * @param value
+	 */
 	public void setOption(String key, String value) {
 		this.config.setProperty(key, value);
 	}
 
+	/**
+	 *
+	 * @param key
+	 * @return
+	 */
 	public String getOption(String key) {
 		return getOption(key, null);
 	}
 
+	/**
+	 *
+	 * @param key
+	 * @param defaultValue
+	 * @return
+	 */
 	public String getOption(String key, String defaultValue) {
 		if (this.config.containsKey(key)) {
 			return this.config.getString(key);
@@ -150,53 +174,97 @@ public class Settings {
 		return config.getString(key);
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getLocalPort() {
 		int ret = getInt(ConfigurationKeys.KEY_LOCAL_PORT);
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getMasterServerTimeout() {
 		int ret = getInt(ConfigurationKeys.KEY_MASTER_SERVER_TIMEOUT);
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getTimeoutBeforeShutdown() {
 		int ret = getInt(ConfigurationKeys.KEY_TIMEOUT_BEFORE_SHUTDOWN);
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public IRemoteServer getRemoteReference() {
 		return remoteReference;
 	}
 
+	/**
+	 *
+	 * @param remoteReference
+	 */
 	public void setRemoteReference(IRemoteServer remoteReference) {
 		this.remoteReference = remoteReference;
 	}
 
+	/**
+	 *
+	 * @param hostID
+	 */
 	public void setHostID(UUID hostID) {
 		this.hostID = hostID;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getMasterServerPort() {
 		int ret = getInt(ConfigurationKeys.KEY_MASTERSERVER_PORT);
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getMasterServerIP() {
 		String ret = getString(ConfigurationKeys.KEY_MASTERSERVER_IP);
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getCores() {
 		int ret = getInt(ConfigurationKeys.KEY_NUMBER_OF_CORES);
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getLocalIp() {
 		String ret = getString(ConfigurationKeys.KEY_LOCAL_IP);
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getName() {
 		String ret = getString(ConfigurationKeys.KEY_NAME);
 		if (ret == null) {
@@ -206,25 +274,46 @@ public class Settings {
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 * @throws MalformedURLException
+	 */
 	public URL getCodebase() throws MalformedURLException {
 		String ret = getString(ConfigurationKeys.KEY_CODEBASE);
 		return new File(ret).toURI().toURL();
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public UUID getHostID() {
 		return hostID;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getPolicyName() {
 		String ret = getString(ConfigurationKeys.KEY_POLICY_NAME);
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getMasterServerName() {
 		String ret = getString(ConfigurationKeys.KEY_MASTERSERVER_NAME);
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public boolean getSilentMode() {
 		String ret = getString(ConfigurationKeys.KEY_SILENT_MODE);
 		if (ret == null) {
@@ -247,11 +336,19 @@ public class Settings {
 		return null;
 	}
 
+	/**
+	 *
+	 * @param DEFAULT_MASTERSERVER_IP
+	 */
 	public void setDEFAULT_MASTERSERVER_IP(String DEFAULT_MASTERSERVER_IP) {
 		config.setProperty(ConfigurationKeys.KEY_MASTERSERVER_IP,
 			DEFAULT_MASTERSERVER_IP);
 	}
 
+	/**
+	 *
+	 * @param DEFAULT_PORT
+	 */
 	public void setDEFAULT_PORT(String DEFAULT_PORT) {
 		config.setProperty(ConfigurationKeys.KEY_LOCAL_PORT, Integer.parseInt(
 			DEFAULT_PORT));

@@ -55,20 +55,40 @@ public class StartUp {
         startUP(null);
     }
 
-    public static MasterServer start() {
+	/**
+	 *
+	 * @return
+	 */
+	public static MasterServer start() {
         return startUP(null);
     }
 
-    public static MasterServer start(String configFile) {
+	/**
+	 *
+	 * @param configFile
+	 * @return
+	 */
+	public static MasterServer start(String configFile) {
         Settings.setConfigFile(configFile);
         return startUP(null);
     }
 
-    public static void setOption(String name, String value) {
+	/**
+	 *
+	 * @param name
+	 * @param value
+	 */
+	public static void setOption(String name, String value) {
         Settings.getInstance().setOption(name, value);
     }
 
-    public static MasterServer start(String configFile, Container c) {
+	/**
+	 *
+	 * @param configFile
+	 * @param c
+	 * @return
+	 */
+	public static MasterServer start(String configFile, Container c) {
         Settings.setConfigFile(configFile);
         return startUP(c);
     }

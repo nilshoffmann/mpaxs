@@ -60,53 +60,99 @@ public class Host {
         this.hostID = hostID;
     }
 
-    public int getNumberOfJobs() {
+	/**
+	 *
+	 * @return
+	 */
+	public int getNumberOfJobs() {
         return numberOfJobs;
     }
 
-    public int getFreeCores() {
+	/**
+	 *
+	 * @return
+	 */
+	public int getFreeCores() {
         return freeCores;
     }
 
-    public void oneCoreMoreUsed() {
+	/**
+	 *
+	 */
+	public void oneCoreMoreUsed() {
         freeCores = freeCores - 1;
         numberOfJobs = numberOfJobs + 1;
     }
 
-    public void oneCoreUnused() {
+	/**
+	 *
+	 */
+	public void oneCoreUnused() {
         freeCores = freeCores + 1;
         numberOfJobs = numberOfJobs - 1;
     }
 
-    public UUID getId() {
+	/**
+	 *
+	 * @return
+	 */
+	public UUID getId() {
         return hostID;
     }
 
-    public int getJobID(){
+	/**
+	 *
+	 * @return
+	 */
+	public int getJobID(){
         return jobID;
     }
 
-    public void changejobID(int jobID){
+	/**
+	 *
+	 * @param jobID
+	 */
+	public void changejobID(int jobID){
         this.jobID = jobID;
     }
 
-    public int getStatus(){
+	/**
+	 *
+	 * @return
+	 */
+	public int getStatus(){
         return status;
     }
 
-    public void changeStatus(int status){
+	/**
+	 *
+	 * @param status
+	 */
+	public void changeStatus(int status){
         this.status = status;
     }
 
-    public String getName(){
+	/**
+	 *
+	 * @return
+	 */
+	public String getName(){
         return name;
     }
 
-    public String getIP(){
+	/**
+	 *
+	 * @return
+	 */
+	public String getIP(){
         return ip;
     }
 
-    public int getCores() {
+	/**
+	 *
+	 * @return
+	 */
+	public int getCores() {
         return cores;
     }
 

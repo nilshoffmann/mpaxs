@@ -60,11 +60,19 @@ public class EventLogger {
         }
     }
 
-    public static EventLogger getInstance() {
+	/**
+	 *
+	 * @return
+	 */
+	public static EventLogger getInstance() {
         return instance;
     }
 
-    public Logger getLogger() {
+	/**
+	 *
+	 * @return
+	 */
+	public Logger getLogger() {
         return logger;
     }
 }

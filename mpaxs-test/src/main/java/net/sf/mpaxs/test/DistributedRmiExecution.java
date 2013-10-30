@@ -54,6 +54,11 @@ public class DistributedRmiExecution implements Callable<Double>, Serializable {
 	private final int maxJobs;
 	private final PropertiesConfiguration cfg;
 
+	/**
+	 *
+	 * @param cfg
+	 * @param maxJobs
+	 */
 	public DistributedRmiExecution(PropertiesConfiguration cfg, int maxJobs) {
 		this.cfg = cfg;
 		this.maxJobs = maxJobs;

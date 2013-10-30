@@ -65,10 +65,20 @@ public class Progress implements Serializable {
 		return progressValue;
 	}
 
+	/**
+	 * Set the progress message.
+	 *
+	 * @param message the message
+	 */
 	public void setMessage(String message) {
 		this.message = message;
 	}
 
+	/**
+	 * Returns the current message
+	 *
+	 * @return the message
+	 */
 	public String getMesaage() {
 		return message;
 	}

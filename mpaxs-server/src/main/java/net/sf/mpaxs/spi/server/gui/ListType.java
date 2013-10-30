@@ -32,5 +32,34 @@ package net.sf.mpaxs.spi.server.gui;
  * @author Kai Bernd Stadermann
  */
 public enum ListType {
-    WAITING, RUNNING, DONE, FAILED, HOSTS, MESSAGE;
+
+	/**
+	 *
+	 */
+	WAITING,
+
+	/**
+	 *
+	 */
+	RUNNING,
+
+	/**
+	 *
+	 */
+	DONE,
+
+	/**
+	 *
+	 */
+	FAILED,
+
+	/**
+	 *
+	 */
+	HOSTS,
+
+	/**
+	 *
+	 */
+	MESSAGE;
 }

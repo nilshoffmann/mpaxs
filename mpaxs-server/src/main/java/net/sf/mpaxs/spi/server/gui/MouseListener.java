@@ -38,7 +38,12 @@ public class MouseListener implements java.awt.event.MouseListener{
     private ListType type;
     private MainFrame main;
 
-    public MouseListener(ListType type, MainFrame main){
+	/**
+	 *
+	 * @param type
+	 * @param main
+	 */
+	public MouseListener(ListType type, MainFrame main){
         this.type = type;
         this.main = main;
     }

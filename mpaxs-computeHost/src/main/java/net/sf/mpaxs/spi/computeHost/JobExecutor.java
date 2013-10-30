@@ -55,6 +55,13 @@ public class JobExecutor extends Thread implements Thread.UncaughtExceptionHandl
 	private ExecutorService executor = null;
 	private boolean jobFailed = false;
 
+	/**
+	 *
+	 * @param job
+	 * @param host
+	 * @param server
+	 * @param jobLocation
+	 */
 	public JobExecutor(IJob job, IRemoteHost host, IRemoteServer server, Map<UUID, JobExecutor> jobLocation) {
 		this.job = job;
 		this.host = host;
@@ -108,6 +115,10 @@ public class JobExecutor extends Thread implements Thread.UncaughtExceptionHandl
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public Progress getJobProgress() {
 		return job.getClassToExecute().getProgress();
 	}

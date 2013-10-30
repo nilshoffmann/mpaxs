@@ -52,6 +52,13 @@ public class SubmitThread implements Runnable {
 	private Settings settings = Settings.getInstance();
 	private Reporter reporter = Reporter.getInstance();
 
+	/**
+	 *
+	 * @param job
+	 * @param remRef
+	 * @param master
+	 * @param host
+	 */
 	public SubmitThread(IJob job, IComputeHost remRef, MasterServer master, Host host) {
 		this.job = job;
 		this.remRef = remRef;

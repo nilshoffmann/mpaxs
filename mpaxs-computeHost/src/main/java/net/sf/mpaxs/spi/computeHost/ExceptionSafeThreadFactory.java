@@ -39,6 +39,10 @@ public final class ExceptionSafeThreadFactory implements ThreadFactory {
 	private final ThreadFactory threadFactory = Executors.defaultThreadFactory();
 	private final Thread.UncaughtExceptionHandler handler;
 
+	/**
+	 *
+	 * @param handler
+	 */
 	public ExceptionSafeThreadFactory(Thread.UncaughtExceptionHandler handler) {
 		this.handler = handler;
 	}

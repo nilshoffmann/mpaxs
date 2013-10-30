@@ -96,6 +96,10 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 	//generate a random id for this master server
 	private UUID authToken = UUID.randomUUID();
 
+	/**
+	 *
+	 * @param c
+	 */
 	public MasterServer(Container c) {
 		settings = Settings.getInstance();
 		settings.setOption(ConfigurationKeys.KEY_AUTH_TOKEN, authToken.toString());
@@ -262,22 +266,42 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public HashMap<UUID, Host> getHosts() {
 		return register.getHosts();
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public HashMap<UUID, IJob> getRunningJobs() {
 		return runningJobs;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public HashMap<UUID, IJob> getDoneJobs() {
 		return doneJobs;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public MyConcurrentLinkedJobQueue getPendingJobs() {
 		return pendingJobs;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public HashMap<UUID, IJob> getCanceledJobs() {
 		return canceledJobs;
 	}
@@ -336,6 +360,11 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @param jobID
+	 * @return
+	 */
 	public Progress getJobProgress(UUID jobID) {
 		if (!isShutdown) {
 			Host host = getHostJobIsRunningOn(jobID);
@@ -363,10 +392,18 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public List<String> getFailedJobs() {
 		return failedJobs;
 	}
 
+	/**
+	 *
+	 * @param job
+	 */
 	public void addDoneJob(IJob job) {
 		if (!this.isShutdown) {
 			Host host = getHostJobIsRunningOn(job.getId());
@@ -384,6 +421,11 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @param chunksize
+	 * @return
+	 */
 	public Collection<IJob> getPendingJobsChunk(int chunksize) {
 		if (!this.isShutdown) {
 			Collection<IJob> ret = pendingJobs.poll(chunksize);
@@ -393,6 +435,10 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public IJob getPendingJob() {
 		if (!this.isShutdown) {
 			IJob ret = pendingJobs.poll();
@@ -402,6 +448,9 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 */
 	public void printDoneJobs() {
 		for (Iterator<UUID> i = doneJobs.keySet().iterator(); i.hasNext();) {
 			try {
@@ -458,6 +507,11 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @param jobId
+	 * @return
+	 */
 	public boolean cancelJob(UUID jobId) {
 		if (!this.isShutdown) {
 			Host host = getHostJobIsRunningOn(jobId);
@@ -499,6 +553,10 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @param job
+	 */
 	public void jobComputationFailed(IJob job) {
 		if (!this.isShutdown) {
 			UUID jobId = job.getId();
@@ -538,6 +596,11 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @param jobId
+	 * @return
+	 */
 	public IJob findJob(UUID jobId) {
 		if (pendingJobs.containsJobWithID(jobId)) {
 			return pendingJobs.getJob(jobId);
@@ -554,6 +617,11 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		return null;
 	}
 
+	/**
+	 *
+	 * @param job
+	 * @param host
+	 */
 	public void jobOnHost(IJob job, Host host) {
 		if (!isShutdown) {
 			jobRunningOnHost.put(job.getId(), host);
@@ -570,6 +638,10 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @param name
+	 */
 	public void addFailedJob(String name) {
 		if (!isShutdown) {
 			failedJobs.add(name);
@@ -579,6 +651,10 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @param job
+	 */
 	public void jobChanged(final IJob job) {
 		if (!isShutdown) {
 			Runnable r = new Runnable() {
@@ -598,10 +674,21 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		}
 	}
 
+	/**
+	 *
+	 * @param listener
+	 * @return
+	 */
 	public final boolean addListener(IJobEventListener listener) {
 		return generalListeners.add(listener);
 	}
 
+	/**
+	 *
+	 * @param listener
+	 * @param jobId
+	 * @return
+	 */
 	public final boolean addListener(IJobEventListener listener, UUID jobId) {
 		boolean b = false;
 		if (listeners.containsKey(jobId)) {
@@ -615,10 +702,21 @@ public class MasterServer implements Thread.UncaughtExceptionHandler {
 		return b;
 	}
 
+	/**
+	 *
+	 * @param listener
+	 * @return
+	 */
 	public boolean removeListener(IJobEventListener listener) {
 		return generalListeners.remove(listener);
 	}
 
+	/**
+	 *
+	 * @param listener
+	 * @param jobId
+	 * @return
+	 */
 	public boolean removeListener(IJobEventListener listener, UUID jobId) {
 		boolean b = false;
 		if (listeners.containsKey(jobId)) {

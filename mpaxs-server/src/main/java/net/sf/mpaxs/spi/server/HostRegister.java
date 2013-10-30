@@ -80,6 +80,13 @@ public class HostRegister {
 	private final AtomicInteger hostLaunchRetries = new AtomicInteger(0);
 	private final AtomicInteger maxHostLaunchRetries = new AtomicInteger(1);
 
+	/**
+	 * Shutdown the host register.
+	 *
+	 * @param timeout  maximum time to wait before hard shutdown
+	 * @param timeUnit time unit for timeout
+	 * @throws InterruptedException
+	 */
 	public void shutdown(long timeout, TimeUnit timeUnit) throws InterruptedException {
 		HashMap<UUID, Host> hosts = getHosts();
 		try {
@@ -415,10 +422,18 @@ public class HostRegister {
 		return listeners.remove(listener);
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getNumberOfHosts() {
 		return Math.max(hosts.size(), hostsLaunched.get());
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String[] getHostIps() {
 		HashMap<UUID, Host> allHosts = hosts.getAll();
 		String[] ret = new String[allHosts.size()];

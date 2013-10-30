@@ -45,6 +45,11 @@ public class ConfigurableCallable<V> implements ConfigurableRunnable<V>, Callabl
 
 	private ConfigurableRunnable<V> cr;
 
+	/**
+	 * Create a new instance.
+	 *
+	 * @param cr the configurable runnable
+	 */
 	public ConfigurableCallable(ConfigurableRunnable<V> cr) {
 		this.cr = cr;
 	}

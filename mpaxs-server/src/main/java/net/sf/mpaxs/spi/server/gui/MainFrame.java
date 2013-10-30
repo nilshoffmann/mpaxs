@@ -36,164 +36,193 @@ import java.util.UUID;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import net.sf.mpaxs.api.event.IJobEventListener;
 import net.sf.mpaxs.api.job.IJob;
+import net.sf.mpaxs.api.job.Status;
 import net.sf.mpaxs.spi.server.Host;
 import net.sf.mpaxs.spi.server.MasterServer;
 import net.sf.mpaxs.spi.server.messages.IComputeHostEventListener;
-import net.sf.mpaxs.api.event.IJobEventListener;
-import net.sf.mpaxs.spi.server.settings.Settings;
 import net.sf.mpaxs.spi.server.messages.IReceiver;
-import net.sf.mpaxs.api.job.Status;
+import net.sf.mpaxs.spi.server.settings.Settings;
 
 /**
  *
  * @author Kai Bernd Stadermann
  */
 public class MainFrame implements IReceiver, IJobEventListener,
-        IComputeHostEventListener {
+	IComputeHostEventListener {
 
-    private MasterServer master;
-    private Settings settings = Settings.getInstance();
-    private DefaultListModel messages = new DefaultListModel();
-    private DefaultListModel hosts = new DefaultListModel();
-    private DefaultListModel waiting = new DefaultListModel();
-    private DefaultListModel running = new DefaultListModel();
-    private DefaultListModel done = new DefaultListModel();
-    private DefaultListModel failed = new DefaultListModel();
-    private Container c = null;
+	private MasterServer master;
+	private Settings settings = Settings.getInstance();
+	private DefaultListModel messages = new DefaultListModel();
+	private DefaultListModel hosts = new DefaultListModel();
+	private DefaultListModel waiting = new DefaultListModel();
+	private DefaultListModel running = new DefaultListModel();
+	private DefaultListModel done = new DefaultListModel();
+	private DefaultListModel failed = new DefaultListModel();
+	private Container c = null;
 
-    /** Creates new form MainFrame */
-    public MainFrame(MasterServer master, Container c) {
-        if (c == null) {
-            this.c = new JFrame("Mpaxs MasterServer");
-        } else {
-            this.c = c;
-        }
-        this.master = master;
-        initComponents();
-        master.addListener(this);
-        masterServerIP.setText(settings.getLocalIP() + ":" + settings.getLocalPort());
-        if (this.c instanceof Window) {
-            ((Window) this.c).addWindowListener(new CleanExiting(master, (Window) this.c));
-        }
-        setUpListSelectionListeners();
-        this.c.setVisible(true);
-        
-    }
+	/**
+	 * Creates new form MainFrame
+	 *
+	 * @param master
+	 * @param c
+	 */
+	public MainFrame(MasterServer master, Container c) {
+		if (c == null) {
+			this.c = new JFrame("Mpaxs MasterServer");
+		} else {
+			this.c = c;
+		}
+		this.master = master;
+		initComponents();
+		master.addListener(this);
+		masterServerIP.setText(settings.getLocalIP() + ":" + settings.getLocalPort());
+		if (this.c instanceof Window) {
+			((Window) this.c).addWindowListener(new CleanExiting(master, (Window) this.c));
+		}
+		setUpListSelectionListeners();
+		this.c.setVisible(true);
 
-    private void setUpListSelectionListeners() {
-        computeHostList.addMouseListener(new MouseListener(ListType.HOSTS, this));
-        waitingJobs.addMouseListener(new MouseListener(ListType.WAITING, this));
-        runningJobs.addMouseListener(new MouseListener(ListType.RUNNING, this));
-        doneJobs.addMouseListener(new MouseListener(ListType.DONE, this));
-        failedJobs.addMouseListener(new MouseListener(ListType.FAILED, this));
-    }
+	}
 
-    public void updateFailedJobs(String name) {
-        failed.addElement(name);
-    }
-    
-    @Override
-    public void hostAdded(Host host) {
-        hosts.addElement(host);
-    }
+	private void setUpListSelectionListeners() {
+		computeHostList.addMouseListener(new MouseListener(ListType.HOSTS, this));
+		waitingJobs.addMouseListener(new MouseListener(ListType.WAITING, this));
+		runningJobs.addMouseListener(new MouseListener(ListType.RUNNING, this));
+		doneJobs.addMouseListener(new MouseListener(ListType.DONE, this));
+		failedJobs.addMouseListener(new MouseListener(ListType.FAILED, this));
+	}
 
-    @Override
-    public void hostRemoved(Host host) {
-        hosts.removeElement(host);
-    }
+	/**
+	 *
+	 * @param name
+	 */
+	public void updateFailedJobs(String name) {
+		failed.addElement(name);
+	}
 
-    @Override
-    public void jobChanged(final IJob job) {
-        Runnable r = new Runnable() {
+	/**
+	 *
+	 * @param host
+	 */
+	@Override
+	public void hostAdded(Host host) {
+		hosts.addElement(host);
+	}
 
-            @Override
-            public void run() {
-                Status status = job.getStatus();
-                switch (status) {
-                    case WAITING:
-                        running.removeElement(job.getId());
-                        waiting.addElement(job.getId());
-                        break;
-                    case RUNNING:
-                        waiting.removeElement(job.getId());
-                        running.addElement(job.getId());
-                        break;
-                    case DONE:
-                        running.removeElement(job.getId());
-                        done.addElement(job.getId());
-                        break;
-                    case ERROR:
-                        running.removeElement(job.getId());
-                        waiting.removeElement(job.getId());
-                        failed.addElement(job.getId());
-                        break;
-                    case CANCELED:
-                        running.removeElement(job.getId());
-                        waiting.removeElement(job.getId());
-                        failed.addElement(job.getId());
-                        break;
-                }
-            }
-        };
-        SwingUtilities.invokeLater(r);
-    }
+	/**
+	 *
+	 * @param host
+	 */
+	@Override
+	public void hostRemoved(Host host) {
+		hosts.removeElement(host);
+	}
 
-    @Override
-    public void newMessage(final String message) {
-        messages.addElement(message);
-    }
+	@Override
+	public void jobChanged(final IJob job) {
+		Runnable r = new Runnable() {
 
-    protected void openComputeHostInfo() {
-        int index = computeHostList.getSelectedIndex();
-        if (index < hosts.size() && 0 < hosts.size()) {
-            new ComputeHostInfo((Host) hosts.get(index), master);
-        }
-    }
+			@Override
+			public void run() {
+				Status status = job.getStatus();
+				switch (status) {
+					case WAITING:
+						running.removeElement(job.getId());
+						waiting.addElement(job.getId());
+						break;
+					case RUNNING:
+						waiting.removeElement(job.getId());
+						running.addElement(job.getId());
+						break;
+					case DONE:
+						running.removeElement(job.getId());
+						done.addElement(job.getId());
+						break;
+					case ERROR:
+						running.removeElement(job.getId());
+						waiting.removeElement(job.getId());
+						failed.addElement(job.getId());
+						break;
+					case CANCELED:
+						running.removeElement(job.getId());
+						waiting.removeElement(job.getId());
+						failed.addElement(job.getId());
+						break;
+				}
+			}
+		};
+		SwingUtilities.invokeLater(r);
+	}
 
-    protected void openJobInfo(ListType type) {
-        int index;
-        switch (type) {
-            case WAITING:
-                index = waitingJobs.getSelectedIndex();
-                if (index < waiting.size() && 0 < waiting.size()) {
-                    new JobInfo((UUID) waiting.get(index), master);
-                }
-                break;
-            case RUNNING:
-                index = runningJobs.getSelectedIndex();
-                if (index < running.size() && 0 < running.size()) {
-                    new JobInfo((UUID) running.get(index), master);
-                }
-                break;
-            case DONE:
-                index = doneJobs.getSelectedIndex();
-                if (index < done.size() && 0 < done.size()) {
-                    new JobInfo((UUID) done.get(index), master);
-                }
-                break;
-            case FAILED:
-                index = failedJobs.getSelectedIndex();
-                if (index < failed.size() && 0 < failed.size()) {
-                    try {
-                        UUID id = (UUID) failed.get(index);
-                        new JobInfo(id, master);
-                    } catch (ClassCastException ex) {
-                        String name = (String) failed.get(index);
-                        new JobInfo(name);
-                    }
+	/**
+	 *
+	 * @param message
+	 */
+	@Override
+	public void newMessage(final String message) {
+		messages.addElement(message);
+	}
 
-                }
-                break;
-        }
-    }
+	/**
+	 *
+	 */
+	protected void openComputeHostInfo() {
+		int index = computeHostList.getSelectedIndex();
+		if (index < hosts.size() && 0 < hosts.size()) {
+			new ComputeHostInfo((Host) hosts.get(index), master);
+		}
+	}
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
+	/**
+	 *
+	 * @param type
+	 */
+	protected void openJobInfo(ListType type) {
+		int index;
+		switch (type) {
+			case WAITING:
+				index = waitingJobs.getSelectedIndex();
+				if (index < waiting.size() && 0 < waiting.size()) {
+					new JobInfo((UUID) waiting.get(index), master);
+				}
+				break;
+			case RUNNING:
+				index = runningJobs.getSelectedIndex();
+				if (index < running.size() && 0 < running.size()) {
+					new JobInfo((UUID) running.get(index), master);
+				}
+				break;
+			case DONE:
+				index = doneJobs.getSelectedIndex();
+				if (index < done.size() && 0 < done.size()) {
+					new JobInfo((UUID) done.get(index), master);
+				}
+				break;
+			case FAILED:
+				index = failedJobs.getSelectedIndex();
+				if (index < failed.size() && 0 < failed.size()) {
+					try {
+						UUID id = (UUID) failed.get(index);
+						new JobInfo(id, master);
+					} catch (ClassCastException ex) {
+						String name = (String) failed.get(index);
+						new JobInfo(name);
+					}
+
+				}
+				break;
+		}
+	}
+
+	/**
+	 * This method is called from within the constructor to
+	 * initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is
+	 * always regenerated by the Form Editor.
+	 */
+	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -369,19 +398,19 @@ public class MainFrame implements IReceiver, IJobEventListener,
     }// </editor-fold>//GEN-END:initComponents
 
     private void pathToConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pathToConfigActionPerformed
-        jButton1ActionPerformed(evt);
+		jButton1ActionPerformed(evt);
     }//GEN-LAST:event_pathToConfigActionPerformed
 
     private void openFileChooserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFileChooserActionPerformed
-        new FileChooser(pathToConfig).setVisible(true);
+		new FileChooser(pathToConfig).setVisible(true);
     }//GEN-LAST:event_openFileChooserActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (!pathToConfig.getText().isEmpty()) {
-            File job = new File(pathToConfig.getText());
-            job.renameTo(new File(settings.getInputDir() + File.separator + job.getName()));
-            pathToConfig.setText("");
-        }
+		if (!pathToConfig.getText().isEmpty()) {
+			File job = new File(pathToConfig.getText());
+			job.renameTo(new File(settings.getInputDir() + File.separator + job.getName()));
+			pathToConfig.setText("");
+		}
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList computeHostList;
@@ -407,35 +436,39 @@ public class MainFrame implements IReceiver, IJobEventListener,
     private javax.swing.JScrollPane waitingJobsScrollPane;
     // End of variables declaration//GEN-END:variables
 
-    private void setDefaultCloseOperation(int DO_NOTHING_ON_CLOSE) {
-        if (this.c instanceof Window) {
-            ((Window)this.c).addWindowListener(new WindowAdapter() {
+	private void setDefaultCloseOperation(int DO_NOTHING_ON_CLOSE) {
+		if (this.c instanceof Window) {
+			((Window) this.c).addWindowListener(new WindowAdapter() {
 
-                @Override
-                public void windowClosing(WindowEvent we) {
-                    System.out.println("Closing Window!");
-                    master.shutdown();
-                }
-            });
-        }
-        if (this.c instanceof JFrame) {
-            ((JFrame) this.c).setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        }
-    }
+				@Override
+				public void windowClosing(WindowEvent we) {
+					System.out.println("Closing Window!");
+					master.shutdown();
+				}
+			});
+		}
+		if (this.c instanceof JFrame) {
+			((JFrame) this.c).setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		}
+	}
 
-    private Container getContentPane() {
-        if (this.c instanceof JFrame) {
-            return ((JFrame) this.c).getContentPane();
-        }
-        return this.c;
-    }
+	private Container getContentPane() {
+		if (this.c instanceof JFrame) {
+			return ((JFrame) this.c).getContentPane();
+		}
+		return this.c;
+	}
 
-    private void pack() {
-        if (this.c instanceof JFrame) {
-            ((JFrame) this.c).pack();
-        }
-    }
+	private void pack() {
+		if (this.c instanceof JFrame) {
+			((JFrame) this.c).pack();
+		}
+	}
 
+	/**
+	 *
+	 * @param host
+	 */
 	@Override
 	public void hostFree(Host host) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

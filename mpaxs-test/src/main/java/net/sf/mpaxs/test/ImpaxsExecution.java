@@ -58,11 +58,31 @@ public class ImpaxsExecution {
 	 */
 	public final static String hash = "#";
 
+	/**
+	 *
+	 */
 	public enum Mode {
 
-		ALL, LOCAL, DISTRIBUTED
+		/**
+		 *
+		 */
+		ALL,
+
+		/**
+		 *
+		 */
+		LOCAL,
+
+		/**
+		 *
+		 */
+		DISTRIBUTED
 	};
 
+	/**
+	 *
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		Options options = new Options();
 		Option[] optionArray = new Option[]{

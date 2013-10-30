@@ -74,12 +74,20 @@ public class Job<T> implements IJob<T> {
 	private Status status = Status.UNKNOWN;
 	private int errorCounter = 0;
 	private int priority = 0;
+
+	/**
+	 * The maximum priority = <code>Integer.MAX_VALUE</code>
+	 */
 	public static final int MAX_PRIORITY = Integer.MAX_VALUE;
+
+	/**
+	 * The minimum priority = <code>Integer.MIN_VALUE</code>
+	 */
 	public static final int MIN_PRIORITY = Integer.MIN_VALUE;
 	private Throwable throwable = null;
 
 	/**
-	 * Create a new Job reading the contents of the supplied job configuration file.
+	 * Create a new Job with priority 0, reading the contents of the supplied job configuration file.
 	 *
 	 * @param jobConfigFile the job configuration file
 	 * @throws ClassNotFoundException
@@ -260,7 +268,7 @@ public class Job<T> implements IJob<T> {
 	}
 
 	@Override
-	public void setClassToExecute(final String jobConfigFile) throws ClassNotFoundException,
+	public final void setClassToExecute(final String jobConfigFile) throws ClassNotFoundException,
 		MalformedURLException, InstantiationException, IllegalAccessException, IOException, IllegalStateException {
 		if (!this.jobConfigFile.isEmpty() || classToExecute != null) {
 			throw new IllegalStateException("Can not reassign job after first call to setClassToExecute!");
@@ -281,7 +289,7 @@ public class Job<T> implements IJob<T> {
 	}
 
 	@Override
-	public void setClassToExecute(ConfigurableRunnable<T> cr) throws IllegalStateException {
+	public final void setClassToExecute(ConfigurableRunnable<T> cr) throws IllegalStateException {
 		if (classToExecute != null) {
 			throw new IllegalStateException("Can not reassign job after first call to setClassToExecute!");
 		}
@@ -297,10 +305,7 @@ public class Job<T> implements IJob<T> {
 			return false;
 		}
 		final Job<T> other = (Job<T>) obj;
-		if (this.id != other.id && (this.id == null || !this.id.equals(other.id))) {
-			return false;
-		}
-		return true;
+		return this.id == other.id || (this.id != null && this.id.equals(other.id));
 	}
 
 	@Override

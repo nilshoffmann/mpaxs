@@ -58,6 +58,10 @@ import org.apache.commons.configuration.PropertiesConfiguration;
  */
 public class StartUp {
 
+	/**
+	 *
+	 * @param cfg
+	 */
 	public StartUp(Configuration cfg) {
 		Settings settings = new Settings(cfg);
 		try {
@@ -130,6 +134,10 @@ public class StartUp {
 		h.startComputeHost();
 	}
 
+	/**
+	 *
+	 * @param args
+	 */
 	public static void main(String args[]) {
 		FileHandler handler;
 		try {

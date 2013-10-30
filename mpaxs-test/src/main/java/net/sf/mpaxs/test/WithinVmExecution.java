@@ -47,7 +47,12 @@ public class WithinVmExecution implements Callable<Double>, Serializable {
     private final int maxJobs;
     private final int maxThreads;
 
-    public WithinVmExecution(int maxJobs, int maxThreads) {
+	/**
+	 *
+	 * @param maxJobs
+	 * @param maxThreads
+	 */
+	public WithinVmExecution(int maxJobs, int maxThreads) {
         this.maxJobs = maxJobs;
         this.maxThreads = maxThreads;
     }

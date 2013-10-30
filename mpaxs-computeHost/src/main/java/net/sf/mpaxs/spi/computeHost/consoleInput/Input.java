@@ -39,7 +39,11 @@ public class Input {
 
     private IRemoteHost host;
 
-    public Input(IRemoteHost host){
+	/**
+	 *
+	 * @param host
+	 */
+	public Input(IRemoteHost host){
         this.host = host;
         System.out.println("-- ComputeHost ready! --");
         System.out.println("Type \"exit\" to end program.");

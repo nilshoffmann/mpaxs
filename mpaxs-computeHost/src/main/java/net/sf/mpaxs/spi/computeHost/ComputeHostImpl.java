@@ -49,15 +49,30 @@ public final class ComputeHostImpl extends UnicastRemoteObject implements ICompu
 	private IRemoteHost host;
 	private Settings settings;
 
+	/**
+	 *
+	 * @throws RemoteException
+	 */
 	public ComputeHostImpl() throws RemoteException {
 
 	}
 
+	/**
+	 *
+	 * @param host
+	 * @param settings
+	 * @throws RemoteException
+	 */
 	public ComputeHostImpl(IRemoteHost host, Settings settings) throws RemoteException {
 		this.host = host;
 		this.settings = settings;
 	}
 
+	/**
+	 *
+	 * @param remoteAuthToken
+	 * @throws RemoteException
+	 */
 	protected void authenticate(UUID remoteAuthToken) throws RemoteException {
 		String authToken = settings.getOption(ConfigurationKeys.KEY_AUTH_TOKEN);
 		if (!remoteAuthToken.toString().equals(authToken)) {

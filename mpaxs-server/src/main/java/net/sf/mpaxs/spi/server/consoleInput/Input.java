@@ -47,7 +47,11 @@ public class Input implements Runnable, IReceiver, IJobEventListener, IComputeHo
     private MasterServer master;
     private boolean cancel = false;
 
-    public Input(MasterServer master) {
+	/**
+	 *
+	 * @param master
+	 */
+	public Input(MasterServer master) {
         this.master = master;
     }
 
@@ -107,7 +111,11 @@ public class Input implements Runnable, IReceiver, IJobEventListener, IComputeHo
         System.out.print("> ");
     }
 
-    @Override
+	/**
+	 *
+	 * @param message
+	 */
+	@Override
     public void newMessage(String message) {
         print(message);
     }
@@ -117,17 +125,29 @@ public class Input implements Runnable, IReceiver, IJobEventListener, IComputeHo
         print("Job "+job.getId()+" changed status to: "+job.getStatus());
     }
 
-    @Override
+	/**
+	 *
+	 * @param host
+	 */
+	@Override
     public void hostAdded(Host host) {
         print("New ComputeHost added with IP: "+host.getIP());
     }
 
-    @Override
+	/**
+	 *
+	 * @param host
+	 */
+	@Override
     public void hostRemoved(Host host) {
         print("ComputeHost removed with IP: "+host.getIP());
     }
-    
-    public void cancel() throws InterruptedException {
+
+	/**
+	 *
+	 * @throws InterruptedException
+	 */
+	public void cancel() throws InterruptedException {
         //throw new InterruptedException();
     }
 
@@ -139,6 +159,10 @@ public class Input implements Runnable, IReceiver, IJobEventListener, IComputeHo
         readCommand();
     }
 
+	/**
+	 *
+	 * @param host
+	 */
 	@Override
 	public void hostFree(Host host) {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

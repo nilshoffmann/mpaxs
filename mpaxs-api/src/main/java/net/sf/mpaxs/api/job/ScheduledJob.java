@@ -49,6 +49,14 @@ public class ScheduledJob<T> implements IScheduledJob<T> {
 	private final TimeUnit timeUnit;
 	private final IJob<T> delegate;
 
+	/**
+	 * Create a new instance.
+	 *
+	 * @param job          the job instance
+	 * @param initialDelay the initial delay
+	 * @param period       the scheduling period
+	 * @param timeUnit     the time unit for period
+	 */
 	public ScheduledJob(IJob<T> job, long initialDelay, long period, TimeUnit timeUnit) {
 		this.delegate = job;
 		this.initialDelay = initialDelay;
@@ -56,6 +64,17 @@ public class ScheduledJob<T> implements IScheduledJob<T> {
 		this.timeUnit = timeUnit;
 	}
 
+	/**
+	 * Start scheduling of the provided job at the given date, with the provided period
+	 * between successive invocations in the provided time unit.
+	 *
+	 * @param <T>       the result type
+	 * @param job       the job instance
+	 * @param startDate the start date
+	 * @param period    the scheduling period
+	 * @param timeUnit  the time unit for period
+	 * @return
+	 */
 	public static <T> ScheduledJob<T> startAt(IJob<T> job, Date startDate, long period, TimeUnit timeUnit) {
 		Date now = new Date();
 		if (startDate.before(now)) {

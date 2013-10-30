@@ -54,6 +54,10 @@ import net.sf.mpaxs.spi.computeHost.consoleInput.Input;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.io.FileUtils;
 
+/**
+ *
+ * @author hoffmann
+ */
 public class Host implements IRemoteHost {
 
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);

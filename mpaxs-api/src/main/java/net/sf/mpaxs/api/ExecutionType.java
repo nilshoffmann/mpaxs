@@ -32,5 +32,24 @@ package net.sf.mpaxs.api;
  * @author Nils Hoffmann
  */
 public enum ExecutionType {
-    LOCAL,DISTRIBUTED,DRMAA,CLOUD;
+
+	/**
+	 *
+	 */
+	LOCAL,
+
+	/**
+	 *
+	 */
+	DISTRIBUTED,
+
+	/**
+	 *
+	 */
+	DRMAA,
+
+	/**
+	 *
+	 */
+	CLOUD;
 }

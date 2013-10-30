@@ -71,6 +71,9 @@ public class MpaxsCompletionService<T extends Serializable> implements
 	private Map<Future<T>, Callable<T>> futureToTaskMap = null;
 	private LinkedBlockingQueue<Callable<T>> failedTasks = null, cancelledTasks = null;
 
+	/**
+	 * Create a new completion service with default cached thread pool.
+	 */
 	public MpaxsCompletionService() {
 		super();
 		init();
@@ -79,10 +82,12 @@ public class MpaxsCompletionService<T extends Serializable> implements
 	}
 
 	/**
-	 * @param e
-	 * @param myTimeToWaitForTasks
-	 * @param myTimeUnitToWaitForTasks
-	 * @param myBlockingWait
+	 * Create a new completion service.
+	 *
+	 * @param e                        the executor service to use
+	 * @param myTimeToWaitForTasks     time to wait for tasks, if myBlockingWait=false
+	 * @param myTimeUnitToWaitForTasks time unit to wait for tasks
+	 * @param myBlockingWait           use blocking wait if true, use non-blocking wait otherwise
 	 */
 	public MpaxsCompletionService(ExecutorService e,
 		long myTimeToWaitForTasks, TimeUnit myTimeUnitToWaitForTasks,
@@ -122,18 +127,39 @@ public class MpaxsCompletionService<T extends Serializable> implements
 		this(es, myTimeToWaitForTasks, TimeUnit.valueOf(myTimeUnitToWaitForTasks), myBlockingWait);
 	}
 
+	/**
+	 * Returns whether this completion service uses blocking wait.
+	 *
+	 * @return true if blocking wait, false otherwise
+	 */
 	public boolean isBlockingWait() {
 		return myBlockingWait;
 	}
 
+	/**
+	 * Returns the maximum number of threads to use for the backing executor service.
+	 *
+	 * @return the maximum number of threads
+	 */
 	public int getMaxThreads() {
 		return this.maxThreads;
 	}
 
+	/**
+	 * Returns the time to wait for tasks if this completion service is set to
+	 * non-blocking wait.
+	 *
+	 * @return the time to wait for tasks
+	 */
 	public long getTimeToWaitForTasks() {
 		return myTimeToWaitForTasks;
 	}
 
+	/**
+	 * Returns the time unit to wait for tasks.
+	 *
+	 * @return the time unit to wait for tasks
+	 */
 	public TimeUnit getTimeUnitToWaitForTasks() {
 		return myTimeUnitToWaitForTasks;
 	}
@@ -141,6 +167,7 @@ public class MpaxsCompletionService<T extends Serializable> implements
 	/**
 	 * {@inheritDoc}
 	 *
+	 * @throws java.lang.Exception
 	 * @throws IllegalStateException if call is invoked more than once
 	 */
 	@Override

@@ -43,19 +43,32 @@ public class Reporter extends Handler{
     private Reporter(){
     }
 
-    public static Reporter getInstance(){
+	/**
+	 *
+	 * @return
+	 */
+	public static Reporter getInstance(){
         return instance;
     }
 
-    public boolean addListener(IReceiver receiver){
+	/**
+	 *
+	 * @param receiver
+	 * @return
+	 */
+	public boolean addListener(IReceiver receiver){
         return listener.add(receiver);
     }
 
     public boolean removeListener(IReceiver receiver){
         return listener.remove(receiver);
     }
-    
-    public void report(String message){
+
+	/**
+	 *
+	 * @param message
+	 */
+	public void report(String message){
         sendMessageToListner(message);
     }
     

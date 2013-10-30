@@ -46,6 +46,9 @@ public class MyConcurrentLinkedJobQueue extends PriorityBlockingQueue<IJob> {
 
 	private HashMap<UUID, IJob> queueBack = new HashMap<UUID, IJob>();
 
+	/**
+	 *
+	 */
 	public MyConcurrentLinkedJobQueue() {
 		//sort in descending order, since max priority jobs should be retrieved
 		//from the head of the queue
@@ -58,14 +61,29 @@ public class MyConcurrentLinkedJobQueue extends PriorityBlockingQueue<IJob> {
 		}));
 	}
 
+	/**
+	 *
+	 * @param jobID
+	 * @return
+	 */
 	public IJob getJob(UUID jobID) {
 		return queueBack.get(jobID);
 	}
 
+	/**
+	 *
+	 * @param jobID
+	 * @return
+	 */
 	public boolean containsJobWithID(UUID jobID) {
 		return queueBack.containsKey(jobID);
 	}
 
+	/**
+	 *
+	 * @param jobId
+	 * @return
+	 */
 	public IJob remove(UUID jobId) {
 		IJob job = queueBack.get(jobId);
 		super.remove(job);
@@ -100,6 +118,11 @@ public class MyConcurrentLinkedJobQueue extends PriorityBlockingQueue<IJob> {
 		return ret;
 	}
 
+	/**
+	 *
+	 * @param maxElements
+	 * @return
+	 */
 	public Collection<IJob> poll(int maxElements) {
 		ArrayList<IJob> jobs = new ArrayList<IJob>();
 		super.drainTo(jobs, maxElements);

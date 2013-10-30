@@ -40,22 +40,44 @@ public class MyConcurrentLinkedHostQueue extends LinkedBlockingQueue<Host> {
 
 	private final HashMap<UUID, Host> queueBack = new HashMap<UUID, Host>();
 
+	/**
+	 *
+	 */
 	public MyConcurrentLinkedHostQueue() {
 		super();
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public HashMap<UUID, Host> getAll() {
 		return queueBack;
 	}
 
+	/**
+	 *
+	 * @param hostId
+	 * @return
+	 */
 	public Host get(UUID hostId) {
 		return queueBack.get(hostId);
 	}
 
+	/**
+	 *
+	 * @param hostId
+	 * @return
+	 */
 	public boolean containsKey(UUID hostId) {
 		return queueBack.containsKey(hostId);
 	}
 
+	/**
+	 *
+	 * @param hostId
+	 * @return
+	 */
 	public Host remove(UUID hostId) {
 		Host host = queueBack.get(hostId);
 		super.remove(host);

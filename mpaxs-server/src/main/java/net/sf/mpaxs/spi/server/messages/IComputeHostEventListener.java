@@ -35,10 +35,22 @@ import net.sf.mpaxs.spi.server.Host;
  */
 public interface IComputeHostEventListener {
 
-    public void hostAdded(Host host);
+	/**
+	 *
+	 * @param host
+	 */
+	public void hostAdded(Host host);
 
-    public void hostRemoved(Host host);
+	/**
+	 *
+	 * @param host
+	 */
+	public void hostRemoved(Host host);
 	
+	/**
+	 *
+	 * @param host
+	 */
 	public void hostFree(Host host);
 
 }

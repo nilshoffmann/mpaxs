@@ -33,5 +33,9 @@ package net.sf.mpaxs.spi.server.messages;
  */
 public interface IReceiver {
 
-    public void newMessage(final String message);
+	/**
+	 *
+	 * @param message
+	 */
+	public void newMessage(final String message);
 }

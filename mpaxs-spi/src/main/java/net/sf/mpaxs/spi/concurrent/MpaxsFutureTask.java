@@ -56,12 +56,25 @@ public class MpaxsFutureTask<T> extends FutureTask<T> implements
 	private final Impaxs computeServer;
 	private Phaser phaser;
 
+	/**
+	 * Create a new instance.
+	 *
+	 * @param computeServer the compute server to use for job submission
+	 * @param callable      the callable to be executed
+	 */
 	public MpaxsFutureTask(Impaxs computeServer, Callable<T> callable) {
 		super(callable);
 		this.computeServer = computeServer;
 		job = new Job<T>(new DefaultCallable<T>(callable));
 	}
 
+	/**
+	 * Create a new instance.
+	 *
+	 * @param computeServer the compute server to use for job submission
+	 * @param runnable      the runnable to be executed
+	 * @param result        the result to be returned on successful completion
+	 */
 	public MpaxsFutureTask(Impaxs computeServer, Runnable runnable, T result) {
 		super(runnable, result);
 		this.computeServer = computeServer;
@@ -71,7 +84,6 @@ public class MpaxsFutureTask<T> extends FutureTask<T> implements
 	@Override
 	public boolean cancel(boolean bln) {
 		boolean superCancelled = super.cancel(bln);
-		//job status will be UNKNOWN for unsubmitted jobs
 		if (job.getStatus() != Status.CANCELED) {
 			computeServer.cancelJob(job.getId());
 			job.setStatus(Status.CANCELED);

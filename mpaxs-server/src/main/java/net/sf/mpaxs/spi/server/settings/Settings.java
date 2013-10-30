@@ -86,6 +86,10 @@ public class Settings {
 		load();
 	}
 
+	/**
+	 *
+	 * @param file
+	 */
 	public static void setConfigFile(String file) {
 		if (file != null) {
 			String[] tmp = {file};
@@ -93,6 +97,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public static Settings getInstance() {
 		if (instance == null) {
 			instance = new Settings();
@@ -100,10 +108,20 @@ public class Settings {
 		return instance;
 	}
 
+	/**
+	 *
+	 * @param key
+	 * @param value
+	 */
 	public void setOption(String key, String value) {
 		this.config.setProperty(key, value);
 	}
 
+	/**
+	 *
+	 * @param key
+	 * @return
+	 */
 	public Object getOption(String key) {
 		return this.config.getProperty(key);
 	}
@@ -171,14 +189,28 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @param key
+	 * @return
+	 */
 	public Integer getInt(String key) {
 		return Integer.valueOf(config.getInt(key, 0));
 	}
 
+	/**
+	 *
+	 * @param key
+	 * @return
+	 */
 	public String getString(String key) {
 		return config.getString(key);
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getMaxNumberOfChosts() {
 		int maxChosts = 1;
 		int tmp = getInt(ConfigurationKeys.KEY_MAX_NUMBER_OF_CHOSTS);
@@ -198,6 +230,10 @@ public class Settings {
 		return maxChosts;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getMaxJobsPerHost() {
 		int tmp = getInt(ConfigurationKeys.KEY_MAX_JOBS_PER_HOST);
 		if (tmp != 0) {
@@ -207,6 +243,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getMaxErrorsPerJob() {
 		int tmp = getInt(ConfigurationKeys.KEY_MAX_ERROR_PER_JOB);
 		if (tmp != 0) {
@@ -216,6 +256,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public boolean getErrorToConsole() {
 		String tmp = getString(ConfigurationKeys.KEY_ERROR_TO_CONSOLE);
 		if (tmp != null && tmp.equals("true")) {
@@ -225,6 +269,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public boolean getGuiMode() {
 		String tmp = getString(ConfigurationKeys.KEY_GUI_MODE);
 		if (tmp != null && tmp.equals("false")) {
@@ -234,6 +282,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public File getBaseDir() {
 		String ret = getString(ConfigurationKeys.KEY_BASE_DIR);
 		if (ret == null) {
@@ -243,25 +295,45 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public File getInputDir() {
 		return new File(
 			getBaseDir().getAbsolutePath() + File.separator + "input");
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public File getRunningDir() {
 		return new File(
 			getBaseDir().getAbsolutePath() + File.separator + "running");
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public File getDoneDir() {
 		return new File(getBaseDir().getAbsolutePath() + File.separator + "done");
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public File getErrorDir() {
 		return new File(
 			getBaseDir().getAbsolutePath() + File.separator + "error");
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public ExecutionType getExecutionMode() {
 		String val = getString(ConfigurationKeys.KEY_EXECUTION_MODE);
 		if (val == null) {
@@ -273,6 +345,10 @@ public class Settings {
 		return ret;
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getComputeHostOutputFile() {
 		String ret = getString(ConfigurationKeys.KEY_COMPUTE_HOST_OUTPUT_FILE);
 		if (ret == null) {
@@ -282,6 +358,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getComputeHostErrorFile() {
 		String ret = getString(ConfigurationKeys.KEY_COMPUTE_HOST_ERROR_FILE);
 		if (ret == null) {
@@ -291,6 +371,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getComputeHostWorkingDir() {
 		String ret = getString(ConfigurationKeys.KEY_COMPUTE_HOST_WORKING_DIR);
 		if (ret == null) {
@@ -300,6 +384,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getComputeHostMainClass() {
 		String ret = getString(ConfigurationKeys.KEY_COMPUTE_HOST_MAIN_CLASS);
 		if (ret == null) {
@@ -309,6 +397,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getPathToJava() {
 		String ret = getString(ConfigurationKeys.KEY_PATH_TO_JAVA);
 		if (ret == null) {
@@ -318,6 +410,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getPathToComputeHostJar() {
 		String ret = getString(ConfigurationKeys.KEY_PATH_TO_COMPUTEHOST_JAR);
 		if (ret == null) {
@@ -327,6 +423,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getScheduleWaitingTime() {
 		int ret = getInt(ConfigurationKeys.KEY_SCHEDULE_WAIT_TIME);
 		if (ret == 0) {
@@ -336,6 +436,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public int getLocalPort() {
 		int ret = getInt(ConfigurationKeys.KEY_LOCAL_PORT);
 		if (ret == 0) {
@@ -345,10 +449,18 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @param newLocalPort
+	 */
 	public void setLocalPort(int newLocalPort) {
 		config.setProperty(ConfigurationKeys.KEY_LOCAL_PORT, newLocalPort);
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getLocalIP() {
 		String ret = getString(ConfigurationKeys.KEY_LOCAL_IP);
 		if (ret == null) {
@@ -358,6 +470,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getCodebase() {
 		String ret = getString(ConfigurationKeys.KEY_CODEBASE);
 		if (ret == null) {
@@ -367,6 +483,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getPolicyName() {
 		String ret = getString(ConfigurationKeys.KEY_POLICY_NAME);
 		if (ret == null) {
@@ -376,6 +496,10 @@ public class Settings {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	public String getName() {
 		String ret = getString(ConfigurationKeys.KEY_NAME);
 		if (ret == null) {

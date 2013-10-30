@@ -54,10 +54,20 @@ public class MpaxsExecutorService extends AbstractExecutorService {
 	private ExecutorService es = Executors.newSingleThreadExecutor();
 	private final Impaxs computeServer;
 
+	/**
+	 * Create a new instance using the default compute server.
+	 *
+	 * @see ComputeServerFactory#getComputeServer()
+	 */
 	public MpaxsExecutorService() {
 		this(ComputeServerFactory.getComputeServer());
 	}
 
+	/**
+	 * Creates a new instance using the supplied compute server.
+	 *
+	 * @param executionServer
+	 */
 	public MpaxsExecutorService(Impaxs executionServer) {
 		this.computeServer = executionServer;
 	}

@@ -35,13 +35,29 @@ import java.util.concurrent.TimeUnit;
  *
  * @author Nils Hoffmann
  * @param <T>
+ * @see java.util.concurrent.ScheduledExecutorService
  */
 public interface IScheduledJob<T> extends IJob<T> {
 
+	/**
+	 * Returns the initial delay before this job should be scheduled.
+	 *
+	 * @return the initial delay
+	 */
 	long getInitialDelay();
 
+	/**
+	 * Returns the scheduling period between two successive invocations.
+	 *
+	 * @return the period
+	 */
 	long getPeriod();
 
+	/**
+	 * Returns the time unit for initialDelay and period.
+	 *
+	 * @return the time unit
+	 */
 	TimeUnit getTimeUnit();
 
 }

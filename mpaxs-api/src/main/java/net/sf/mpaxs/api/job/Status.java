@@ -38,10 +38,28 @@ package net.sf.mpaxs.api.job;
  */
 public enum Status {
 
+	/**
+	 * Initial lifecycle state of a job.
+	 */
 	UNKNOWN,
+	/**
+	 * State after submission to an execution queue.
+	 */
 	WAITING,
+	/**
+	 * State after transmission and begin of execution on a compute host.
+	 */
 	RUNNING,
+	/**
+	 * State after succesful termination of a job.
+	 */
 	DONE,
+	/**
+	 * State after experiencing an exception.
+	 */
 	ERROR,
+	/**
+	 * State after cancellation of a job.
+	 */
 	CANCELED;
 }

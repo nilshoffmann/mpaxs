@@ -41,7 +41,12 @@ public class CleanExiting extends WindowAdapter {
     MasterServer master;
     Window main;
 
-    public CleanExiting(MasterServer master, Window main) {
+	/**
+	 *
+	 * @param master
+	 * @param main
+	 */
+	public CleanExiting(MasterServer master, Window main) {
         this.master = master;
         this.main = main;
     }

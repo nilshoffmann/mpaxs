@@ -141,15 +141,27 @@ public class JobScheduler implements Runnable, IComputeHostEventListener {
 		}
 	}
 
+	/**
+	 *
+	 * @param host
+	 */
 	@Override
 	public void hostAdded(Host host) {
 //		freeHosts.add(host);
 	}
 
+	/**
+	 *
+	 * @param host
+	 */
 	@Override
 	public void hostRemoved(Host host) {
 	}
 
+	/**
+	 *
+	 * @param host
+	 */
 	@Override
 	public void hostFree(Host host) {
 //		freeHosts.add(host);

@@ -38,9 +38,9 @@ import java.util.logging.Logger;
 import javax.swing.RepaintManager;
 import javax.swing.SwingUtilities;
 import net.sf.mpaxs.api.job.IJob;
+import net.sf.mpaxs.api.job.Status;
 import net.sf.mpaxs.spi.server.Host;
 import net.sf.mpaxs.spi.server.MasterServer;
-import net.sf.mpaxs.api.job.Status;
 
 /**
  *
@@ -48,136 +48,146 @@ import net.sf.mpaxs.api.job.Status;
  */
 public class JobInfo extends javax.swing.JFrame {
 
-    private MasterServer master;
-    private UUID jobID;
-    private ScheduledExecutorService scheduler = Executors.
-            newScheduledThreadPool(1);
+	private MasterServer master;
+	private UUID jobID;
+	private ScheduledExecutorService scheduler = Executors.
+		newScheduledThreadPool(1);
 
-    public JobInfo(String name) {
-        initComponents();
-        configName.setText(name);
-        jobMessage.setText(
-                "This Job is in an error state. Please check your configuration file!");
-        status.setText(Status.ERROR.toString());
-        hostField.setText("");
-        cancelButton.setEnabled(false);
-        this.setVisible(true);
-    }
+	/**
+	 *
+	 * @param name
+	 */
+	public JobInfo(String name) {
+		initComponents();
+		configName.setText(name);
+		jobMessage.setText(
+			"This Job is in an error state. Please check your configuration file!");
+		status.setText(Status.ERROR.toString());
+		hostField.setText("");
+		cancelButton.setEnabled(false);
+		this.setVisible(true);
+	}
 
-    /** Creates new form JobInfo */
-    public JobInfo(UUID jobID, MasterServer master) {
-        initComponents();
-        this.master = master;
-        this.jobID = jobID;
-        progressBar.setMaximum(0);
-        progressBar.setMaximum(100);
-        initialSetup();
-        this.setVisible(true);
-        if (!scheduler.isShutdown()) {
-            permanentTextfieldUpdates();
-        }
-    }
+	/**
+	 * Creates new form JobInfo
+	 *
+	 * @param jobID
+	 * @param master
+	 */
+	public JobInfo(UUID jobID, MasterServer master) {
+		initComponents();
+		this.master = master;
+		this.jobID = jobID;
+		progressBar.setMaximum(0);
+		progressBar.setMaximum(100);
+		initialSetup();
+		this.setVisible(true);
+		if (!scheduler.isShutdown()) {
+			permanentTextfieldUpdates();
+		}
+	}
 
-    private void initialSetup() {
-        IJob job = master.findJob(jobID);
-        setupStaticTextFields(job);
-        updateTextFields(job);
-    }
+	private void initialSetup() {
+		IJob job = master.findJob(jobID);
+		setupStaticTextFields(job);
+		updateTextFields(job);
+	}
 
-    private void setupStaticTextFields(IJob job) {
-        jobIDField.setText(jobID.toString());
-        if (job.getConfigurationFile() != null || !job.getConfigurationFile().
-                isEmpty()) {
-            configName.setText(new File(job.getConfigurationFile()).getName());
-        }
+	private void setupStaticTextFields(IJob job) {
+		jobIDField.setText(jobID.toString());
+		if (job.getConfigurationFile() != null || !job.getConfigurationFile().
+			isEmpty()) {
+			configName.setText(new File(job.getConfigurationFile()).getName());
+		}
 
-        className.setText(job.getClassToExecute().getClass().getSimpleName());
-    }
+		className.setText(job.getClassToExecute().getClass().getSimpleName());
+	}
 
-    private void updateTextFields(final IJob job) {
-        Runnable r = new Runnable() {
+	private void updateTextFields(final IJob job) {
+		Runnable r = new Runnable() {
 
-            Status jobStatus = job.getStatus();
+			Status jobStatus = job.getStatus();
 
-            @Override
-            public void run() {
-                switch (jobStatus) {
-                    case WAITING:
-                        status.setText(Status.WAITING.toString());
-                        hostField.setText("");
-                        cancelButton.setEnabled(true);
-                        showResults.setEnabled(false);
-                        jobMessage.setText("");
-                        break;
-                    case RUNNING:
-                        status.setText(Status.RUNNING.toString());
-                        Host host = master.getHostJobIsRunningOn(jobID);
-                        if (host != null) {
-                            hostField.setText(host.getIP());
-                            progressBar.setValue(master.getJobProgress(jobID).
-                                    getProgressValue());
-                        }
-                        cancelButton.setEnabled(true);
-                        showResults.setEnabled(false);
-                        jobMessage.setText("");
-                        break;
-                    case DONE:
-                        status.setText(Status.DONE.toString());
-                        hostField.setText("");
-                        progressBar.setValue(100);
-                        cancelButton.setEnabled(false);
-                        showResults.setEnabled(true);
-                        jobMessage.setText("");
-                        scheduler.shutdown();
-                        break;
-                    case ERROR:
-                        status.setText(Status.ERROR.toString());
-                        hostField.setText("");
-                        progressBar.setValue(0);
-                        cancelButton.setEnabled(false);
-                        showResults.setEnabled(false);
-                        jobMessage.setText(
-                                "This Job is in an error state. Please check log.xml and your implementation!");
-                        scheduler.shutdown();
-                        break;
-                    case CANCELED:
-                        status.setText(Status.CANCELED.toString());
-                        hostField.setText("");
-                        progressBar.setValue(0);
-                        cancelButton.setEnabled(false);
-                        showResults.setEnabled(false);
-                        jobMessage.setText("This Job has been canceled.");
-                        scheduler.shutdown();
-                        break;
-                }
-            }
-        };
-        SwingUtilities.invokeLater(r);
-        RepaintManager.currentManager(this).markCompletelyDirty(status);
-        RepaintManager.currentManager(this).markCompletelyDirty(hostField);
-        RepaintManager.currentManager(this).markCompletelyDirty(progressBar);
-        RepaintManager.currentManager(this).markCompletelyDirty(jobMessage);
-    }
+			@Override
+			public void run() {
+				switch (jobStatus) {
+					case WAITING:
+						status.setText(Status.WAITING.toString());
+						hostField.setText("");
+						cancelButton.setEnabled(true);
+						showResults.setEnabled(false);
+						jobMessage.setText("");
+						break;
+					case RUNNING:
+						status.setText(Status.RUNNING.toString());
+						Host host = master.getHostJobIsRunningOn(jobID);
+						if (host != null) {
+							hostField.setText(host.getIP());
+							progressBar.setValue(master.getJobProgress(jobID).
+								getProgressValue());
+						}
+						cancelButton.setEnabled(true);
+						showResults.setEnabled(false);
+						jobMessage.setText("");
+						break;
+					case DONE:
+						status.setText(Status.DONE.toString());
+						hostField.setText("");
+						progressBar.setValue(100);
+						cancelButton.setEnabled(false);
+						showResults.setEnabled(true);
+						jobMessage.setText("");
+						scheduler.shutdown();
+						break;
+					case ERROR:
+						status.setText(Status.ERROR.toString());
+						hostField.setText("");
+						progressBar.setValue(0);
+						cancelButton.setEnabled(false);
+						showResults.setEnabled(false);
+						jobMessage.setText(
+							"This Job is in an error state. Please check log.xml and your implementation!");
+						scheduler.shutdown();
+						break;
+					case CANCELED:
+						status.setText(Status.CANCELED.toString());
+						hostField.setText("");
+						progressBar.setValue(0);
+						cancelButton.setEnabled(false);
+						showResults.setEnabled(false);
+						jobMessage.setText("This Job has been canceled.");
+						scheduler.shutdown();
+						break;
+				}
+			}
+		};
+		SwingUtilities.invokeLater(r);
+		RepaintManager.currentManager(this).markCompletelyDirty(status);
+		RepaintManager.currentManager(this).markCompletelyDirty(hostField);
+		RepaintManager.currentManager(this).markCompletelyDirty(progressBar);
+		RepaintManager.currentManager(this).markCompletelyDirty(jobMessage);
+	}
 
-    private void permanentTextfieldUpdates() {
-        scheduler.scheduleAtFixedRate(
-                new Runnable() {
+	private void permanentTextfieldUpdates() {
+		scheduler.scheduleAtFixedRate(
+			new Runnable() {
 
-                    @Override
-                    public void run() {
-                        IJob job = master.findJob(jobID);
-                        setupStaticTextFields(job);
-                        updateTextFields(job);
-                    }
-                }, 0, 1, TimeUnit.SECONDS);
-    }
+				@Override
+				public void run() {
+					IJob job = master.findJob(jobID);
+					setupStaticTextFields(job);
+					updateTextFields(job);
+				}
+			}, 0, 1, TimeUnit.SECONDS);
+	}
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
+	/**
+	 * This method is called from within the constructor to
+	 * initialize the form.
+	 * WARNING: Do NOT modify this code. The content of this method is
+	 * always regenerated by the Form Editor.
+	 */
+	@SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -324,19 +334,19 @@ public class JobInfo extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        cancelButton.setEnabled(false);
-        master.cancelJob(jobID);
+		cancelButton.setEnabled(false);
+		master.cancelJob(jobID);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void showResultsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showResultsActionPerformed
-        IJob job = master.findJob(jobID);
-        try {
-            new ShowResult(job.getClassToExecute().get().toString());
-        } catch (InterruptedException ex) {
-            Logger.getLogger(JobInfo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ExecutionException ex) {
-            Logger.getLogger(JobInfo.class.getName()).log(Level.SEVERE, null, ex);
-        }
+		IJob job = master.findJob(jobID);
+		try {
+			new ShowResult(job.getClassToExecute().get().toString());
+		} catch (InterruptedException ex) {
+			Logger.getLogger(JobInfo.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (ExecutionException ex) {
+			Logger.getLogger(JobInfo.class.getName()).log(Level.SEVERE, null, ex);
+		}
     }//GEN-LAST:event_showResultsActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;

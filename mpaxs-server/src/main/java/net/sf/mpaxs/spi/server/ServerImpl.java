@@ -45,10 +45,21 @@ public class ServerImpl extends UnicastRemoteObject implements IRemoteServer {
     MasterServer master;
     private UUID authToken;
 
-    public ServerImpl() throws RemoteException {
+	/**
+	 *
+	 * @throws RemoteException
+	 */
+	public ServerImpl() throws RemoteException {
     }
 
-    public ServerImpl(HostRegister register, MasterServer master, UUID authToken) throws RemoteException {
+	/**
+	 *
+	 * @param register
+	 * @param master
+	 * @param authToken
+	 * @throws RemoteException
+	 */
+	public ServerImpl(HostRegister register, MasterServer master, UUID authToken) throws RemoteException {
         this.register = register;
         this.master = master;
         this.authToken = authToken;
@@ -84,7 +95,12 @@ public class ServerImpl extends UnicastRemoteObject implements IRemoteServer {
         master.jobComputationFailed(job);
     }
 
-    protected void authenticate(UUID remoteAuthToken) throws RemoteException {
+	/**
+	 *
+	 * @param remoteAuthToken
+	 * @throws RemoteException
+	 */
+	protected void authenticate(UUID remoteAuthToken) throws RemoteException {
         if (!remoteAuthToken.equals(authToken)) {
             throw new RemoteException("Authentication with token: " + remoteAuthToken + " failed!");
         }
