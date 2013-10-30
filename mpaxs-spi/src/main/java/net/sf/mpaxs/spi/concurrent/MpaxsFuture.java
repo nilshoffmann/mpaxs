@@ -33,7 +33,7 @@ import java.util.concurrent.Future;
 /**
  *
  * @author Nils Hoffmann
- * @param <V>
+ * @param <V> the type of computed results
  */
 public interface MpaxsFuture<V extends Serializable> extends Future<V> {
 

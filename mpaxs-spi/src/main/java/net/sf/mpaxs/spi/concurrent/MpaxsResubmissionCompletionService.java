@@ -46,9 +46,12 @@ import java.util.logging.Logger;
 import net.sf.mpaxs.api.ICompletionService;
 
 /**
+ * This class allows to create a completion service that is resilient
+ * to random failures of jobs. It can be configured to allow for a maximum
+ * number of retries for every failed job.
  *
  * @author Nils Hoffmann
- * @param <T>
+ * @param <T> the type of computed results
  */
 public class MpaxsResubmissionCompletionService<T extends Serializable>
 	implements ICompletionService<T> {
@@ -80,7 +83,10 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
 	}
 
 	/**
-	 * @param mcs
+	 * Create a new resubmission service, delegating to the provided
+	 * completion service.
+	 *
+	 * @param mcs the provided completion service
 	 */
 	public MpaxsResubmissionCompletionService(MpaxsCompletionService<T> mcs) {
 		this();
@@ -88,48 +94,55 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
 	}
 
 	/**
+	 * Get the maximum number of retries for failed jobs.
 	 *
-	 * @return
+	 * @return the maximum number of resubmissions to attempt
 	 */
 	public int getMaxResubmissions() {
 		return maxResubmissions;
 	}
 
 	/**
+	 * Set the maximum number of retries for failed jobs.
 	 *
-	 * @param maxResubmissions
+	 * @param maxResubmissions the maximum number of resubmissions to attempt
 	 */
 	public void setMaxResubmissions(int maxResubmissions) {
 		this.maxResubmissions = maxResubmissions;
 	}
 
 	/**
+	 * Get the number of jobs that experienced an exception.
 	 *
-	 * @return
+	 * @return the number of failed jobs
 	 */
 	public int getFailed() {
 		return failed.get();
 	}
 
 	/**
+	 * Get the number of jobs that have finished and have neither been
+	 * cancelled nor experienced an exception.
 	 *
-	 * @return
+	 * @return the number of successfully finished jobs
 	 */
 	public int getFinished() {
 		return finished.get();
 	}
 
 	/**
+	 * Whether more jobs can be submitted.
 	 *
-	 * @return
+	 * @return true if no more jobs can be submitted, false otherwise
 	 */
 	public boolean isSubmissionClosed() {
 		return submissionClosed;
 	}
 
 	/**
+	 * Get the number of submitted jobs.
 	 *
-	 * @return
+	 * @return the number of submitted jobs
 	 */
 	public int getSubmitted() {
 		return submitted.get();
@@ -178,9 +191,13 @@ public class MpaxsResubmissionCompletionService<T extends Serializable>
 	}
 
 	/**
-	 * This method should only be called once to obtain the results.
+	 * <p>
+	 * Returns the list of computed results</p>
 	 *
-	 * @return
+	 * <p>
+	 * This method should only be called once to obtain the results.</p>
+	 *
+	 * @return the list of computed results
 	 * @throws Exception
 	 * @throws IllegalStateException if call() is invoked more than once
 	 */

@@ -49,6 +49,8 @@ import java.util.logging.Logger;
 import net.sf.mpaxs.api.ICompletionService;
 
 /**
+ * This class allows to create a completion service that allows access to
+ * cancelled, failed and successful <code>Callables</code>.
  *
  * @author Nils Hoffmann
  * @param <T>

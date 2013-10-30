@@ -46,25 +46,26 @@ import net.sf.mpaxs.api.job.Status;
  * Implementation of RunnableFuture for mpaxs jobs.
  *
  * @author Nils Hoffmann
- * @param <V>
+ * @param <T> the type of computed results
+ * @see java.util.concurrent.FutureTask
  */
-public class MpaxsFutureTask<V> extends FutureTask<V> implements
-	RunnableFuture<V>, IJobEventListener {
+public class MpaxsFutureTask<T> extends FutureTask<T> implements
+	RunnableFuture<T>, IJobEventListener {
 
-	private final IJob<V> job;
+	private final IJob<T> job;
 	private final Impaxs computeServer;
 	private Phaser phaser;
 
-	public MpaxsFutureTask(Impaxs computeServer, Callable<V> callable) {
+	public MpaxsFutureTask(Impaxs computeServer, Callable<T> callable) {
 		super(callable);
 		this.computeServer = computeServer;
-		job = new Job<V>(new DefaultCallable<V>(callable));
+		job = new Job<T>(new DefaultCallable<T>(callable));
 	}
 
-	public MpaxsFutureTask(Impaxs computeServer, Runnable runnable, V result) {
+	public MpaxsFutureTask(Impaxs computeServer, Runnable runnable, T result) {
 		super(runnable, result);
 		this.computeServer = computeServer;
-		job = new Job<V>(new DefaultRunnable<V>(runnable, result));
+		job = new Job<T>(new DefaultRunnable<T>(runnable, result));
 	}
 
 	@Override
@@ -85,11 +86,7 @@ public class MpaxsFutureTask<V> extends FutureTask<V> implements
 		job.setStatus(Status.UNKNOWN);
 		job.setThrowable(null);
 		computeServer.submitJob(job);
-		//wait for job changed
-//		System.out.println("Waiting in thread " + Thread.currentThread().getName());
-//		System.out.println("Phaser has " + phaser.getRegisteredParties() + " registered parties of which " + phaser.getUnarrivedParties() + " have not arrived yet!");
 		phaser.awaitAdvance(0);
-//		System.out.println("Job is Done!");
 	}
 
 	@Override
@@ -97,7 +94,7 @@ public class MpaxsFutureTask<V> extends FutureTask<V> implements
 		if (job.getId().equals(this.job.getId())) {
 			if (job.getStatus() == Status.DONE) {
 				try {
-					V v = (V) job.getClassToExecute().get();
+					T v = (T) job.getClassToExecute().get();
 					if (v != null) {
 						set(v);
 					}
