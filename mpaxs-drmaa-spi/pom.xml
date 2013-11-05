@@ -4,11 +4,11 @@
     <parent>
         <artifactId>mpaxs</artifactId>
         <groupId>net.sf.mpaxs</groupId>
-        <version>1.6.18-SNAPSHOT</version>
+        <version>1.7.0</version>
     </parent>
     <groupId>net.sf.mpaxs</groupId>
     <artifactId>mpaxs-drmaa-spi</artifactId>
-    <version>1.6.18-SNAPSHOT</version>
+    <version>1.7.0</version>
     <name>mpaxs-drmaa-spi</name>
     <dependencies>
         <dependency>
