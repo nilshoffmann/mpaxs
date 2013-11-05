@@ -10,14 +10,14 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="440.15692"
-   height="272.00439"
+   height="440.16"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.3.1 r9886"
    sodipodi:docname="MpaxsLogo.svg"
-   inkscape:export-filename="/home/hoffmann/Uni/projects/sf/mpaxs/mpaxs-code/src/site/resources/images/MpaxsLogo.png"
-   inkscape:export-xdpi="33.82"
-   inkscape:export-ydpi="33.82">
+   inkscape:export-filename="/home/hoffmann/Uni/projects/sf/mpaxs/mpaxs-code/src/site/resources/images/MpaxsLogoSquare.png"
+   inkscape:export-xdpi="13.09"
+   inkscape:export-ydpi="13.09">
   <defs
      id="defs4" />
   <sodipodi:namedview
@@ -27,9 +27,9 @@
      borderopacity="1"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.5490042"
-     inkscape:cx="220.53641"
-     inkscape:cy="136.0128"
+     inkscape:zoom="2.2537259"
+     inkscape:cx="220.07846"
+     inkscape:cy="220.08"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -38,10 +38,10 @@
      fit-margin-left="20"
      fit-margin-right="20"
      fit-margin-bottom="20"
-     inkscape:window-width="1600"
-     inkscape:window-height="1171"
+     inkscape:window-width="1920"
+     inkscape:window-height="1176"
      inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-y="24"
      inkscape:window-maximized="1"
      borderlayer="false">
     <inkscape:grid
@@ -70,26 +70,26 @@
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(93.008145,68.629404)">
+     transform="translate(93.008145,236.78501)">
     <path
-       style="fill:#73945b;fill-opacity:1;fill-rule:nonzero;stroke:#2d5016;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 57.99999,-47.637811 -59.9999999,100 -70.0000001,0 14.15625,15 -14.15625,15 70.0000001,0 59.9999999,100.000001 60,0 14.15625,-15 -14.15625,-15 -60,0 -42,-70.000001 102,0 14.15625,-15 -14.15625,-15 -102,0 42,-70 60,0 14.15625,-15 -14.15625,-15 -60,0 z"
+       style="fill:#73945b;fill-opacity:1;fill-rule:nonzero;stroke:#2d5016;stroke-width:2.63752174;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 57.99999,-217.63781 -59.9999999,173.913045 -70.0000001,0 14.15625,26.086957 -14.15625,26.0869563 70.0000001,0 59.9999999,173.9130417 60,0 14.15625,-26.08695 -14.15625,-26.08696 -60,0 -42,-121.7391317 102,0 14.15625,-26.0869563 -14.15625,-26.086957 -102,0 42,-121.739135 60,0 14.15625,-26.08695 -14.15625,-26.08696 -60,0 z"
        id="rect2989"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
        inkscape:export-xdpi="33.740002"
        inkscape:export-ydpi="33.740002" />
     <path
-       style="fill:#aade87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m -72,2.3621856 14.15625,15.0000004 -14.15625,15 10,0 60,0 60,99.999994 59.99999,0 14.15625,-15 -14.15625,-15 -59.99999,0 -60,-99.9999944 -60,0 -10,0 z"
+       style="fill:#aade87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.63752174;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m -72,-130.6813 14.15625,26.08697 L -72,-78.507384 l 10,0 60,0 60,173.913038 59.99999,0 14.15625,-26.086955 -14.15625,-26.086957 -59.99999,0 -60,-173.913042 -60,0 -10,0 z"
        id="rect2989-4"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
        inkscape:export-xdpi="33.740002"
        inkscape:export-ydpi="33.740002" />
     <path
-       style="fill:#5c7394;fill-opacity:1;fill-rule:nonzero;stroke:#323232;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="m 122,-47.637811 14.15625,15 -14.15625,15 10,0 60,0 42,70 -112,0 14.15625,15 -14.15625,15 112,0 -42,70.000001 -60,0 -10,0 14.15625,15 -14.15625,15 10,0 60,0 60,-100.000001 60,0 14.15625,-15 -14.15625,-15 -60,0 -60,-100 -60,0 -10,0 z"
+       style="fill:#5c7394;fill-opacity:1;fill-rule:nonzero;stroke:#323232;stroke-width:2.63752174;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 122,-217.63781 14.15625,26.08696 L 122,-165.4639 l 10,0 60,0 42,121.739135 -112,0 14.15625,26.086957 L 122,8.4491483 l 112,0 -42,121.7391317 -60,0 -10,0 14.15625,26.08696 L 122,182.36219 l 10,0 60,0 60,-173.9130417 60,0 L 326.15625,-17.637808 312,-43.724765 l -60,0 -60,-173.913045 -60,0 -10,0 z"
        id="path3393"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
@@ -101,11 +101,11 @@
        inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
        inkscape:connector-curvature="0"
        id="path3840"
-       d="m 122,2.3621856 14.15625,15.0000004 -14.15625,15 10,0 60,0 60,99.999994 59.99999,0 14.15625,-15 -14.15625,-15 -59.99999,0 -60,-99.9999944 -60,0 -10,0 z"
-       style="fill:#afc6e9;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+       d="m 122,-130.6813 14.15625,26.08697 L 122,-78.507384 l 10,0 60,0 60,173.913038 59.99999,0 14.15625,-26.086955 -14.15625,-26.086957 -59.99999,0 -60,-173.913042 -60,0 -10,0 z"
+       style="fill:#afc6e9;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.63752174;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
     <path
-       style="fill:#aade87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       d="M 58,2.3621896 -2,102.36219 l -60,0 -10,0 14.15625,15 -14.15625,15 10,0 60,0 60,-100 59.99999,0 14.15625,-15 -14.15625,-15.0000004 -59.99999,0 z"
+       style="fill:#aade87;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.63752174;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       d="m 58,-130.68128 -60,173.913039 -60,0 -10,0 14.15625,26.086956 L -72,95.405672 l 10,0 60,0 60,-173.913043 59.99999,0 14.15625,-26.086949 -14.15625,-26.08696 -59.99999,0 z"
        id="rect2993"
        inkscape:connector-curvature="0"
        inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
@@ -117,7 +117,7 @@
        inkscape:export-filename="/home/hoffmann/Uni/projects/sf/maltcms/maven/cross/trunk/src/site/resources/images/cross-logo.png"
        inkscape:connector-curvature="0"
        id="path3842"
-       d="m 252,2.3621896 -60,100.0000004 -60,0 -10,0 14.15625,15 -14.15625,15 10,0 60,0 60,-100 59.99999,0 14.15625,-15 -14.15625,-15.0000004 -59.99999,0 z"
-       style="fill:#afc6e9;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
+       d="m 252,-130.68128 -60,173.913039 -60,0 -10,0 14.15625,26.086956 L 122,95.405672 l 10,0 60,0 60,-173.913043 59.99999,0 14.15625,-26.086949 -14.15625,-26.08696 -59.99999,0 z"
+       style="fill:#afc6e9;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.63752174;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
   </g>
 </svg>
