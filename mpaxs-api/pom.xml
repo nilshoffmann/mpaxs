@@ -4,11 +4,11 @@
     <parent>
         <artifactId>mpaxs</artifactId>
         <groupId>net.sf.mpaxs</groupId>
-        <version>1.7.0</version>
+        <version>1.7.1-SNAPSHOT</version>
     </parent>
     <groupId>net.sf.mpaxs</groupId>
     <artifactId>mpaxs-api</artifactId>
-    <version>1.7.0</version>
+    <version>1.7.1-SNAPSHOT</version>
     <name>mpaxs-api</name>
     <packaging>jar</packaging>
     <build>
